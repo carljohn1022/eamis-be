@@ -55,6 +55,12 @@ namespace EAMIS.Core.Domain
         public DbSet<EAMISAUTHORIZATION> EAMIS_AUTHORIZATION { get; set; }
         public DbSet<EAMISRESPONSIBILITYCODE> EAMIS_RESPONSIBILITY_CODE { get; set; }
 
+        //Transaction
+        public DbSet<EAMISDELIVERYRECEIPT> EAMIS_DELIVERY_RECEIPT { get; set; }
+        public DbSet<EAMISDELIVERYRECEIPTDETAILS> EAMIS_DELIVERY_RECEIPT_DETAILS { get; set; }
+        public DbSet<EAMISPROPERTYTRANSACTION> EAMIS_PROPERTY_TRANSACTION { get; set; }
+        public DbSet<EAMISPROPERTYTRANSACTIONDETAILS> EAMIS_PROPERTY_TRANSACTION_DETAILS { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
