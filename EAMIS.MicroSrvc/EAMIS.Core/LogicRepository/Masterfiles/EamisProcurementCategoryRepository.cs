@@ -1,0 +1,137 @@
+﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Core.ContractRepository.Masterfiles;
+using EAMIS.Core.Domain;
+using EAMIS.Core.Domain.Entities;
+using EAMIS.Core.Response.DTO;
+using LinqKit;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EAMIS.Core.LogicRepository.Masterfiles
+{
+    public class EamisProcurementCategoryRepository : IEamisProcurementCategoryRepository
+    {
+        private readonly EAMISContext _ctx;
+        private readonly int _maxPageSize;
+        public EamisProcurementCategoryRepository(EAMISContext ctx)
+        {
+            _ctx = ctx;
+            _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
+                : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
+        }
+
+        public async Task<EamisProcurementCategoryDTO> Delete(EamisProcurementCategoryDTO item)
+        {
+            EAMISPROCUREMENTCATEGORY data = MapToEntity(item);
+            _ctx.Entry(data).State = EntityState.Deleted;
+            await _ctx.SaveChangesAsync();
+            return item;
+        }
+
+        private EAMISPROCUREMENTCATEGORY MapToEntity(EamisProcurementCategoryDTO item)
+        {
+            if (item == null) return new EAMISPROCUREMENTCATEGORY();
+            return new EAMISPROCUREMENTCATEGORY
+            {
+                ID = item.Id,
+                PROCUREMENT_DESCRIPTION = item.ProcurementDescription,
+                IS_ACTIVE = item.isActive
+            };
+        }
+
+        public async Task<EamisProcurementCategoryDTO> Insert(EamisProcurementCategoryDTO item)
+        {
+            EAMISPROCUREMENTCATEGORY data = MapToEntity(item);
+            _ctx.Entry(data).State = EntityState.Added;
+            await _ctx.SaveChangesAsync();
+            return item;
+        }
+
+        public async Task<DataList<EamisProcurementCategoryDTO>> List(EamisProcurementCategoryDTO filter, PageConfig config)
+        {
+            IQueryable<EAMISPROCUREMENTCATEGORY> query = FilteredEntities(filter);
+
+            string resolved_sort = config.SortBy ?? "Id";
+            bool resolve_isAscending = (config.IsAscending) ? config.IsAscending : false;
+            int resolved_size = config.Size ?? _maxPageSize;
+            if (resolved_size > _maxPageSize) resolved_size = _maxPageSize;
+            int resolved_index = config.Index ?? 1;
+
+            var paged = PagedQuery(query, resolved_size, resolved_index);
+            return new DataList<EamisProcurementCategoryDTO>
+            {
+                Count = await query.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync(),
+            };
+        }
+
+        private IQueryable<EamisProcurementCategoryDTO> QueryToDTO(IQueryable<EAMISPROCUREMENTCATEGORY> query)
+        {
+            return query.Select(x => new EamisProcurementCategoryDTO
+            {
+                Id = x.ID,
+                ProcurementDescription = x.PROCUREMENT_DESCRIPTION,
+                isActive = x.IS_ACTIVE
+            });
+        }
+
+        private IQueryable<EAMISPROCUREMENTCATEGORY> FilteredEntities(EamisProcurementCategoryDTO filter, IQueryable<EAMISPROCUREMENTCATEGORY> custom_query = null, bool strict = false)
+        {
+            var predicate = PredicateBuilder.New<EAMISPROCUREMENTCATEGORY>(true);
+            if (filter.Id != null && filter.Id != 0)
+                predicate = predicate.And(x => x.ID == filter.Id);
+            if (!string.IsNullOrEmpty(filter.ProcurementDescription)) predicate = (strict)
+                    ? predicate.And(x => x.PROCUREMENT_DESCRIPTION.ToLower() == filter.ProcurementDescription.ToLower())
+                    : predicate.And(x => x.PROCUREMENT_DESCRIPTION.ToLower() == filter.ProcurementDescription.ToLower());
+            var query = custom_query ?? _ctx.EAMIS_PROCUREMENTCATEGORY;
+            return query.Where(predicate);
+        }
+
+        private IQueryable<EAMISPROCUREMENTCATEGORY> PagedQuery(IQueryable<EAMISPROCUREMENTCATEGORY> query, int resolved_size, int resolved_index)
+        {
+            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+        }
+
+        public async Task<EamisProcurementCategoryDTO> Update(int Id, EamisProcurementCategoryDTO item)
+        {
+            EAMISPROCUREMENTCATEGORY data = MapToEntity(item);
+            _ctx.Entry(data).State = EntityState.Modified;
+            await _ctx.SaveChangesAsync();
+            return item;
+        }
+
+        public async Task<DataList<EamisProcurementCategoryDTO>> SearchProcurementCategory(string searchType, string searchValue)
+        {
+            IQueryable<EAMISPROCUREMENTCATEGORY> query = null;
+           
+                query = _ctx.EAMIS_PROCUREMENTCATEGORY.AsNoTracking().Where(x => x.PROCUREMENT_DESCRIPTION.Contains(searchValue)).AsQueryable();
+         
+            
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisProcurementCategoryDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await MapToDTO(paged).ToListAsync()
+            };
+        }
+
+        private IQueryable<EamisProcurementCategoryDTO> MapToDTO(IQueryable<EAMISPROCUREMENTCATEGORY> query)
+        {
+            return query.Select(x => new EamisProcurementCategoryDTO
+            {
+                Id = x.ID,
+                ProcurementDescription = x.PROCUREMENT_DESCRIPTION
+            });
+        }
+
+        private IQueryable<EAMISPROCUREMENTCATEGORY> PagedQueryForSearch(IQueryable<EAMISPROCUREMENTCATEGORY> query)
+        {
+            return query;
+        }
+    }
+}
