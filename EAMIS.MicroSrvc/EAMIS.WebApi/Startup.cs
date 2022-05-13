@@ -5,11 +5,13 @@ using EAMIS.Core.ContractRepository;
 using EAMIS.Core.ContractRepository.Ais;
 using EAMIS.Core.ContractRepository.Classification;
 using EAMIS.Core.ContractRepository.Masterfiles;
+using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain;
 using EAMIS.Core.LogicRepository;
 using EAMIS.Core.LogicRepository.Ais;
 using EAMIS.Core.LogicRepository.Classification;
 using EAMIS.Core.LogicRepository.Masterfiles;
+using EAMIS.Core.LogicRepository.Transaction;
 using EAMIS.Core.Response;
 using EAMIS.Core.Response.DTO;
 using EAMIS.Core.TokenServices;
@@ -95,6 +97,12 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisAuthorizationRepository, EamisAuthorizationRepository>();
             services.AddScoped<IEamisFinancingSourceRepository, EamisFinancingSourceRepository>();
             services.AddScoped<IEamisResponsibilityCodeRepository, EamisResponsibilityCodeRepository>();
+
+            //Transaction
+            services.AddScoped<IEamisPropertyTransactionRepository, EamisPropertyTransactionRepository>();
+            services.AddScoped<IEamisPropertyTransactionDetailsRepository, EamisPropertyTransactionDetailsRepository>();
+            services.AddScoped<IEamisDeliveryReceiptRepository, EamisDeliveryReceiptRepository>();
+            services.AddScoped<IEamisDeliveryReceiptDetailsRepository, EamisDeliveryReceiptDetailsRepository>();
 
             //AIS
             services.AddScoped<IAisPersonnelRepository, AisPersonnelRepository>();

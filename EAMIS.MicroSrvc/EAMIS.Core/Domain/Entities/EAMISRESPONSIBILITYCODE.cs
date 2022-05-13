@@ -13,6 +13,7 @@ namespace EAMIS.Core.Domain.Entities
         [Key]
         public int ID { get; set; }
         public string OFFICE { get; set; }
+        public string CODE { get; set; }
         public string DEPARTMENT { get; set; }
         public bool IS_ACTIVE { get; set; }
     }
