@@ -8270,11 +8270,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\npala\\Desktop\\New Pull\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.WebApi\\EAMIS.WebApi.csproj",
+      "projectUniqueName": "C:\\Users\\npala\\Desktop\\New Pull\\new\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.WebApi\\EAMIS.WebApi.csproj",
       "projectName": "EAMIS.WebApi",
-      "projectPath": "C:\\Users\\npala\\Desktop\\New Pull\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.WebApi\\EAMIS.WebApi.csproj",
+      "projectPath": "C:\\Users\\npala\\Desktop\\New Pull\\new\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.WebApi\\EAMIS.WebApi.csproj",
       "packagesPath": "C:\\Users\\npala\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\npala\\Desktop\\New Pull\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.WebApi\\obj\\",
+      "outputPath": "C:\\Users\\npala\\Desktop\\New Pull\\new\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.WebApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -8294,8 +8294,8 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "C:\\Users\\npala\\Desktop\\New Pull\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj": {
-              "projectPath": "C:\\Users\\npala\\Desktop\\New Pull\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj"
+            "C:\\Users\\npala\\Desktop\\New Pull\\new\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj": {
+              "projectPath": "C:\\Users\\npala\\Desktop\\New Pull\\new\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj"
             }
           }
         }

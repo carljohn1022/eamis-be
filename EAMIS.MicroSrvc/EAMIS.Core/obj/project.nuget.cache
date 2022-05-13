@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QgfUXttGNgycBqweldQK2Q6BcOIqpkNL2hhRiRMRZAN2ZiYTxLlBJbUM/BpJi/cKs/PQgKPkhK8TLnM9QGdAvg==",
+  "dgSpecHash": "2pgDC4vmnPxZL+Z1wNqmZTcV1b3x64O/IZAx+W+Nha4aT8hqsqCBLdR/E47+C+hxbmSdc7IKzBTUJhRL8TzwXQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\npala\\Desktop\\New Pull\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj",
+  "projectFilePath": "C:\\Users\\npala\\Desktop\\New Pull\\new\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\npala\\.nuget\\packages\\entityframework\\6.3.0\\entityframework.6.3.0.nupkg.sha512",
     "C:\\Users\\npala\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",

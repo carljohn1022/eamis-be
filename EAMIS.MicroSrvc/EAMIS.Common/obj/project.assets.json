@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\npala\\Desktop\\New Pull\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj",
+      "projectUniqueName": "C:\\Users\\npala\\Desktop\\New Pull\\new\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj",
       "projectName": "EAMIS.Common",
-      "projectPath": "C:\\Users\\npala\\Desktop\\New Pull\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj",
+      "projectPath": "C:\\Users\\npala\\Desktop\\New Pull\\new\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj",
       "packagesPath": "C:\\Users\\npala\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\npala\\Desktop\\New Pull\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\obj\\",
+      "outputPath": "C:\\Users\\npala\\Desktop\\New Pull\\new\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
