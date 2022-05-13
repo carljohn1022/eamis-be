@@ -23,20 +23,48 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                 filter = new EamisWarehouseDTO();
             return Ok(await _eamisWarehouseRepository.List(filter, config));
         }
+
+        [HttpGet("Search")]
+        public async Task<ActionResult<EamisWarehouseDTO>> Search(string type, string searchValue)
+        {
+            return Ok(await _eamisWarehouseRepository.SearchWarehouse(type, searchValue));
+        }
+
         [HttpPost("Add")]
         public async Task<ActionResult<EamisWarehouseDTO>> Add([FromBody] EamisWarehouseDTO item)
         {
-            if (item == null)
-                item = new EamisWarehouseDTO();
-            return Ok(await _eamisWarehouseRepository.Insert(item));
+            if (await _eamisWarehouseRepository.ValidateExistingWarehouse(item.Warehouse_Description))
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                if (item == null)
+                    item = new EamisWarehouseDTO();
+                return Ok(await _eamisWarehouseRepository.Insert(item));
+            }
         }
         [HttpPut("Edit")]
         public async Task<ActionResult<EamisWarehouseDTO>> Edit([FromBody] EamisWarehouseDTO item)
         {
-            if (item == null)
-                item = new EamisWarehouseDTO();
-            return Ok(await _eamisWarehouseRepository.Update(item));
+            if (await _eamisWarehouseRepository.EditValidationWarehouse(item.Id, item.Warehouse_Description))
+            {
+                if (item == null)
+                    item = new EamisWarehouseDTO();
+                return Ok(await _eamisWarehouseRepository.Update(item));
+            }
+            else if (await _eamisWarehouseRepository.ValidateExistingWarehouse(item.Warehouse_Description))
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                if (item == null)
+                    item = new EamisWarehouseDTO();
+                return Ok(await _eamisWarehouseRepository.Update(item));
+            }
         }
+
         [HttpPost("Delete")]
         public async Task<ActionResult<EamisWarehouseDTO>> Delete([FromBody] EamisWarehouseDTO item)
         {

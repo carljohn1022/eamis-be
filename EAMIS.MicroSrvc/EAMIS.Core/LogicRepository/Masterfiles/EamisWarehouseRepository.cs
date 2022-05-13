@@ -42,7 +42,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 BARANGAY_CODE = item.Barangay_Code,
                 REGION_CODE = item.Region_Code,
                 MUNICIPALITY_CODE = item.Municipality_Code,
-                PROVINCE_CODE = item.Province_Code
+                PROVINCE_CODE = item.Province_Code,
+                IS_ACTIVE = item.IsActive
             };
         }
 
@@ -78,6 +79,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             {
                 Id = x.ID,
                 Warehouse_Description = x.WAREHOUSE_DESCRIPTION,
+                IsActive = x.IS_ACTIVE,
                 Street_Name = x.STREET_NAME,
                 Barangay_Code = x.BARANGAY_CODE,
                 Region_Code = x.REGION_CODE,
@@ -112,7 +114,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
 
         private IQueryable<EAMISWAREHOUSE> PagedQuery(IQueryable<EAMISWAREHOUSE> query, int resolved_size, int resolved_index)
         {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
 
         private IQueryable<EAMISWAREHOUSE> FilteredEntities(EamisWarehouseDTO filter, IQueryable<EAMISWAREHOUSE> custom_query = null, bool strict = false)
@@ -134,6 +136,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 predicate = predicate.And(x => x.PROVINCE_CODE == filter.Province_Code);
             if (filter.Barangay_Code != null && filter.Barangay_Code != 0)
                 predicate = predicate.And(x => x.BARANGAY_CODE == filter.Barangay_Code);
+            if (filter.IsActive != null && filter.IsActive != false)
+                predicate = predicate.And(x => x.IS_ACTIVE == filter.IsActive);
             var query = custom_query ?? _ctx.EAMIS_WAREHOUSE;
             return query.Where(predicate);
         }
@@ -144,6 +148,36 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _ctx.Entry(data).State = EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
+        }
+
+        public Task<bool> ValidateExistingWarehouse(string warehouseDesc)
+        {
+            return _ctx.EAMIS_WAREHOUSE.AsNoTracking().AnyAsync(x => x.WAREHOUSE_DESCRIPTION == warehouseDesc);
+        }
+
+        public Task<bool> EditValidationWarehouse(int id, string warehouseDesc)
+        {
+            return _ctx.EAMIS_WAREHOUSE.AsNoTracking().AnyAsync(x => x.ID == id && x.WAREHOUSE_DESCRIPTION == warehouseDesc);
+        }
+
+        public async Task<DataList<EamisWarehouseDTO>> SearchWarehouse(string searchType, string searchValue)
+        {
+            IQueryable<EAMISWAREHOUSE> query = null;
+
+            query = _ctx.EAMIS_WAREHOUSE.AsNoTracking().Where(x => x.WAREHOUSE_DESCRIPTION.Contains(searchValue)).AsQueryable();
+
+
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisWarehouseDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync()
+            };
+        }
+
+        private IQueryable<EAMISWAREHOUSE> PagedQueryForSearch(IQueryable<EAMISWAREHOUSE> query)
+        {
+            return query;
         }
     }
 }

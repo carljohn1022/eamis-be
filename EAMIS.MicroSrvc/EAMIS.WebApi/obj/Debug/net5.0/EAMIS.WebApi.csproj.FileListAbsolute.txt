@@ -314,6 +314,7 @@ C:\Users\revil\OneDrive\Documents\DENR-EAMS\April 26, 2022 - New - Copy\New fold
 C:\Users\revil\OneDrive\Documents\DENR-EAMS\April 26, 2022 - New - Copy\New folder\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\ref\EAMIS.WebApi.dll
 C:\Users\revil\OneDrive\Documents\DENR-EAMS\April 26, 2022 - New - Copy\New folder\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.pdb
 C:\Users\revil\OneDrive\Documents\DENR-EAMS\April 26, 2022 - New - Copy\New folder\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.genruntimeconfig.cache
+C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\appsettings.json
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\aws-beanstalk-tools-defaults.json
@@ -434,7 +435,6 @@ C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.We
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
-C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll

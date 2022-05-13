@@ -143,7 +143,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
 
         private IQueryable<EAMISCHARTOFACCOUNTS> PagedQuery(IQueryable<EAMISCHARTOFACCOUNTS> query, int resolved_size, int resolved_index)
         {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
 
         private IQueryable<EAMISCHARTOFACCOUNTS> FilteredEntities(EamisChartofAccountsDTO filter, IQueryable<EAMISCHARTOFACCOUNTS> custom_query = null, bool strict = false)
@@ -173,6 +173,53 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _ctx.Entry(data).State = EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
+        }
+
+        public async Task<DataList<EamisChartofAccountsDTO>> SearchChart(string type, string searchValue)
+        {
+            IQueryable<EAMISCHARTOFACCOUNTS> query = null;
+            if (type == "UACS")
+            {
+                query = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().Where(x => x.ACCOUNT_CODE.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Object Code")
+            {
+                query = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().Where(x => x.OBJECT_CODE.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Classification")
+            {
+                query = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().Where(x => x.CLASSIFICATION.NAME_CLASSIFICATION.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Sub-Classification")
+            {
+                query = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().Where(x => x.SUBCLASSIFICATION.NAME_SUBCLASSIFICATION.Contains(searchValue)).AsQueryable();
+            }
+            else
+            {
+                query = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().Where(x => x.GROUPCLASSIFICATION.NAME_GROUPCLASSIFICATION.Contains(searchValue)).AsQueryable();
+            }
+
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisChartofAccountsDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync()
+            };
+        }
+
+        private IQueryable<EAMISCHARTOFACCOUNTS> PagedQueryForSearch(IQueryable<EAMISCHARTOFACCOUNTS> query)
+        {
+            return query;
+        }
+
+        public async Task<bool> ValidateExistingAccountCode(string accountCode)
+        {
+            return await _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().AnyAsync(x => x.ACCOUNT_CODE == accountCode);
+        }
+
+        public async Task<bool> EditValidationAccountCode(int id, string accountCode)
+        {
+            return await _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().AnyAsync(x => x.ID == id && x.ACCOUNT_CODE == accountCode);
         }
     }
 }
