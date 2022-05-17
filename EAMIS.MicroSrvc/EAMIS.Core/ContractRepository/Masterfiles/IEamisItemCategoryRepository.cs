@@ -16,7 +16,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisItemCategoryDTO> Insert(EamisItemCategoryDTO item);
         Task<EamisItemCategoryDTO> Update(EamisItemCategoryDTO item);
         Task<EamisItemCategoryDTO> Delete(EamisItemCategoryDTO item);
-        Task<bool> ValidateExistingShortDesc(string shortDesc);
-        Task<bool> EditValidateExistingShortDesc(int id, string shortDesc);
+        Task<bool> ValidateExistingShortDesc(string shortDesc, string categoryName);
+        Task<bool> EditValidateExistingShortDesc(int id, string shortDesc, string categoryName);
     }
 }

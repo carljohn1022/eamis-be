@@ -10,12 +10,13 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
 {
     public interface IEamisPropertyItemsRepository
     {
-        Task<DataList<EamisPropertyItemsDTO>> PublicSearch(string SearchValue);
+        Task<DataList<EamisPropertyItemsDTO>> PublicSearch(string type,string SearchValue);
         Task<DataList<EamisPropertyItemsDTO>> List(EamisPropertyItemsDTO filter, PageConfig config);
         Task<EamisPropertyItemsDTO> Insert(EamisPropertyItemsDTO item);
-        Task<EamisPropertyItemsDTO> Update(EamisPropertyItemsDTO item);
+        Task<EamisPropertyItemsDTO> Update(EamisPropertyItemsDTO item, int id);
         Task<EamisPropertyItemsDTO> Delete(EamisPropertyItemsDTO item);
         Task<EamisPropertyItemsDTO> GeneratedProperty();
         Task<bool> ValidateExistingItem(string propertyNo);
+        Task<bool> UpdateValidateExistingItem(string propertyNo, int id);
     }
 }

@@ -45,7 +45,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         [HttpPost("Add")]
         public async Task<ActionResult<EamisItemCategoryDTO>> Add([FromBody] EamisItemCategoryDTO item)
         {
-            if(await _eamisItemCategoryRepository.ValidateExistingShortDesc(item.ShortDesc))
+            if(await _eamisItemCategoryRepository.ValidateExistingShortDesc(item.ShortDesc, item.CategoryName))
             {
                 return Unauthorized();
             }
@@ -58,13 +58,13 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         public async Task<ActionResult<EamisItemCategoryDTO>> Edit([FromBody] EamisItemCategoryDTO item)
         {
             
-            if (await _eamisItemCategoryRepository.EditValidateExistingShortDesc(item.Id, item.ShortDesc)) 
+            if (await _eamisItemCategoryRepository.EditValidateExistingShortDesc(item.Id, item.ShortDesc, item.CategoryName)) 
             {
                 if (item == null)
                     item = new EamisItemCategoryDTO();
                 return Ok(await _eamisItemCategoryRepository.Update(item));
             }
-            else if (await _eamisItemCategoryRepository.ValidateExistingShortDesc(item.ShortDesc))
+            else if (await _eamisItemCategoryRepository.ValidateExistingShortDesc(item.ShortDesc, item.CategoryName))
             {
                 return Unauthorized();
             }

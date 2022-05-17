@@ -1,5 +1,6 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
 using EAMIS.Core.ContractRepository.Masterfiles;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -26,16 +27,37 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         [HttpPost("Add")]
         public async Task<ActionResult<EamisUnitofMeasureDTO>> Add([FromBody] EamisUnitofMeasureDTO item)
         {
+            if (await _eamisUnitofMeasureRepository.ValidateExistingDesc(item.Short_Description, item.Uom_Description))
+            {
+                return Unauthorized();
+            }
             if (item == null)
                 item = new EamisUnitofMeasureDTO();
             return Ok(await _eamisUnitofMeasureRepository.Insert(item));
         }
         [HttpPut("Edit")]
-        public async Task<ActionResult<EamisUnitofMeasureDTO>> Edit([FromBody] EamisUnitofMeasureDTO item)
+        public async Task<ActionResult<EamisUnitofMeasureDTO>> Edit([FromBody] EamisUnitofMeasureDTO item, int id)
         {
-            if (item == null)
-                item = new EamisUnitofMeasureDTO();
-            return Ok(await _eamisUnitofMeasureRepository.Update(item));
+            var data = new EamisUnitofMeasureDTO();
+            if (await _eamisUnitofMeasureRepository.UpdateValidateExistingDesc(item.Short_Description, item.Uom_Description, item.Id))
+            {
+                if (item == null)
+                    item = new EamisUnitofMeasureDTO();
+                return Ok(await _eamisUnitofMeasureRepository.Update(item, id));
+            }
+            else if (await _eamisUnitofMeasureRepository.ValidateExistingDesc(item.Short_Description, item.Uom_Description))
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                return Ok(await _eamisUnitofMeasureRepository.Update(item, id));
+            }
+        }
+        [HttpGet("Search")]
+        public async Task<ActionResult<EAMISUNITOFMEASURE>> Search(string type, string searchValue)
+        {
+            return Ok(await _eamisUnitofMeasureRepository.SearchMeasure(type, searchValue));
         }
         [HttpPost("Delete")]
         public async Task<ActionResult<EamisUnitofMeasureDTO>> Delete([FromBody] EamisUnitofMeasureDTO item)

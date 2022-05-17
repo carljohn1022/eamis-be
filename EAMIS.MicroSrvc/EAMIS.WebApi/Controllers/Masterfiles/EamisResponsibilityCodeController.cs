@@ -36,21 +36,34 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         [HttpPost("Add")]
         public async Task<ActionResult<EamisResponsibilityCodeDTO>> Add([FromBody] EamisResponsibilityCodeDTO item)
         {
-            if(await _eamisResponsibilityCodeRepository.ValidateExistingCode(item.Office, item.Department))
+            if (await _eamisResponsibilityCodeRepository.ValidateExistingCode(item.Office, item.Department))
             {
                 return Unauthorized();
             }
             if (item == null)
-            item = new EamisResponsibilityCodeDTO();
+                item = new EamisResponsibilityCodeDTO();
             return Ok(await _eamisResponsibilityCodeRepository.Insert(item));
         }
         [HttpPut("Edit")]
-        public async Task<ActionResult<EamisResponsibilityCodeDTO>> Edit([FromBody] EamisResponsibilityCodeDTO item)
+        public async Task<ActionResult<EamisResponsibilityCodeDTO>> Edit([FromBody] EamisResponsibilityCodeDTO item, int id)
         {
-            if (item == null)
-                item = new EamisResponsibilityCodeDTO();
-            return Ok(await _eamisResponsibilityCodeRepository.Update(item));
+            var data = new EamisResponsibilityCodeDTO();
+            if (await _eamisResponsibilityCodeRepository.UpdateValidateExistingCode(item.Office, item.Department, item.Id))
+            {
+                if (item == null)
+                    item = new EamisResponsibilityCodeDTO();
+                return Ok(await _eamisResponsibilityCodeRepository.Update(item, id));
+            }
+            else if (await _eamisResponsibilityCodeRepository.ValidateExistingCode(item.Office, item.Department))
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                return Ok(await _eamisResponsibilityCodeRepository.Update(item, id));
+            }
         }
+
 
     }
 }

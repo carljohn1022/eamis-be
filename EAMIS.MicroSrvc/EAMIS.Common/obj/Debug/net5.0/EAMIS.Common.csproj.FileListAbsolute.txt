@@ -26,7 +26,6 @@ C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Co
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\bin\Debug\net5.0\EAMIS.Common.dll
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\bin\Debug\net5.0\ref\EAMIS.Common.dll
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\bin\Debug\net5.0\EAMIS.Common.pdb
-C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.csproj.AssemblyReference.cache
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.AssemblyInfoInputs.cache
 C:\Users\npala\Desktop\New Pull\new\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.AssemblyInfo.cs

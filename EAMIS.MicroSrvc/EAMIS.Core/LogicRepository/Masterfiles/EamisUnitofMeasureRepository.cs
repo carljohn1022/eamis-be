@@ -36,7 +36,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             {
                 ID = item.Id,
                 SHORT_DESCRIPTION = item.Short_Description,
-                UOM_DESCRIPTION = item.Uom_Description
+                UOM_DESCRIPTION = item.Uom_Description,
+                IS_ACTIVE = item.isActive
 
             };
         }
@@ -74,17 +75,44 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             {
                 Id = x.ID,
                 Short_Description = x.SHORT_DESCRIPTION,
-                Uom_Description = x.UOM_DESCRIPTION
+                Uom_Description = x.UOM_DESCRIPTION,
+                isActive = x.IS_ACTIVE
 
             });
         }
 
         private IQueryable<EAMISUNITOFMEASURE> PagedQuery(IQueryable<EAMISUNITOFMEASURE> query, int resolved_size, int resolved_index)
         {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x=>x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
 
         }
 
+        public async Task<DataList<EamisUnitofMeasureDTO>> SearchMeasure(string type, string SearchValue)
+        {
+
+            IQueryable<EAMISUNITOFMEASURE> query = null;
+            if (type == "Short Description")
+            {
+                query = _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().Where(x => x.SHORT_DESCRIPTION.Contains(SearchValue)).AsQueryable();
+            }
+            else
+            {
+                query = _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().Where(x => x.UOM_DESCRIPTION.Contains(SearchValue)).AsQueryable();
+            }
+
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisUnitofMeasureDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync()
+            };
+
+        }
+
+        private IQueryable<EAMISUNITOFMEASURE> PagedQueryForSearch(IQueryable<EAMISUNITOFMEASURE> query)
+        {
+            return query;
+        }
         private IQueryable<EAMISUNITOFMEASURE> FilteredEntities(EamisUnitofMeasureDTO filter, IQueryable<EAMISUNITOFMEASURE> custom_query = null, bool strict = false)
         {
             var predicate = PredicateBuilder.New<EAMISUNITOFMEASURE>(true);
@@ -93,16 +121,26 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             if (!string.IsNullOrEmpty(filter.Uom_Description)) predicate = (strict)
                     ? predicate.And(x => x.UOM_DESCRIPTION.ToLower() == filter.Uom_Description.ToLower())
                     : predicate.And(x => x.UOM_DESCRIPTION.Contains(filter.Uom_Description.ToLower()));
+            if (filter.isActive != null && filter.isActive != false)
+                predicate = predicate.And(x => x.IS_ACTIVE == filter.isActive);
             var query = custom_query ?? _ctx.EAMIS_UNITOFMEASURE;
             return query.Where(predicate);
         }
 
-        public async Task<EamisUnitofMeasureDTO> Update(EamisUnitofMeasureDTO item)
+        public async Task<EamisUnitofMeasureDTO> Update(EamisUnitofMeasureDTO item, int Id)
         {
             EAMISUNITOFMEASURE data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
+        }
+        public Task<bool> ValidateExistingDesc(string Short_Description, string Uom_Description)
+        {
+            return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION == Short_Description || x.UOM_DESCRIPTION == Uom_Description);
+        }
+        public Task<bool> UpdateValidateExistingDesc(string Short_Description, string Uom_Description, int id)
+        {
+            return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION == Short_Description || x.UOM_DESCRIPTION == Uom_Description && x.ID == id);
         }
     }
 }

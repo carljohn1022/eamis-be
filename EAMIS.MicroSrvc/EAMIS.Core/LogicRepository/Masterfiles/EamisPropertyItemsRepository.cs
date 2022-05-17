@@ -77,13 +77,29 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         }
         
 
-        public async Task<DataList<EamisPropertyItemsDTO>> PublicSearch(string SearchValue)
+        public async Task<DataList<EamisPropertyItemsDTO>> PublicSearch(string type,string SearchValue)
         {
 
             IQueryable<EAMISPROPERTYITEMS> query = null;
+            if(type == "Item Number")
+            {
+                query = _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().Where(x => x.PROPERTY_NO.Contains(SearchValue)).AsQueryable();
+            }
+            else if (type == "Item Name")
+            {
+                query = _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().Where(x => x.PROPERTY_NAME.Contains(SearchValue)).AsQueryable();
+            }
+            else if (type == "Brand")
+            {
+                query = _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().Where(x => x.BRAND.Contains(SearchValue)).AsQueryable();
+            }
+            else if (type == "Model")
+            {
+                query = _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().Where(x => x.MODEL.Contains(SearchValue)).AsQueryable();
+            }
             
            
-            query = _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().Where(x => x.PROPERTY_NAME.Contains(SearchValue)).AsQueryable();
+           
        
             var paged = PagedQueryForSearch(query);
             return new DataList<EamisPropertyItemsDTO>
@@ -241,7 +257,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
 
         private IQueryable<EAMISPROPERTYITEMS> PagedQuery(IQueryable<EAMISPROPERTYITEMS> query, int resolved_size, int resolved_index)
         {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x=>x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
 
         private IQueryable<EAMISPROPERTYITEMS> FilteredEntites(EamisPropertyItemsDTO filter, IQueryable<EAMISPROPERTYITEMS> custom_query = null, bool strict = false)
@@ -290,7 +306,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             return query.Where(predicate);
         }
 
-        public async Task<EamisPropertyItemsDTO> Update(EamisPropertyItemsDTO item)
+        public async Task<EamisPropertyItemsDTO> Update(EamisPropertyItemsDTO item, int id)
         {
             EAMISPROPERTYITEMS data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Modified;
@@ -313,6 +329,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         public Task<bool> ValidateExistingItem(string propertyNo)
         {
             return _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().AnyAsync(x => x.PROPERTY_NO == propertyNo);
+        }
+
+        public Task<bool> UpdateValidateExistingItem(string propertyNo,int id)
+        {
+            return _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().AnyAsync(x => x.PROPERTY_NO == propertyNo && x.ID == id);
         }
     }
 }

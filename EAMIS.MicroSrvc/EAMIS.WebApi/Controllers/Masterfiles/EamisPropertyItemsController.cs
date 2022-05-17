@@ -29,9 +29,9 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         }
 
         [HttpGet("PublicSearchPropertyItems")]
-        public async Task<ActionResult<EAMISPROPERTYITEMS>> PublicSearchPropertyItems(string SearchValue)
+        public async Task<ActionResult<EAMISPROPERTYITEMS>> PublicSearchPropertyItems(string type,string SearchValue)
         {
-            return Ok(await _eamisPropertyItemsRepository.PublicSearch(SearchValue));
+            return Ok(await _eamisPropertyItemsRepository.PublicSearch(type,SearchValue));
 
         }
        
@@ -56,19 +56,26 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         }
 
         [HttpPut("Edit")]
-        public async Task<ActionResult<EamisPropertyItemsDTO>> Edit([FromBody] EamisPropertyItemsDTO item)
+        public async Task<ActionResult<EamisPropertyItemsDTO>> Edit([FromBody] EamisPropertyItemsDTO item, int id)
         {
-            if (item == null)
-                item = new EamisPropertyItemsDTO();
-            return Ok(await _eamisPropertyItemsRepository.Update(item));
-        }
-
-        [HttpDelete("Delete")]
-        public async Task<ActionResult<EamisPropertyItemsDTO>> Delete([FromBody] EamisPropertyItemsDTO item)
-        {
-            if (item == null)
-                item = new EamisPropertyItemsDTO();
-            return Ok(await _eamisPropertyItemsRepository.Delete(item));
+            var data = new EamisPropertyItemsDTO();
+            if (await _eamisPropertyItemsRepository.UpdateValidateExistingItem(item.PropertyNo, item.Id))
+            {
+                if (item == null)
+                    item = new EamisPropertyItemsDTO();
+                return Ok(await _eamisPropertyItemsRepository.Update(item, id));
+            }
+            else if (await _eamisPropertyItemsRepository.ValidateExistingItem(item.PropertyNo))
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                return Ok(await _eamisPropertyItemsRepository.Update(item, id));
+            }
         }
     }
-}
+
+        
+   }
+

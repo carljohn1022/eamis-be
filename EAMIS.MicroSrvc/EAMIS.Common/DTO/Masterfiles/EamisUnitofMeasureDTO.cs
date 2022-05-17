@@ -11,5 +11,6 @@ namespace EAMIS.Common.DTO.Masterfiles
         public int Id { get; set; }
         public string Short_Description { get; set; }
         public string Uom_Description { get; set; }
+        public bool isActive { get; set; }
     }
 }

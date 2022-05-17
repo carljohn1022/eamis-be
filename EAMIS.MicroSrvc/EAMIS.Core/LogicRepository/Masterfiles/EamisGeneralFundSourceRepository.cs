@@ -68,7 +68,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         }
         private IQueryable<EAMISGENERALFUNDSOURCE> PagedQuery(IQueryable<EAMISGENERALFUNDSOURCE> query, int resolved_size, int resolved_index)
         {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x=>x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
         private IQueryable<EAMISGENERALFUNDSOURCE> FilteredEntities(EamisGeneralFundSourceDTO filter, IQueryable<EAMISGENERALFUNDSOURCE> custom_query = null, bool strict = false)
         {

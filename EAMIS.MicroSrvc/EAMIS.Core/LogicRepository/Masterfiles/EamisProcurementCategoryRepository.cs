@@ -94,7 +94,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
 
         private IQueryable<EAMISPROCUREMENTCATEGORY> PagedQuery(IQueryable<EAMISPROCUREMENTCATEGORY> query, int resolved_size, int resolved_index)
         {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x=>x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
 
         public async Task<EamisProcurementCategoryDTO> Update(int Id, EamisProcurementCategoryDTO item)

@@ -11,6 +11,8 @@ namespace EAMIS.Core.Domain.Entities
         public int ID { get; set; }
         public string SHORT_DESCRIPTION { get; set; }
         public string UOM_DESCRIPTION { get; set; }
+        public bool IS_ACTIVE { get; set; }
         public List<EAMISPROPERTYITEMS> PROPERTY_ITEM { get; set; }
+
     }
 }

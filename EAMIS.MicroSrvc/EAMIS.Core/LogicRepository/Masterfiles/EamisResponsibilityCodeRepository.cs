@@ -14,7 +14,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
     {
         private readonly EAMISContext _ctx;
         private readonly int _maxPageSize;
-        public EamisResponsibilityCodeRepository (EAMISContext ctx)
+        public EamisResponsibilityCodeRepository(EAMISContext ctx)
         {
             _ctx = ctx;
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxSizePage")) ? 100
@@ -31,7 +31,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 IS_ACTIVE = item.isActive
             };
         }
-        public async Task<DataList<EamisResponsibilityCodeDTO>> List (EamisResponsibilityCodeDTO filter, PageConfig config)
+        public async Task<DataList<EamisResponsibilityCodeDTO>> List(EamisResponsibilityCodeDTO filter, PageConfig config)
         {
             IQueryable<EAMISRESPONSIBILITYCODE> query = FilteredEntities(filter);
 
@@ -108,7 +108,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             var query = custom_query ?? _ctx.EAMIS_RESPONSIBILITY_CODE;
             return query.Where(predicate);
         }
-        public async Task<EamisResponsibilityCodeDTO> Update(EamisResponsibilityCodeDTO item)
+        public async Task<EamisResponsibilityCodeDTO> Update(EamisResponsibilityCodeDTO item, int id)
         {
             EAMISRESPONSIBILITYCODE data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Modified;
@@ -117,14 +117,15 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         }
         public Task<bool> ValidateExistingCode(string office, string department)
         {
-            return _ctx.EAMIS_RESPONSIBILITY_CODE.AsNoTracking().AnyAsync(x => x.OFFICE == office && x.DEPARTMENT == department);
+            return _ctx.EAMIS_RESPONSIBILITY_CODE.AsNoTracking().AnyAsync(x => x.OFFICE == office || x.DEPARTMENT == department);
         }
-        public Task<bool> UpdateValidateExistingCode(string office, string department,int id)
+        public Task<bool> UpdateValidateExistingCode(string office, string department, int id)
         {
-            return _ctx.EAMIS_RESPONSIBILITY_CODE.AsNoTracking().AnyAsync(x => x.OFFICE == office && x.DEPARTMENT == department && x.ID == id);
+            return _ctx.EAMIS_RESPONSIBILITY_CODE.AsNoTracking().AnyAsync(x => x.OFFICE == office && x.DEPARTMENT == department || x.ID == id);
         }
-  
+
 
 
     }
 }
+

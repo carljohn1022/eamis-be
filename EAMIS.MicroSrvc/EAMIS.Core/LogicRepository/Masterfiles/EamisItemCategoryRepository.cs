@@ -266,14 +266,14 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             return item;
         }
 
-        public Task<bool> ValidateExistingShortDesc(string shortDesc)
+        public Task<bool> ValidateExistingShortDesc(string shortDesc , string categoryName)
         {
-            return _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION == shortDesc);
+            return _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION == shortDesc || x.CATEGORY_NAME == categoryName);
         }
 
-        public Task<bool> EditValidateExistingShortDesc(int id, string shortDesc)
+        public Task<bool> EditValidateExistingShortDesc(int id, string shortDesc, string categoryName)
         {
-            return _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().AnyAsync(x => x.ID == id && x.SHORT_DESCRIPTION == shortDesc);
+            return _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().AnyAsync(x => x.ID == id && x.SHORT_DESCRIPTION == shortDesc || x.CATEGORY_NAME == categoryName);
         }
     }
 }
