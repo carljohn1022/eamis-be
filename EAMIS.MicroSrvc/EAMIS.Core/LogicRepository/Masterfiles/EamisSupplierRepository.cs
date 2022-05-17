@@ -130,7 +130,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
 
         private IQueryable<EAMISSUPPLIER> PagedQuery(IQueryable<EAMISSUPPLIER> query, int resolved_size, int resolved_index)
         {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
 
         private IQueryable<EAMISSUPPLIER> FilteredEntities(EamisSupplierDTO filter, IQueryable<EAMISSUPPLIER> custom_query = null, bool strict = false)
@@ -200,6 +200,17 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _ctx.Entry(data).State = EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
+        }
+       
+
+        public async Task<bool> ValidateExistingCode(string companyname)
+        {
+            return await _ctx.EAMIS_SUPPLIER.AsNoTracking().AnyAsync(x => x.COMPANY_NAME == companyname);
+        }
+
+        public async Task<bool> UpdateValidationCode(int id, string companyname)
+        {
+            return await _ctx.EAMIS_SUPPLIER.AsNoTracking().AnyAsync(x => x.ID == id && x.COMPANY_NAME == companyname);
         }
     }
 }

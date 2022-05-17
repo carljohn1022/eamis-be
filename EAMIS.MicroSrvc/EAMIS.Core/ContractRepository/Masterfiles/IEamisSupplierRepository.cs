@@ -15,5 +15,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisSupplierDTO> Insert(EamisSupplierDTO item);
         Task<EamisSupplierDTO> Update(EamisSupplierDTO item);
         Task<EamisSupplierDTO> Delete(EamisSupplierDTO item);
+        Task<bool> ValidateExistingCode(string companynanme);
+        Task<bool> UpdateValidationCode(int id, string companyname);
     }
 }
