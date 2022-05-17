@@ -188,11 +188,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             }
             else if (type == "Classification")
             {
-                query = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().Where(x => x.CLASSIFICATION.NAME_CLASSIFICATION.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().Where(x => x.GROUPCLASSIFICATION.CLASSIFICATION.NAME_CLASSIFICATION.Contains(searchValue)).AsQueryable();
             }
             else if (type == "Sub-Classification")
             {
-                query = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().Where(x => x.SUBCLASSIFICATION.NAME_SUBCLASSIFICATION.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().Where(x => x.GROUPCLASSIFICATION.SUBCLASSIFICATION.NAME_SUBCLASSIFICATION.Contains(searchValue)).AsQueryable();
             }
             else
             {

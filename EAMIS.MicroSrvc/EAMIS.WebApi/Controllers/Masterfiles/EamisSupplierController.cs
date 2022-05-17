@@ -39,6 +39,13 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         [HttpPost("Add")]
         public async Task<ActionResult<EamisSupplierDTO>> Add([FromBody] EamisSupplierDTO item)
         {
+            if (await _eamisSupplierRepository.ValidateExistingCode(item.CompanyName))
+            {
+                return Unauthorized();
+            }
+            else
+            { 
+            }
             if (item == null)
                 item = new EamisSupplierDTO();
             return Ok(await _eamisSupplierRepository.Insert(item));
