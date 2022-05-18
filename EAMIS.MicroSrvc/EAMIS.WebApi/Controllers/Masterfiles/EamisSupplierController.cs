@@ -22,9 +22,9 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         }
 
         [HttpGet("SearchSupplier")]
-        public async Task<ActionResult<EAMISSUPPLIER>> SearchSupplier(string searchValue)
+        public async Task<ActionResult<EAMISSUPPLIER>> SearchSupplier(string type, string searchValue)
         {
-            return Ok(await _eamisSupplierRepository.SearchSupplier(searchValue));
+            return Ok(await _eamisSupplierRepository.SearchSuppliers(type, searchValue));
         }
 
         [HttpGet("list")]
