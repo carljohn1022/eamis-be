@@ -39,18 +39,10 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         [HttpPost("Add")]
         public async Task<ActionResult<EamisItemSubCategoryDTO>> Add([FromBody] EamisItemSubCategoryDTO item)
         {
-            if (await _eamisItemSubCategoryRepository.Validation(item.CategoryId, item.SubCategoryName))
+            if (await _eamisItemSubCategoryRepository.Validation(item.SubCategoryName))
             {
                 //
                 return Unauthorized();
-            }
-            else if (await _eamisItemSubCategoryRepository.ValidateExistingSub(item.CategoryId))
-            {
-                return Ok(await _eamisItemSubCategoryRepository.Insert(item));
-            }
-            else if(await _eamisItemSubCategoryRepository.ValidateExistingCategoryId(item.CategoryId))
-            {
-                return Ok(await _eamisItemSubCategoryRepository.Insert(item));
             }
             if (item == null)
                 item = new EamisItemSubCategoryDTO();
@@ -60,23 +52,24 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         }
 
         [HttpPut("Edit")]
-        public async Task<ActionResult<EamisItemSubCategoryDTO>> Edit([FromBody] EamisItemSubCategoryDTO item)
+        public async Task<ActionResult<EamisItemSubCategoryDTO>> Edit([FromBody] EamisItemSubCategoryDTO item, int id)
         {
-            if (await _eamisItemSubCategoryRepository.ValidateExistingSubUpdate(item.SubCategoryName, item.CategoryId))
+            var data = new EamisItemSubCategoryDTO();
+            if (await _eamisItemSubCategoryRepository.ValidateExistingSubUpdate(item.SubCategoryName, item.Id))
             {
                 if (item == null)
                     item = new EamisItemSubCategoryDTO();
-                return Ok(await _eamisItemSubCategoryRepository.Update(item));
+                return Ok(await _eamisItemSubCategoryRepository.Update(item, id));
             }
-            else if(await _eamisItemSubCategoryRepository.ValidateExistingSub(item.CategoryId))
+            else if (await _eamisItemSubCategoryRepository.Validation(item.SubCategoryName))
             {
                 return Unauthorized();
             }
             else
             {
-                return Ok(await _eamisItemSubCategoryRepository.Update(item));
+                return Ok(await _eamisItemSubCategoryRepository.Update(item, id));
             }
-            
+
         }
 
         [HttpDelete("Delete")]

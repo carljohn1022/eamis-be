@@ -14,11 +14,11 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<DataList<EamisItemSubCategoryDTO>> SearchItemSubCategory(string type, string searchValue);
         Task<DataList<EamisItemSubCategoryDTO>> List(EamisItemSubCategoryDTO filter, PageConfig config);
         Task<EamisItemSubCategoryDTO> Insert(EamisItemSubCategoryDTO item);
-        Task<EamisItemSubCategoryDTO> Update(EamisItemSubCategoryDTO item);
+        Task<EamisItemSubCategoryDTO> Update(EamisItemSubCategoryDTO item, int id);
         Task<EamisItemSubCategoryDTO> Delete(EamisItemSubCategoryDTO item);
-        Task<bool> ValidateExistingSub(int categoryId);
-        Task<bool> ValidateExistingCategoryId(int categoryId);
-        Task<bool> ValidateExistingSubUpdate(string SubCategoryName, int CategoryId);
-        Task<bool> Validation(int categoryId, string subCategoryName);
+        //Task<bool> ValidateExistingSub(int categoryId);
+        //Task<bool> ValidateExistingCategoryId(int categoryId);
+        Task<bool> ValidateExistingSubUpdate(string SubCategoryName, int id);
+        Task<bool> Validation(string subCategoryName);
     }
 }
