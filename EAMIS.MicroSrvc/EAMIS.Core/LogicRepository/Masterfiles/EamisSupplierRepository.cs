@@ -173,22 +173,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             var query = custom_query ?? _ctx.EAMIS_SUPPLIER;
             return query.Where(predicate);
         }
-
-        public async Task<DataList<EamisSupplierDTO>> SearchSupplier(string searchValue)
-        {
-            IQueryable<EAMISSUPPLIER> query = null;
-
-            query = _ctx.EAMIS_SUPPLIER.AsNoTracking().Where(x => x.COMPANY_NAME.Contains(searchValue)).AsQueryable();
-
-
-            var paged = PagedQueryForSearch(query);
-            return new DataList<EamisSupplierDTO>
-            {
-                Count = await paged.CountAsync(),
-                Items = await QueryToDTO(paged).ToListAsync()
-            };
-        }
-
+          
         private IQueryable<EAMISSUPPLIER> PagedQueryForSearch(IQueryable<EAMISSUPPLIER> query)
         {
             return query;
@@ -212,5 +197,31 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         {
             return await _ctx.EAMIS_SUPPLIER.AsNoTracking().AnyAsync(x => x.ID == id && x.COMPANY_NAME == companyname);
         }
+
+        public async Task<DataList<EamisSupplierDTO>> SearchSuppliers(string type, string searchValue)
+        {
+            IQueryable<EAMISSUPPLIER> query = null;
+            if (type == "Company Name")
+            {
+                query = _ctx.EAMIS_SUPPLIER.AsNoTracking().Where(x => x.COMPANY_NAME.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Contact Person")
+            {
+                query = _ctx.EAMIS_SUPPLIER.AsNoTracking().Where(x => x.CONTACT_PERSON_NAME.Contains(searchValue)).AsQueryable();
+            }
+            else
+            {
+                query = _ctx.EAMIS_SUPPLIER.AsNoTracking().Where(x => x.CONTACT_PERSON_NUMBER.Contains(searchValue)).AsQueryable();
+            }
+
+
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisSupplierDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync()
+            };
+        }
     }
+    
 }

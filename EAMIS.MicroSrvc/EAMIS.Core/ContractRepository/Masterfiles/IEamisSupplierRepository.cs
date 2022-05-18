@@ -10,7 +10,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
 {
     public interface IEamisSupplierRepository
     {
-        Task<DataList<EamisSupplierDTO>> SearchSupplier(string searchValue);
+        Task<DataList<EamisSupplierDTO>> SearchSuppliers(string type, string searchValue);
         Task<DataList<EamisSupplierDTO>> List(EamisSupplierDTO filter, PageConfig config);
         Task<EamisSupplierDTO> Insert(EamisSupplierDTO item);
         Task<EamisSupplierDTO> Update(EamisSupplierDTO item);
