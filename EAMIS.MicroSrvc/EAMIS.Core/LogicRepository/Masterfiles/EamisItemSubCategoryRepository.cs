@@ -141,7 +141,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             return query;
         }
 
-        public async Task<EamisItemSubCategoryDTO> Update(EamisItemSubCategoryDTO item, int Id)
+        public async Task<EamisItemSubCategoryDTO> Update(EamisItemSubCategoryDTO item)
         {
             EAMISITEMSUBCATEGORY data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Modified;
@@ -149,24 +149,24 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             return item;
         }
 
-        public Task<bool> ValidateExistingSubUpdate(string SubCategoryName, int id)
+        public Task<bool> ValidateExistingSubUpdate(string SubCategoryName, int CategoryId)
         {
-            return _ctx.EAMIS_ITEMS_SUB_CATEGORY.AsNoTracking().AnyAsync(x => x.SUB_CATEGORY_NAME == SubCategoryName && x.ID == id);
+            return _ctx.EAMIS_ITEMS_SUB_CATEGORY.AsNoTracking().AnyAsync(x => x.SUB_CATEGORY_NAME == SubCategoryName && x.CATEGORY_ID == CategoryId);
         }
 
-        //public Task<bool> ValidateExistingSub(int categoryId)
-        //{
-        //    return _ctx.EAMIS_ITEMS_SUB_CATEGORY.AsNoTracking().AnyAsync(x => x.CATEGORY_ID != categoryId);
-        //}
-
-        //public Task<bool> ValidateExistingCategoryId(int categoryId)
-        //{
-        //    return _ctx.EAMIS_ITEMS_SUB_CATEGORY.AsNoTracking().AnyAsync(x => x.CATEGORY_ID == categoryId);
-        //}
-
-        public Task<bool> Validation(string subCategoryName)
+        public Task<bool> ValidateExistingSub(int categoryId)
         {
-            return _ctx.EAMIS_ITEMS_SUB_CATEGORY.AsNoTracking().AnyAsync(x => x.SUB_CATEGORY_NAME == subCategoryName);
+            return _ctx.EAMIS_ITEMS_SUB_CATEGORY.AsNoTracking().AnyAsync(x => x.CATEGORY_ID != categoryId);
+        }
+
+        public Task<bool> ValidateExistingCategoryId(int categoryId)
+        {
+            return _ctx.EAMIS_ITEMS_SUB_CATEGORY.AsNoTracking().AnyAsync(x => x.CATEGORY_ID == categoryId);
+        }
+
+        public Task<bool> Validation(int categoryId, string subCategoryName)
+        {
+            return _ctx.EAMIS_ITEMS_SUB_CATEGORY.AsNoTracking().AnyAsync(x => x.CATEGORY_ID == categoryId && x.SUB_CATEGORY_NAME == subCategoryName);
            
         }
     }

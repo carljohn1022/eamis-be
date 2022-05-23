@@ -27,7 +27,15 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         [HttpPost("Add")]
         public async Task<ActionResult<EamisUnitofMeasureDTO>> Add([FromBody] EamisUnitofMeasureDTO item)
         {
-            if (await _eamisUnitofMeasureRepository.ValidateExistingDesc(item.Short_Description, item.Uom_Description))
+            if (await _eamisUnitofMeasureRepository.ValidateExistDesc(item.Short_Description, item.Uom_Description))
+            {
+                return Unauthorized();
+            }
+            else if (await _eamisUnitofMeasureRepository.ValidationForUomExistShortDescNotExist(item.Short_Description, item.Uom_Description))
+            {
+                return Unauthorized();
+            }
+            else if (await _eamisUnitofMeasureRepository.ValidationForShortDescExistUomNotExist(item.Short_Description, item.Uom_Description))
             {
                 return Unauthorized();
             }
@@ -36,23 +44,24 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             return Ok(await _eamisUnitofMeasureRepository.Insert(item));
         }
         [HttpPut("Edit")]
-        public async Task<ActionResult<EamisUnitofMeasureDTO>> Edit([FromBody] EamisUnitofMeasureDTO item, int id)
+        public async Task<ActionResult<EamisUnitofMeasureDTO>> Edit([FromBody] EamisUnitofMeasureDTO item)
         {
             var data = new EamisUnitofMeasureDTO();
-            if (await _eamisUnitofMeasureRepository.UpdateValidateExistingDesc(item.Short_Description, item.Uom_Description, item.Id))
-            {
-                if (item == null)
-                    item = new EamisUnitofMeasureDTO();
-                return Ok(await _eamisUnitofMeasureRepository.Update(item, id));
-            }
-            else if (await _eamisUnitofMeasureRepository.ValidateExistingDesc(item.Short_Description, item.Uom_Description))
+            if (await _eamisUnitofMeasureRepository.ValidateExistDesc(item.Short_Description, item.Uom_Description))
             {
                 return Unauthorized();
             }
-            else
+            else if (await _eamisUnitofMeasureRepository.ValidationForUomExistShortDescNotExist(item.Short_Description, item.Uom_Description))
             {
-                return Ok(await _eamisUnitofMeasureRepository.Update(item, id));
+                return Unauthorized();
             }
+            else if (await _eamisUnitofMeasureRepository.ValidationForShortDescExistUomNotExist(item.Short_Description, item.Uom_Description))
+            {
+                return Unauthorized();
+            }
+            if (item == null)
+                item = new EamisUnitofMeasureDTO();
+            return Ok(await _eamisUnitofMeasureRepository.Update(item));
         }
         [HttpGet("Search")]
         public async Task<ActionResult<EAMISUNITOFMEASURE>> Search(string type, string searchValue)

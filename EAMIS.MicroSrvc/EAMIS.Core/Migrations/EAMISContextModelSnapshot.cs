@@ -19,6 +19,44 @@ namespace EAMIS.Core.Migrations
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISATTACHMENTS", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ATTACHMENT_DESCRIPTION")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IS_REQUIRED")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("EAMIS_ATTACHMENTS");
+                });
+
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISATTACHMENTTYPE", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ATTACHMENT_ID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ATTACHMENT_TYPE_DESCRIPTION")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ATTACHMENT_ID");
+
+                    b.ToTable("EAMIS_ATTACHMENT_TYPE");
+                });
+
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISAUTHORIZATION", b =>
                 {
                     b.Property<int>("ID")
@@ -129,6 +167,93 @@ namespace EAMIS.Core.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("EAMIS_CLASSIFICATION");
+                });
+
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPT", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("PURCHASE_ORDER_DATE")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PURCHASE_ORDER_NUMBER")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PURCHASE_REQUEST_DATE")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PURCHASE_REQUEST_NUMBER")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SALE_INVOICE_DATE")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SALE_INVOICE_NUMBER")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SERIAL_LOT")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SUPPLIER")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TOTAL_AMOUNT")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TRANSACTION_STATUS")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TRANSACTION_TYPE")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("EAMIS_DELIVERY_RECEIPT");
+                });
+
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPTDETAILS", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DELIVERY_RECEIPT_ID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ITEM_ID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QTY_DELIVERED")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QTY_ORDER")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QTY_RECEIVED")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QTY_REJECTED")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SERIAL_NUMBER")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UNIT_COST")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UNIT_OF_MEASUREMENT")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("WARRANTY_EXPIRY_DATE")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("EAMIS_DELIVERY_RECEIPT_DETAILS");
                 });
 
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISENVIRONMENTALIMPACTS", b =>
@@ -644,6 +769,144 @@ namespace EAMIS.Core.Migrations
                     b.ToTable("EAMIS_PROPERTYITEMS");
                 });
 
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISPROPERTYTRANSACTION", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("APPROVED_BY")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DELIVERY_DATE")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FISCALPERIOD")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MEMO")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RECEIVED_BY")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TIMESTAMP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TRANSACTION_DATE")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TRANSACTION_NUMBER")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TRANSACTION_STATUS")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TRANSACTION_TYPE")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("USER_STAMP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("EAMIS_PROPERTY_TRANSACTION");
+                });
+
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISPROPERTYTRANSACTIONDETAILS", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AREA_SQM")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BOOK_VALUE")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CUSTODIAN_ID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DELIVERY_RECEIPT_NUMBER")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DEPARTMENT")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ESTIMATED_LIFE")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FORD_DEPRECIATION")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ITEM_ID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OFFICE")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PROPERTY_CONDITION")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PROPERTY_DESCRIPTION")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PROPERTY_KIT_ID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PROPERTY_NUMBER")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PROPERTY_TRANSACTION_ID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PURCHASE_ORDER_DATE")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PURCHASE_ORDER_NUMBER")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PURCHASE_REQUEST_DATE")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PURCHASE_REQUEST_NUMBER")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("QTY")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RECEIVING_DATE")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SALVAGE_VALUE")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SEMI_EXPANDABLE_AMOUNT")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SERIAL_NUMBER")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TIME_STAMP")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UNIT_COST")
+                        .HasColumnType("int");
+
+                    b.Property<string>("USER_STAMP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("WARRANTY_START_DATE")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("EAMIS_PROPERTY_TRANSACTION_DETAILS");
+                });
+
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISPROPERTYTRANSFERDETAILS", b =>
                 {
                     b.Property<int>("ID")
@@ -737,22 +1000,70 @@ namespace EAMIS.Core.Migrations
                     b.ToTable("EAMIS_REGION");
                 });
 
-            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISREQUIREDATTACHMENTS", b =>
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISRESPONSIBILITYCENTER", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ATTACHMENT_TYPE_DESCRIPTION")
+                    b.Property<bool>("IS_ACTIVE")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MAIN_GROUP_CODE")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IS_REQUIRED")
-                        .HasColumnType("bit");
+                    b.Property<string>("MAIN_GROUP_DESC")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OFFICE_CODE")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OFFICE_DESC")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RESPONSIBILITY_CENTER")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SUB_GROUP_CODE")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SUB_GROUP_DESC")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UNIT_CODE")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UNIT_DESC")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
 
-                    b.ToTable("EAMIS_REQUIRED_ATTACHMENTS");
+                    b.ToTable("EAMIS_RESPONSIBILITY_CENTER");
+                });
+
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISRESPONSIBILITYCODE", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CODE")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DEPARTMENT")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IS_ACTIVE")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OFFICE")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("EAMIS_RESPONSIBILITY_CODE");
                 });
 
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISROLES", b =>
@@ -870,6 +1181,9 @@ namespace EAMIS.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IS_ACTIVE")
+                        .HasColumnType("bit");
 
                     b.Property<string>("SHORT_DESCRIPTION")
                         .HasColumnType("nvarchar(450)");
@@ -994,6 +1308,9 @@ namespace EAMIS.Core.Migrations
                     b.Property<int>("BARANGAY_CODE")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IS_ACTIVE")
+                        .HasColumnType("bit");
+
                     b.Property<int>("MUNICIPALITY_CODE")
                         .HasColumnType("int");
 
@@ -1014,6 +1331,17 @@ namespace EAMIS.Core.Migrations
                     b.HasIndex("BARANGAY_CODE");
 
                     b.ToTable("EAMIS_WAREHOUSE");
+                });
+
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISATTACHMENTTYPE", b =>
+                {
+                    b.HasOne("EAMIS.Core.Domain.Entities.EAMISATTACHMENTS", "ATTACHMENTS")
+                        .WithMany("ATTACHMENTTYPE")
+                        .HasForeignKey("ATTACHMENT_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ATTACHMENTS");
                 });
 
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISBARANGAY", b =>
@@ -1289,6 +1617,11 @@ namespace EAMIS.Core.Migrations
                         .IsRequired();
 
                     b.Navigation("BARANGAY");
+                });
+
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISATTACHMENTS", b =>
+                {
+                    b.Navigation("ATTACHMENTTYPE");
                 });
 
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISAUTHORIZATION", b =>

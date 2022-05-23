@@ -8,10 +8,17 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
     {
         Task<DataList<EamisUnitofMeasureDTO>> List(EamisUnitofMeasureDTO filter, PageConfig config);
         Task<EamisUnitofMeasureDTO> Insert(EamisUnitofMeasureDTO item);
-        Task<EamisUnitofMeasureDTO> Update(EamisUnitofMeasureDTO item, int id);
+        Task<EamisUnitofMeasureDTO> Update(EamisUnitofMeasureDTO item);
         Task<EamisUnitofMeasureDTO> Delete(EamisUnitofMeasureDTO item);
-        Task<bool> ValidateExistingDesc(string Short_Description, string Uom_Description);
-        Task<bool> UpdateValidateExistingDesc(string Short_Description, string Uom_Description, int id);
         Task<DataList<EamisUnitofMeasureDTO>> SearchMeasure(string type, string searchValue);
+        //Task<bool> ValidateExistingDescUpdate(string ShortDesc, string UomDesc);
+        //Task<bool> ValidateExistingUomDesc(string UomDesc);
+        //Task<bool> ValidateExistingShortDesc(string ShortDesc);
+        //Task<bool> ValidateExistingShortDesc1(string ShortDesc);
+        //Task<bool> ValidateExistingUomDesc1(string UomDesc);
+        //Task<bool> Validation(string shortDesc, string UomDesc);
+        Task<bool> ValidationForUomExistShortDescNotExist(string ShortDesc, string UomDesc);
+        Task<bool> ValidationForShortDescExistUomNotExist(string ShortDesc, string UomDesc);
+        Task<bool> ValidateExistDesc(string ShortDesc, string UomDesc);
     }
 }

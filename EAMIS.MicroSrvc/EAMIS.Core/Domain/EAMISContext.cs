@@ -54,6 +54,7 @@ namespace EAMIS.Core.Domain
         public DbSet<EAMISFINANCINGSOURCE> EAMIS_FINANCING_SOURCE { get; set; }
         public DbSet<EAMISAUTHORIZATION> EAMIS_AUTHORIZATION { get; set; }
         public DbSet<EAMISRESPONSIBILITYCODE> EAMIS_RESPONSIBILITY_CODE { get; set; }
+        public DbSet<EAMISRESPONSIBILITYCENTER> EAMIS_RESPONSIBILITY_CENTER { get; set; }
 
         //Transaction
         public DbSet<EAMISDELIVERYRECEIPT> EAMIS_DELIVERY_RECEIPT { get; set; }

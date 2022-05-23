@@ -11,6 +11,7 @@ using EAMIS.Core.LogicRepository;
 using EAMIS.Core.LogicRepository.Ais;
 using EAMIS.Core.LogicRepository.Classification;
 using EAMIS.Core.LogicRepository.Masterfiles;
+using EAMIS.Core.LogicRepository.Masterfiles.EAMIS.Core.LogicRepository.Masterfiles;
 using EAMIS.Core.LogicRepository.Transaction;
 using EAMIS.Core.Response;
 using EAMIS.Core.Response.DTO;
@@ -97,7 +98,7 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisAuthorizationRepository, EamisAuthorizationRepository>();
             services.AddScoped<IEamisFinancingSourceRepository, EamisFinancingSourceRepository>();
             services.AddScoped<IEamisResponsibilityCodeRepository, EamisResponsibilityCodeRepository>();
-
+            services.AddScoped<IEamisResponsibilityCenterRepository, EamisResponsibilityCenterRepository>();
             //Transaction
             services.AddScoped<IEamisPropertyTransactionRepository, EamisPropertyTransactionRepository>();
             services.AddScoped<IEamisPropertyTransactionDetailsRepository, EamisPropertyTransactionDetailsRepository>();

@@ -9,7 +9,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<DataList<EamisWarehouseDTO>> SearchWarehouse(string searchType, string searchValue);
         Task<DataList<EamisWarehouseDTO>> List(EamisWarehouseDTO filter, PageConfig config);
         Task<EamisWarehouseDTO> Insert(EamisWarehouseDTO item);
-        Task<EamisWarehouseDTO> Update(EamisWarehouseDTO item);
+        Task<EamisWarehouseDTO> Update(EamisWarehouseDTO item, int id);
         Task<EamisWarehouseDTO> Delete(EamisWarehouseDTO item);
         Task<bool> ValidateExistingWarehouse(string warehouseDesc);
         Task<bool> EditValidationWarehouse(int id, string warehouseDesc);

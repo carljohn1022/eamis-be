@@ -142,7 +142,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             return query.Where(predicate);
         }
 
-        public async Task<EamisWarehouseDTO> Update(EamisWarehouseDTO item)
+        public async Task<EamisWarehouseDTO> Update(EamisWarehouseDTO item, int id)
         {
             EAMISWAREHOUSE data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Modified;

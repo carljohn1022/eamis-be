@@ -179,7 +179,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             return query;
         }
 
-        public async Task<EamisSupplierDTO> Update(EamisSupplierDTO item)
+        public async Task<EamisSupplierDTO> Update(EamisSupplierDTO item, int id)
         {
             EAMISSUPPLIER data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Modified;

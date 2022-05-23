@@ -45,13 +45,14 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             }
         }
         [HttpPut("Edit")]
-        public async Task<ActionResult<EamisWarehouseDTO>> Edit([FromBody] EamisWarehouseDTO item)
+        public async Task<ActionResult<EamisWarehouseDTO>> Edit([FromBody] EamisWarehouseDTO item, int id)
         {
+            var data = new EamisWarehouseDTO();
             if (await _eamisWarehouseRepository.EditValidationWarehouse(item.Id, item.Warehouse_Description))
             {
                 if (item == null)
                     item = new EamisWarehouseDTO();
-                return Ok(await _eamisWarehouseRepository.Update(item));
+                return Ok(await _eamisWarehouseRepository.Update(item, id));
             }
             else if (await _eamisWarehouseRepository.ValidateExistingWarehouse(item.Warehouse_Description))
             {
@@ -59,9 +60,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             }
             else
             {
-                if (item == null)
-                    item = new EamisWarehouseDTO();
-                return Ok(await _eamisWarehouseRepository.Update(item));
+                return Ok(await _eamisWarehouseRepository.Update(item, id));
             }
         }
 

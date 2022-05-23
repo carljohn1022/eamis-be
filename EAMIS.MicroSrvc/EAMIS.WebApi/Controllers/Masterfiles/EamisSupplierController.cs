@@ -43,20 +43,29 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             {
                 return Unauthorized();
             }
-            else
-            { 
-            }
             if (item == null)
                 item = new EamisSupplierDTO();
             return Ok(await _eamisSupplierRepository.Insert(item));
         }
 
         [HttpPut("Edit")]
-        public async Task<ActionResult<EamisSupplierDTO>> Edit([FromBody] EamisSupplierDTO item)
+        public async Task<ActionResult<EamisSupplierDTO>> Edit([FromBody] EamisSupplierDTO item, int id)
         {
-            if (item == null)
-                item = new EamisSupplierDTO();
-            return Ok(await _eamisSupplierRepository.Update(item));
+            var data = new EamisSupplierDTO();
+            if (await _eamisSupplierRepository.UpdateValidationCode(item.Id, item.CompanyName))
+            {
+                if (item == null)
+                    item = new EamisSupplierDTO();
+                return Ok(await _eamisSupplierRepository.Update(item, id));
+            }
+            else if (await _eamisSupplierRepository.ValidateExistingCode(item.CompanyName))
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                return Ok(await _eamisSupplierRepository.Update(item, id));
+            }
         }
 
         [HttpDelete("Delete")]

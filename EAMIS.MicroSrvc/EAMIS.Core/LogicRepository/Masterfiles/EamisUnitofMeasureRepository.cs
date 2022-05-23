@@ -127,20 +127,51 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             return query.Where(predicate);
         }
 
-        public async Task<EamisUnitofMeasureDTO> Update(EamisUnitofMeasureDTO item, int Id)
+        public async Task<EamisUnitofMeasureDTO> Update(EamisUnitofMeasureDTO item)
         {
             EAMISUNITOFMEASURE data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
         }
-        public Task<bool> ValidateExistingDesc(string Short_Description, string Uom_Description)
+        public Task<bool> ValidateExistingDescUpdate(string ShortDesc, string UomDesc)
         {
-            return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION == Short_Description || x.UOM_DESCRIPTION == Uom_Description);
+            return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION == ShortDesc && x.UOM_DESCRIPTION == UomDesc);
         }
-        public Task<bool> UpdateValidateExistingDesc(string Short_Description, string Uom_Description, int id)
+
+        //public Task<bool> ValidateExistingUomDesc(string UomDesc)
+        //{
+        //    return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.UOM_DESCRIPTION != UomDesc);
+        //}
+        //public Task<bool> ValidateExistingUomDesc1(string UomDesc)
+        //{
+        //    return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.UOM_DESCRIPTION == UomDesc);
+        //}
+
+        //public Task<bool> ValidateExistingShortDesc1(string ShortDesc)
+        //{
+        //    return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION == ShortDesc);
+        //}
+        //public Task<bool> ValidateExistingShortDesc(string ShortDesc)
+        //{
+        //    return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION != ShortDesc);
+        //}
+        //public Task<bool> Validation(string ShortDesc, string UomDesc)
+        //{
+        //    return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION == ShortDesc && x.UOM_DESCRIPTION == UomDesc);
+
+        //}
+        public Task<bool> ValidationForUomExistShortDescNotExist (string ShortDesc,string UomDesc)
         {
-            return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION == Short_Description || x.UOM_DESCRIPTION == Uom_Description && x.ID == id);
+            return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION != ShortDesc && x.UOM_DESCRIPTION == UomDesc);
+        }
+        public Task<bool> ValidationForShortDescExistUomNotExist (string ShortDesc, string UomDesc)
+        {
+            return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION == ShortDesc && x.UOM_DESCRIPTION != UomDesc);
+        }
+        public Task<bool> ValidateExistDesc (string ShortDesc, string UomDesc)
+        {
+            return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION == ShortDesc && x.UOM_DESCRIPTION == UomDesc);
         }
     }
 }
