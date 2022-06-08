@@ -7,7 +7,6 @@ namespace EAMIS.Common.DTO.Masterfiles
         public int Id { get; set; }
         public int AttachmentId { get; set; }
         public string AttachmentTypeDescription { get; set; }
-
-        //public EamisAttachmentsDTO AttachmentsDTO { get; set; }
+        public EamisAttachmentsDTO EamisAttachmentsDTO { get; set; }
     }
 }

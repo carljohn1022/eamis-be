@@ -94,6 +94,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 UserStamp = x.USER_STAMP,
                 TimeStamp = x.TIMESTAMP,
                 TransactionStatus = x.TRANSACTION_STATUS
+          
             });
         }
 
@@ -150,4 +151,5 @@ namespace EAMIS.Core.LogicRepository.Transaction
             return item;
         }
     }
+
 }

@@ -66,10 +66,10 @@ namespace EAMIS.Core.Domain
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<EAMISATTACHMENTTYPE>()
-                .HasOne(x => x.ATTACHMENTS)
-                .WithMany(x => x.ATTACHMENTTYPE)
-                .HasForeignKey(x => x.ATTACHMENT_ID);
+            //modelBuilder.Entity<EAMISATTACHMENTTYPE>()
+            //    .HasOne(x => x.ATTACHMENTS)
+            //    .WithMany(x => x.ATTACHMENTTYPE)
+            //    .HasForeignKey(x => x.ID);
 
             modelBuilder.Entity<EAMISFUNDSOURCE>()
                 .HasOne(x => x.FINANCING_SOURCE)

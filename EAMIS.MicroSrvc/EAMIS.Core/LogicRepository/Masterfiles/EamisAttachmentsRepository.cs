@@ -37,7 +37,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             {
                 ID = item.Id,
                 ATTACHMENT_DESCRIPTION = item.AttachmentDescription,
-                IS_REQUIRED = item.Is_Required
+                MODULE_NAME = item.ModuleName
                
             };
         }
@@ -74,13 +74,14 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             {
                 Id = x.ID,
                 AttachmentDescription = x.ATTACHMENT_DESCRIPTION,
-                Is_Required = x.IS_REQUIRED,
-                AttachmentTypeDTO = x.ATTACHMENTTYPE.Select(y => new EamisAttachmentTypeDTO
-                { 
-                    Id = y.ID,
-                    AttachmentId = y.ATTACHMENT_ID,
-                    AttachmentTypeDescription = y.ATTACHMENT_TYPE_DESCRIPTION
-                }).ToList()
+                AttachmentTypeDescription = x.ATTACHMENT_TYPE_DESCRIPTION,
+                ModuleName = x.MODULE_NAME
+                //AttachmentTypeDTO = x.ATTACHMENTTYPE.Select(y => new EamisAttachmentTypeDTO
+                //{ 
+                //    Id = y.ID,
+                //    AttachmentId = y.ATTACHMENT_ID,
+                //    AttachmentTypeDescription = y.ATTACHMENT_TYPE_DESCRIPTION
+                //}).ToList()
                //AttachmentTypeDTO = new EamisAttachmentTypeDTO
                //{
                //    Id = x.ATTACHMENTTYPE.FirstOrDefault().ID,
@@ -105,8 +106,9 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             if (!string.IsNullOrEmpty(filter.AttachmentDescription)) predicate = (strict)
                      ? predicate.And(x => x.ATTACHMENT_DESCRIPTION.ToLower() == filter.AttachmentDescription.ToLower())
                      : predicate.And(x => x.ATTACHMENT_DESCRIPTION.Contains(filter.AttachmentDescription.ToLower()));
-            if (filter.Is_Required != null && filter.Is_Required != false)
-                predicate = predicate.And(x => x.IS_REQUIRED == filter.Is_Required);
+            if (!string.IsNullOrEmpty(filter.ModuleName)) predicate = (strict)
+                      ? predicate.And(x => x.MODULE_NAME.ToLower() == filter.ModuleName.ToLower())
+                      : predicate.And(x => x.MODULE_NAME.Contains(filter.ModuleName.ToLower()));
             var query = custom_query ?? _ctx.EAMIS_ATTACHMENTS;
             return query.Where(predicate);
         }
