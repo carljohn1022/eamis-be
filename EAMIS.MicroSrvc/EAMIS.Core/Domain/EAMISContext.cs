@@ -57,6 +57,7 @@ namespace EAMIS.Core.Domain
         public DbSet<EAMISRESPONSIBILITYCENTER> EAMIS_RESPONSIBILITY_CENTER { get; set; }
 
         //Transaction
+      
         public DbSet<EAMISDELIVERYRECEIPT> EAMIS_DELIVERY_RECEIPT { get; set; }
         public DbSet<EAMISDELIVERYRECEIPTDETAILS> EAMIS_DELIVERY_RECEIPT_DETAILS { get; set; }
         public DbSet<EAMISPROPERTYTRANSACTION> EAMIS_PROPERTY_TRANSACTION { get; set; }
@@ -66,6 +67,7 @@ namespace EAMIS.Core.Domain
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+     
             modelBuilder.Entity<EAMISATTACHMENTTYPE>()
                 .HasOne(x => x.ATTACHMENTS)
                 .WithMany(x => x.ATTACHMENTTYPE)
@@ -105,6 +107,16 @@ namespace EAMIS.Core.Domain
                 .HasOne(x => x.CHART_OF_ACCOUNTS)
                 .WithMany(x => x.ITEM_CATEGORY)
                 .HasForeignKey(x => x.CHART_OF_ACCOUNT_ID);
+
+            modelBuilder.Entity<EAMISDELIVERYRECEIPT>()
+                .HasOne(x => x.WAREHOUSE_GROUP)
+                .WithMany(x => x.DELIVERY_RECEIPT)
+                .HasForeignKey(x => x.WAREHOUSE_ID);
+
+            modelBuilder.Entity<EAMISDELIVERYRECEIPT>()
+                .HasOne(x => x.SUPPLIER_GROUP)
+                .WithMany(x => x.DELIVERY_RECEIPT)
+                .HasForeignKey(x => x.SUPPLIER_ID);
             //modelBuilder.Entity<EAMISITEMCATEGORY>()
             //    .HasOne(x => x.CHART_OF_ACCOUNTS)
             //    .WithOne(x => x.ITEM_CATEGORY)

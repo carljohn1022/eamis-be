@@ -141,6 +141,28 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 if (!string.IsNullOrEmpty(filter.mainGroupCode)) predicate = (strict)
                         ? predicate.And(x => x.MAIN_GROUP_CODE.ToLower() == filter.mainGroupCode.ToLower())
                         : predicate.And(x => x.MAIN_GROUP_CODE.Contains(filter.mainGroupCode.ToLower()));
+                if (!string.IsNullOrEmpty(filter.mainGroupDesc)) predicate = (strict)
+                         ? predicate.And(x => x.MAIN_GROUP_DESC.ToLower() == filter.mainGroupDesc.ToLower())
+                         : predicate.And(x => x.MAIN_GROUP_DESC.Contains(filter.mainGroupDesc.ToLower()));
+                if (!string.IsNullOrEmpty(filter.subGroupCode)) predicate = (strict)
+                        ? predicate.And(x => x.SUB_GROUP_CODE.ToLower() == filter.subGroupCode.ToLower())
+                        : predicate.And(x => x.SUB_GROUP_CODE.Contains(filter.subGroupCode.ToLower()));
+                if (!string.IsNullOrEmpty(filter.subGroupDesc)) predicate = (strict)
+                        ? predicate.And(x => x.SUB_GROUP_DESC.ToLower() == filter.subGroupDesc.ToLower())
+                        : predicate.And(x => x.SUB_GROUP_DESC.Contains(filter.subGroupDesc.ToLower()));
+                if (!string.IsNullOrEmpty(filter.officeCode)) predicate = (strict)
+                         ? predicate.And(x => x.OFFICE_CODE.ToLower() == filter.officeCode.ToLower())
+                         : predicate.And(x => x.OFFICE_CODE.Contains(filter.officeCode.ToLower()));
+                if (!string.IsNullOrEmpty(filter.officeDesc)) predicate = (strict)
+                         ? predicate.And(x => x.OFFICE_DESC.ToLower() == filter.officeDesc.ToLower())
+                         : predicate.And(x => x.OFFICE_DESC.Contains(filter.officeDesc.ToLower()));
+                if (!string.IsNullOrEmpty(filter.unitCode)) predicate = (strict)
+                         ? predicate.And(x => x.UNIT_CODE.ToLower() == filter.unitCode.ToLower())
+                         : predicate.And(x => x.UNIT_CODE.Contains(filter.unitCode.ToLower()));
+                if (!string.IsNullOrEmpty(filter.unitDesc)) predicate = (strict)
+                         ? predicate.And(x => x.UNIT_DESC.ToLower() == filter.unitDesc.ToLower())
+                         : predicate.And(x => x.UNIT_DESC.Contains(filter.unitDesc.ToLower()));
+
                 var query = custom_query ?? _ctx.EAMIS_RESPONSIBILITY_CENTER;
                 return query.Where(predicate);
             }

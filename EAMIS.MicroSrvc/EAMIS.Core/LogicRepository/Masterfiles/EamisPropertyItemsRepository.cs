@@ -64,15 +64,16 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 SUPPLIER_ID = item.SupplierId,
                 IS_ACTIVE = item.IsActive
                 
-
             };
         }
 
         public async Task<EamisPropertyItemsDTO> Insert(EamisPropertyItemsDTO item)
         {
+          
             EAMISPROPERTYITEMS data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
+         
             return item;
         }
         

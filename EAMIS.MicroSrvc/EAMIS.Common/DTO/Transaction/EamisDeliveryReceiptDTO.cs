@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EAMIS.Common.DTO.Masterfiles;
+using System;
 
 namespace EAMIS.Common.DTO.Transaction
 {
@@ -6,7 +7,9 @@ namespace EAMIS.Common.DTO.Transaction
     {
         public int Id { get; set; }
         public string TransactionType  { get; set; }
-        public string Supplier  { get; set; }
+        public string ReceivedBy { get; set; }
+        public DateTime DateReceived { get; set; }
+        public int SupplierId  { get; set; }
         public string PurchaseOrderNumber  { get; set; }
         public DateTime PurchaseOrderDate  { get; set; }
         public string PurchaseRequestNumber  { get; set; }
@@ -16,5 +19,10 @@ namespace EAMIS.Common.DTO.Transaction
         public int TotalAmount  { get; set; }
         public string TransactionStatus  { get; set; }
         public int SerialLot  { get; set; }
+        public int StockroomId { get; set; }
+        public EamisWarehouseDTO Warehouse { get; set; }
+        public EamisSupplierDTO Supplier { get; set; }
+
+
     }
 }

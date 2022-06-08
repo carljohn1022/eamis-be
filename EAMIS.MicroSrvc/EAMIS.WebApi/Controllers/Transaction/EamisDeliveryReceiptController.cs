@@ -1,7 +1,9 @@
 ﻿using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.ContractRepository.Transaction;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace EAMIS.WebApi.Controllers.Transaction
@@ -16,7 +18,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
             _eamisDeliveryReceiptRepository = eamisDeliveryReceiptRepository;
         }
         [HttpGet("list")]
-        public async Task<ActionResult<EamisDeliveryReceiptDTO>> List([FromQuery] EamisDeliveryReceiptDTO filter, [FromQuery] PageConfig config)
+        public async Task<ActionResult<EAMISDELIVERYRECEIPT>> List([FromQuery] EamisDeliveryReceiptDTO filter, [FromQuery] PageConfig config)
         {
             if (filter == null)
                 filter = new EamisDeliveryReceiptDTO();
@@ -43,5 +45,6 @@ namespace EAMIS.WebApi.Controllers.Transaction
                 item = new EamisDeliveryReceiptDTO();
             return Ok(await _eamisDeliveryReceiptRepository.Delete(item));
         }
+
     }
 }

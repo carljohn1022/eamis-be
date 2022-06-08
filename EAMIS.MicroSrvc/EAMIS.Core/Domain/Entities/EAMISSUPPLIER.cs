@@ -30,6 +30,7 @@ namespace EAMIS.Core.Domain.Entities
         [ForeignKey("BRGY_CODE")]
         public EAMISBARANGAY BARANGAY_GROUP { get; set; }
         public List<EAMISPROPERTYITEMS> PROPERTY_ITEMS { get; set; }
+        public List<EAMISDELIVERYRECEIPT> DELIVERY_RECEIPT { get; set; }
 
     }
 }
