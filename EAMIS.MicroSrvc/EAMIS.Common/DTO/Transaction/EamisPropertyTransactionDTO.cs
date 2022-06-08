@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace EAMIS.Common.DTO.Transaction
 {
@@ -16,5 +17,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string UserStamp  { get; set; }
         public string TimeStamp  { get; set; }
         public string TransactionStatus { get; set; }
+
+        //public List<EamisPropertyTransactionDetailsDTO> PropertyTransactionDetails { get; set; }
     }
 }

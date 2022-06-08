@@ -75,13 +75,13 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             {
                 Id = x.ID,
                 AttachmentId = x.ATTACHMENT_ID,
-                AttachmentTypeDescription =  x.ATTACHMENT_TYPE_DESCRIPTION
-                //AttachmentsDTO = new EamisAttachmentsDTO
-                //{
-                //    Id = x.ATTACHMENTS.ID,
-                //    AttachmentDescription = x.ATTACHMENTS.ATTACHMENT_DESCRIPTION,
-                //    Is_Required = x.ATTACHMENTS.IS_REQUIRED
-                //}
+                AttachmentTypeDescription =  x.ATTACHMENT_TYPE_DESCRIPTION,
+                EamisAttachmentsDTO = new EamisAttachmentsDTO
+                {
+                    Id = x.ATTACHMENTS.ID,
+                    AttachmentDescription = x.ATTACHMENTS.ATTACHMENT_DESCRIPTION,
+                    ModuleName = x.ATTACHMENTS.MODULE_NAME
+                }
 
             });
         }
