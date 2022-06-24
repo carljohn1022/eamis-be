@@ -48,6 +48,13 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 USER_STAMP = item.UserStamp,
                 TIMESTAMP = item.TimeStamp,
                 TRANSACTION_STATUS = item.TransactionStatus
+
+                
+
+
+
+
+
             };
         }
 
@@ -94,8 +101,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 UserStamp = x.USER_STAMP,
                 TimeStamp = x.TIMESTAMP,
                 TransactionStatus = x.TRANSACTION_STATUS
-          
-            });
+
+});
         }
 
         private IQueryable<EAMISPROPERTYTRANSACTION> PagedQuery(IQueryable<EAMISPROPERTYTRANSACTION> query, int resolved_size, int resolved_index)

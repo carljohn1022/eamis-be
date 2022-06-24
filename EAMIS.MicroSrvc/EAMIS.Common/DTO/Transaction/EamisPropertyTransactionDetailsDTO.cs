@@ -6,7 +6,9 @@ namespace EAMIS.Common.DTO.Transaction
     public class EamisPropertyTransactionDetailsDTO
     {
         public int Id { get; set; }
+        public int PropertyTransactionID { get; set; }
         public bool isDepreciation { get; set; }
+        public int DeliveryRecieptID { get; set; }
         public string Dr { get; set; }
         public string PropertyNumber  { get; set; }
         public string ItemDescription  { get; set; }
@@ -32,7 +34,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string Invoice  { get; set; }
         public string PropertyCondition  { get; set; }
 
-        //public List<EamisPropertyTransactionDTO> PropertyTransaction { get; set; }
+        public EamisDeliveryReceiptDTO DeliveryReceipt { get; set; }
 
     }
 

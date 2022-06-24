@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EAMIS.Core.Domain.Entities
@@ -6,10 +7,9 @@ namespace EAMIS.Core.Domain.Entities
     public class EAMISPROPERTYTRANSACTIONDETAILS
     {
         public int ID { get; set; }
-
-        [ForeignKey("EAMISPROPERTYTRANSACTION")]
-        public int PROPERTYTRAN_ID { get; set; }
+        public int PROPERTY_TRANS_ID { get; set; }
         public bool IS_DEPRECIATION { get; set; }
+        public int DELIVERY_RECEIPT_ID { get; set; }
         public string DR { get; set; }
         public string PROPERTY_NUMBER { get; set; }
         public string ITEM_DESCRIPTION { get; set; }
@@ -34,6 +34,8 @@ namespace EAMIS.Core.Domain.Entities
         public DateTime WARRANTY_EXPIRY { get; set; }
         public string INVOICE { get; set;}
         public string PROPERTY_CONDITION { get; set; }
-        //public EAMISPROPERTYTRANSACTIONDETAILS PROPERTYTRANSACTIONDETAILS { get; set; }
+
+        public EAMISPROPERTYTRANSACTION PROPERTYTRANSACTION { get; set; }
+        public EAMISDELIVERYRECEIPTDETAILS DELIVERYRECEIPT_GROUP { get; set; }
     }
 }
