@@ -18,7 +18,6 @@ namespace EAMIS.Common.DTO.Transaction
         public DateTime SaleInvoiceDate  { get; set; }
         public int TotalAmount  { get; set; }
         public string TransactionStatus  { get; set; }
-        public int SerialLot  { get; set; }
         public int StockroomId { get; set; }
         public EamisWarehouseDTO Warehouse { get; set; }
         public EamisSupplierDTO Supplier { get; set; }

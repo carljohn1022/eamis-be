@@ -14,7 +14,7 @@ namespace EAMIS.Core.Domain.Entities
         [Column(TypeName = "Date")]
         public DateTime DATE_RECEIVED { get; set; }
         public int SUPPLIER_ID { get; set; }
-        public int WAREHOUSE_ID { get; set; }
+       
         public string PURCHASE_ORDER_NUMBER { get; set; }
 
         [Column(TypeName = "Date")]
@@ -32,7 +32,7 @@ namespace EAMIS.Core.Domain.Entities
 
         public int TOTAL_AMOUNT { get; set; }
         public string  TRANSACTION_STATUS { get; set; }
-        public int SERIAL_LOT { get; set; }
+        public int WAREHOUSE_ID { get; set; }
 
         public EAMISWAREHOUSE WAREHOUSE_GROUP { get; set; }
         public EAMISSUPPLIER SUPPLIER_GROUP { get; set; }

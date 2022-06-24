@@ -29,8 +29,11 @@ namespace EAMIS.Core.Migrations
                     b.Property<string>("ATTACHMENT_DESCRIPTION")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IS_REQUIRED")
-                        .HasColumnType("bit");
+                    b.Property<string>("ATTACHMENT_TYPE_DESCRIPTION")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MODULE_NAME")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
 
@@ -44,6 +47,9 @@ namespace EAMIS.Core.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("ATTACHMENTSID")
+                        .HasColumnType("int");
+
                     b.Property<int>("ATTACHMENT_ID")
                         .HasColumnType("int");
 
@@ -52,7 +58,7 @@ namespace EAMIS.Core.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ATTACHMENT_ID");
+                    b.HasIndex("ATTACHMENTSID");
 
                     b.ToTable("EAMIS_ATTACHMENT_TYPE");
                 });
@@ -176,29 +182,35 @@ namespace EAMIS.Core.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("DATE_RECEIVED")
+                        .HasColumnType("Date");
+
                     b.Property<DateTime>("PURCHASE_ORDER_DATE")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("Date");
 
                     b.Property<string>("PURCHASE_ORDER_NUMBER")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("PURCHASE_REQUEST_DATE")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("Date");
 
                     b.Property<string>("PURCHASE_REQUEST_NUMBER")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RECEIVED_BY")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("SALE_INVOICE_DATE")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("Date");
 
                     b.Property<string>("SALE_INVOICE_NUMBER")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SERIAL_LOT")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SUPPLIER")
+                    b.Property<string>("SERIAL_LOT")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SUPPLIER_ID")
+                        .HasColumnType("int");
 
                     b.Property<int>("TOTAL_AMOUNT")
                         .HasColumnType("int");
@@ -209,7 +221,14 @@ namespace EAMIS.Core.Migrations
                     b.Property<string>("TRANSACTION_TYPE")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("WAREHOUSE_ID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("SUPPLIER_ID");
+
+                    b.HasIndex("WAREHOUSE_ID");
 
                     b.ToTable("EAMIS_DELIVERY_RECEIPT");
                 });
@@ -239,8 +258,8 @@ namespace EAMIS.Core.Migrations
                     b.Property<int>("QTY_REJECTED")
                         .HasColumnType("int");
 
-                    b.Property<string>("SERIAL_NUMBER")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("SERIAL_NUMBER")
+                        .HasColumnType("int");
 
                     b.Property<int>("UNIT_COST")
                         .HasColumnType("int");
@@ -252,6 +271,8 @@ namespace EAMIS.Core.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("ITEM_ID");
 
                     b.ToTable("EAMIS_DELIVERY_RECEIPT_DETAILS");
                 });
@@ -821,65 +842,62 @@ namespace EAMIS.Core.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AREA_SQM")
+                    b.Property<DateTime>("ACQUISITION_DATE")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("AREA")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ASSIGNEE_CUSTODIAN")
                         .HasColumnType("int");
 
                     b.Property<int>("BOOK_VALUE")
                         .HasColumnType("int");
 
-                    b.Property<int>("CUSTODIAN_ID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DELIVERY_RECEIPT_NUMBER")
+                    b.Property<string>("DEPARTMENT")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DEPARTMENT")
+                    b.Property<string>("DR")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ESTIMATED_LIFE")
                         .HasColumnType("int");
 
-                    b.Property<int>("FORD_DEPRECIATION")
-                        .HasColumnType("int");
+                    b.Property<string>("INVOICE")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ITEM_ID")
-                        .HasColumnType("int");
+                    b.Property<bool>("IS_DEPRECIATION")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ITEM_DESCRIPTION")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OFFICE")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PO")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PR")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PROPERTYTRAN_ID")
+                        .HasColumnType("int");
+
                     b.Property<string>("PROPERTY_CONDITION")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PROPERTY_DESCRIPTION")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PROPERTY_KIT_ID")
-                        .HasColumnType("int");
-
                     b.Property<string>("PROPERTY_NUMBER")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PROPERTY_TRANSACTION_ID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("PURCHASE_ORDER_DATE")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PURCHASE_ORDER_NUMBER")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("PURCHASE_REQUEST_DATE")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PURCHASE_REQUEST_NUMBER")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("QTY")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("RECEIVING_DATE")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("REQUESTED_BY")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RESPONSIBILITY_CODE")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SALVAGE_VALUE")
                         .HasColumnType("int");
@@ -899,7 +917,7 @@ namespace EAMIS.Core.Migrations
                     b.Property<string>("USER_STAMP")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("WARRANTY_START_DATE")
+                    b.Property<DateTime>("WARRANTY_EXPIRY")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ID");
@@ -1337,9 +1355,7 @@ namespace EAMIS.Core.Migrations
                 {
                     b.HasOne("EAMIS.Core.Domain.Entities.EAMISATTACHMENTS", "ATTACHMENTS")
                         .WithMany("ATTACHMENTTYPE")
-                        .HasForeignKey("ATTACHMENT_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ATTACHMENTSID");
 
                     b.Navigation("ATTACHMENTS");
                 });
@@ -1400,6 +1416,36 @@ namespace EAMIS.Core.Migrations
                     b.Navigation("GROUPCLASSIFICATION");
 
                     b.Navigation("SUBCLASSIFICATION");
+                });
+
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPT", b =>
+                {
+                    b.HasOne("EAMIS.Core.Domain.Entities.EAMISSUPPLIER", "SUPPLIER_GROUP")
+                        .WithMany("DELIVERY_RECEIPT")
+                        .HasForeignKey("SUPPLIER_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EAMIS.Core.Domain.Entities.EAMISWAREHOUSE", "WAREHOUSE_GROUP")
+                        .WithMany("DELIVERY_RECEIPT")
+                        .HasForeignKey("WAREHOUSE_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SUPPLIER_GROUP");
+
+                    b.Navigation("WAREHOUSE_GROUP");
+                });
+
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPTDETAILS", b =>
+                {
+                    b.HasOne("EAMIS.Core.Domain.Entities.EAMISPROPERTYITEMS", "ITEMS_GROUP")
+                        .WithMany("DELIVERY_RECEIPT_DETAILS")
+                        .HasForeignKey("ITEM_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ITEMS_GROUP");
                 });
 
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISFUNDSOURCE", b =>
@@ -1675,6 +1721,11 @@ namespace EAMIS.Core.Migrations
                     b.Navigation("BARANGAY");
                 });
 
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISPROPERTYITEMS", b =>
+                {
+                    b.Navigation("DELIVERY_RECEIPT_DETAILS");
+                });
+
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISREGION", b =>
                 {
                     b.Navigation("PROVINCE");
@@ -1694,6 +1745,8 @@ namespace EAMIS.Core.Migrations
 
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISSUPPLIER", b =>
                 {
+                    b.Navigation("DELIVERY_RECEIPT");
+
                     b.Navigation("PROPERTY_ITEMS");
                 });
 
@@ -1711,6 +1764,8 @@ namespace EAMIS.Core.Migrations
 
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISWAREHOUSE", b =>
                 {
+                    b.Navigation("DELIVERY_RECEIPT");
+
                     b.Navigation("PROPERTY_ITEMS");
                 });
 #pragma warning restore 612, 618

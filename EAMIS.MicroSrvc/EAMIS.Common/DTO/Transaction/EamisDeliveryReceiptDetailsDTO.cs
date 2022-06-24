@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EAMIS.Common.DTO.Masterfiles;
+using System;
 
 namespace EAMIS.Common.DTO.Transaction
 {
@@ -12,8 +13,10 @@ namespace EAMIS.Common.DTO.Transaction
         public int QtyRejected  { get; set; }
         public int QtyReceived  { get; set; }
         public int UnitCost  { get; set; }
-        public string SerialNumber  { get; set; }
+        public int SerialNumber  { get; set; }
         public string UnitOfMeasurement  { get; set; }
-        public DateTime WarrantyExpiryDate  { get; set; }
+        //public DateTime WarrantyExpiryDate  { get; set; }
+        public EamisPropertyItemsDTO PropertyItem { get; set; }
+
     }
 }

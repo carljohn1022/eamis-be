@@ -1,5 +1,6 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
 using EAMIS.Common.DTO.Transaction;
+
 using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain;
 using EAMIS.Core.Domain.Entities;
@@ -10,7 +11,8 @@ using System;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
-
+using EAMIS.Core.CommonSvc.Constant;
+using EAMIS.Core.CommonSvc.Utility;
 
 namespace EAMIS.Core.LogicRepository.Transaction
 {
@@ -18,9 +20,11 @@ namespace EAMIS.Core.LogicRepository.Transaction
     {
         private readonly EAMISContext _ctx;
         private readonly int _maxPageSize;
+        private readonly IEAMISIDProvider _EAMISIDProvider;
 
-        public EamisDeliveryReceiptRepository(EAMISContext ctx)
+        public EamisDeliveryReceiptRepository(EAMISContext ctx, IEAMISIDProvider EAMISIDProvider)
         {
+            _EAMISIDProvider = EAMISIDProvider;
             _ctx = ctx;
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                 : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
@@ -50,16 +54,42 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 SALE_INVOICE_DATE = item.SaleInvoiceDate,
                 TOTAL_AMOUNT = item.TotalAmount,
                 TRANSACTION_STATUS = item.TransactionStatus,
-                SERIAL_LOT = item.SerialLot,
                 WAREHOUSE_ID = item.StockroomId
             };
         }
+        //public async Task<EamisDeliveryReceiptDTO> GeneratedDRNum()
+        //{
+        //    var deliveryPrefix = "DR" + DateTime.Now.Year.ToString();
+        //    var idNum = await _ctx.EAMIS_DELIVERY_RECEIPT.AsNoTracking().OrderByDescending(x => x.ID).ToListAsync();
+        //    var drNumber = deliveryPrefix + idNum;
+            
+        //}
 
         public async Task<EamisDeliveryReceiptDTO> Insert(EamisDeliveryReceiptDTO item)
         {
             EAMISDELIVERYRECEIPT data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
+
+            //ensure that recently added record has the correct transaction type number
+            item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
+
+            string _drType = item.TransactionType.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0');
+
+            //check if the forecasted transaction type matches with the actual transaction type (saved/created in DB)
+            //forecasted transaction type = item.TransactionType
+            //actual transaction type = item.TransactionType.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0')
+            if (item.TransactionType != _drType)
+            {
+                item.TransactionType = _drType; //if not matched, replace value of FTT with  ATT
+
+                //reset context state to avoid error
+                _ctx.Entry(data).State = EntityState.Detached;
+
+                //call the update method, force to update the transaction type in the DB
+                await this.Update(item);
+            }
+
             return item;
         }
 
@@ -93,8 +123,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.TransactionStatus)) predicate = (strict)
                    ? predicate.And(x => x.TRANSACTION_STATUS.ToLower() == filter.TransactionStatus.ToLower())
                    : predicate.And(x => x.TRANSACTION_STATUS.Contains(filter.TransactionStatus.ToLower()));
-            if (filter.SerialLot != null && filter.SerialLot != 0)
-                predicate = predicate.And(x => x.SERIAL_LOT == filter.SerialLot);
+          
+
             var query = custom_query ?? _ctx.EAMIS_DELIVERY_RECEIPT;
             return query.Where(predicate);
         }
@@ -117,10 +147,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
         }
         private IQueryable<EAMISDELIVERYRECEIPT> PagedQuery(IQueryable<EAMISDELIVERYRECEIPT> query, int resolved_size, int resolved_index)
         {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x=> x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
-
-
         private IQueryable<EamisDeliveryReceiptDTO> QueryToDTO (IQueryable<EAMISDELIVERYRECEIPT> query)
         {
             return query.Select(x => new EamisDeliveryReceiptDTO
@@ -138,7 +166,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 SaleInvoiceDate = x.SALE_INVOICE_DATE,
                 TotalAmount = x.TOTAL_AMOUNT,
                 TransactionStatus = x.TRANSACTION_STATUS,
-                SerialLot = x.SERIAL_LOT,
+                StockroomId = x.WAREHOUSE_ID,
                 Warehouse = new EamisWarehouseDTO
                 {
                     Id = x.WAREHOUSE_GROUP.ID,
@@ -149,8 +177,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     Id = x.SUPPLIER_GROUP.ID,
                     CompanyName = x.SUPPLIER_GROUP.COMPANY_NAME
                 }
-
-
             });
         }
 
@@ -160,6 +186,43 @@ namespace EAMIS.Core.LogicRepository.Transaction
             _ctx.Entry(data).State = EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
+        }
+
+        public async Task<string> GetNextSequenceNumber()
+        {
+            var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.DeliveryReceipt);
+            return nextId;
+        }
+        private IQueryable<EAMISDELIVERYRECEIPT> PagedQueryForSearch(IQueryable<EAMISDELIVERYRECEIPT> query)
+        {
+            return query;
+        }
+
+        public async Task<DataList<EamisDeliveryReceiptDTO>> SearchDeliveryReceipt(string type, string searchValue)
+        {
+            IQueryable<EAMISDELIVERYRECEIPT> query = null;
+            if (type == "Transaction #")
+            {
+                query = _ctx.EAMIS_DELIVERY_RECEIPT.AsNoTracking().Where(x => x.TRANSACTION_TYPE.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Received By")
+            {
+                query = _ctx.EAMIS_DELIVERY_RECEIPT.AsNoTracking().Where(x => x.RECEIVED_BY.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Date Received")
+            {
+                query = _ctx.EAMIS_DELIVERY_RECEIPT.AsNoTracking().Where(x => x.DATE_RECEIVED.ToString().Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Supplier DR")
+            {
+                query = _ctx.EAMIS_DELIVERY_RECEIPT.AsNoTracking().Where(x => x.SUPPLIER_GROUP.COMPANY_NAME.Contains(searchValue)).AsQueryable();
+            }
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisDeliveryReceiptDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync()
+            };
         }
     }
 }

@@ -1,6 +1,7 @@
 using EAMIS.Common.DTO;
 using EAMIS.Core.BusinessLogic;
 using EAMIS.Core.BusinessLogic.Masterfiles;
+using EAMIS.Core.CommonSvc.Utility;
 using EAMIS.Core.ContractRepository;
 using EAMIS.Core.ContractRepository.Ais;
 using EAMIS.Core.ContractRepository.Classification;
@@ -104,7 +105,7 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisPropertyTransactionDetailsRepository, EamisPropertyTransactionDetailsRepository>();
             services.AddScoped<IEamisDeliveryReceiptRepository, EamisDeliveryReceiptRepository>();
             services.AddScoped<IEamisDeliveryReceiptDetailsRepository, EamisDeliveryReceiptDetailsRepository>();
-
+            services.AddScoped<IEAMISIDProvider, EAMISIDProvider>();
             //AIS
             services.AddScoped<IAisPersonnelRepository, AisPersonnelRepository>();
             services.AddScoped<IAisOfficeRepository, AisOfficeRepository>();

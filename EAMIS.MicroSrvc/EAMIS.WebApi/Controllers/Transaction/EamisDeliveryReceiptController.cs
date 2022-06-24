@@ -45,6 +45,18 @@ namespace EAMIS.WebApi.Controllers.Transaction
                 item = new EamisDeliveryReceiptDTO();
             return Ok(await _eamisDeliveryReceiptRepository.Delete(item));
         }
+        [HttpGet("getNextSequence")]
+        public async Task<string> GetNextSequenceAsync()
+        {
+            var nextId = await _eamisDeliveryReceiptRepository.GetNextSequenceNumber();
+            return nextId;
+        }
+
+        [HttpGet("Search")]
+        public async Task<ActionResult<EAMISRESPONSIBILITYCENTER>> Search(string type, string searchValue)
+        {
+            return Ok(await _eamisDeliveryReceiptRepository.SearchDeliveryReceipt(type, searchValue));
+        }
 
     }
 }

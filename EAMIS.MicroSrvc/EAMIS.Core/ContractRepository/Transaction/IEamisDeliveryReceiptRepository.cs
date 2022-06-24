@@ -11,8 +11,10 @@ namespace EAMIS.Core.ContractRepository.Transaction
    public interface IEamisDeliveryReceiptRepository
     {
         Task<DataList<EamisDeliveryReceiptDTO>> List(EamisDeliveryReceiptDTO filter, PageConfig config);
+        Task<DataList<EamisDeliveryReceiptDTO>> SearchDeliveryReceipt(string type, string searchValue);
         Task<EamisDeliveryReceiptDTO> Insert(EamisDeliveryReceiptDTO item);
         Task<EamisDeliveryReceiptDTO> Update(EamisDeliveryReceiptDTO item);
         Task<EamisDeliveryReceiptDTO> Delete(EamisDeliveryReceiptDTO item);
+        Task<string> GetNextSequenceNumber();
     }
 }

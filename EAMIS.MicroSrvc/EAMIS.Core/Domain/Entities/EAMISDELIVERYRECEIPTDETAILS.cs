@@ -12,8 +12,12 @@ namespace EAMIS.Core.Domain.Entities
         public int QTY_REJECTED { get; set;}
         public int QTY_RECEIVED { get; set; }
         public int UNIT_COST { get; set; }
-        public string SERIAL_NUMBER { get; set; }
+        public int SERIAL_LOT { get; set; }
         public string UNIT_OF_MEASUREMENT { get; set; }
-        public DateTime WARRANTY_EXPIRY_DATE { get; set; }
+        //public DateTime WARRANTY_EXPIRY_DATE { get; set; }
+
+        public EAMISPROPERTYITEMS ITEMS_GROUP { get; set; }
+      
+
     }
 }

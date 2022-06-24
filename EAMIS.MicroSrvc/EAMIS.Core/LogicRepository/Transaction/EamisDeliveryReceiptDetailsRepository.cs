@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Transaction;
+﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain;
 using EAMIS.Core.Domain.Entities;
@@ -44,9 +45,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 QTY_RECEIVED = item.QtyReceived,
                 QTY_REJECTED = item.QtyRejected,
                 UNIT_COST = item.UnitCost,
-                SERIAL_NUMBER = item.SerialNumber,
+                SERIAL_LOT = item.SerialNumber,
                 UNIT_OF_MEASUREMENT = item.UnitOfMeasurement,
-                WARRANTY_EXPIRY_DATE = item.WarrantyExpiryDate
+                //WARRANTY_EXPIRY_DATE = item.WarrantyExpiryDate
             };
         }
 
@@ -89,9 +90,16 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 QtyRejected = x.QTY_REJECTED,
                 QtyReceived = x.QTY_RECEIVED,
                 UnitCost = x.UNIT_COST,
-                SerialNumber = x.SERIAL_NUMBER,
+                SerialNumber = x.SERIAL_LOT,
                 UnitOfMeasurement = x.UNIT_OF_MEASUREMENT,
-                WarrantyExpiryDate = x.WARRANTY_EXPIRY_DATE
+                //WarrantyExpiryDate = x.WARRANTY_EXPIRY_DATE,
+                PropertyItem = new EamisPropertyItemsDTO
+                {
+                    Id = x.ITEMS_GROUP.ID,
+                    PropertyName = x.ITEMS_GROUP.PROPERTY_NAME,
+                    UomId = x.ITEMS_GROUP.UOM_ID,
+                    
+                }
             });
         }
 
@@ -119,14 +127,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 predicate = predicate.And(x => x.QTY_RECEIVED == filter.QtyReceived);
             if (filter.UnitCost != null && filter.UnitCost != 0)
                 predicate = predicate.And(x => x.UNIT_COST == filter.UnitCost);
-            if (!string.IsNullOrEmpty(filter.SerialNumber)) predicate = (strict)
-                  ? predicate.And(x => x.SERIAL_NUMBER.ToLower() == filter.SerialNumber.ToLower())
-                  : predicate.And(x => x.SERIAL_NUMBER.Contains(filter.SerialNumber.ToLower()));
+            if (filter.SerialNumber != null && filter.SerialNumber != 0)
+                predicate = predicate.And(x => x.SERIAL_LOT == filter.SerialNumber);
+
             if (!string.IsNullOrEmpty(filter.UnitOfMeasurement)) predicate = (strict)
                   ? predicate.And(x => x.UNIT_OF_MEASUREMENT.ToLower() == filter.UnitOfMeasurement.ToLower())
                   : predicate.And(x => x.UNIT_OF_MEASUREMENT.Contains(filter.UnitOfMeasurement.ToLower()));
-            if (filter.WarrantyExpiryDate != null && filter.WarrantyExpiryDate != DateTime.MinValue)
-                predicate = predicate.And(x => x.WARRANTY_EXPIRY_DATE == filter.WarrantyExpiryDate);
+            //if (filter.WarrantyExpiryDate != null && filter.WarrantyExpiryDate != DateTime.MinValue)
+            //    predicate = predicate.And(x => x.WARRANTY_EXPIRY_DATE == filter.WarrantyExpiryDate);
             var query = custom_query ?? _ctx.EAMIS_DELIVERY_RECEIPT_DETAILS;
             return query.Where(predicate);
         }

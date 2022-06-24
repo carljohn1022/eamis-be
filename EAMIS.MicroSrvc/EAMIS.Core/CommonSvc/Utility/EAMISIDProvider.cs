@@ -1,0 +1,36 @@
+﻿using EAMIS.Core.CommonSvc.Constant;
+using EAMIS.Core.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EAMIS.Core.CommonSvc.Utility
+{
+    public class EAMISIDProvider : IEAMISIDProvider
+    {
+        private readonly EAMISContext _ctx;
+
+        public EAMISIDProvider(EAMISContext ctx)
+        {
+            _ctx = ctx;
+        }
+
+        public async Task<string> GetNextSequenceNumber(string TransactionType)
+        {
+            var maxId = 0;
+            var nextId = 0;
+            string _id = "";
+            switch (TransactionType)
+            {
+                case TransactionTypeSettings.DeliveryReceipt:
+                    maxId = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.Max(t => t.ID)).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = PrefixSettings.DRPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');
+                    break;
+            }
+            return _id;
+        }
+    }
+  }
