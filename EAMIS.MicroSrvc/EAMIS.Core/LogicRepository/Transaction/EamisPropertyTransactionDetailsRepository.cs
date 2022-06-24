@@ -39,6 +39,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             return new EAMISPROPERTYTRANSACTIONDETAILS
             {
                 ID = item.Id,
+                PROPERTY_TRANS_ID = item.PropertyTransactionID,
                 IS_DEPRECIATION = item.isDepreciation,
                 DR = item.Dr,
                 PROPERTY_NUMBER = item.PropertyNumber,
@@ -100,6 +101,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             return query.Select(x => new EamisPropertyTransactionDetailsDTO
             {
                 Id = x.ID,
+                PropertyTransactionID = x.PROPERTY_TRANS_ID,
                 isDepreciation = x.IS_DEPRECIATION,
                 Dr = x.DR,
                 PropertyNumber = x.PROPERTY_NUMBER,
@@ -124,7 +126,15 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TimeStamp = x.TIME_STAMP,
                 WarrantyExpiry = x.WARRANTY_EXPIRY,
                 Invoice = x.INVOICE,
-                PropertyCondition = x.PROPERTY_CONDITION
+                PropertyCondition = x.PROPERTY_CONDITION,
+
+                DeliveryReceipt = new EamisDeliveryReceiptDetailsDTO
+                {
+                   ItemId = x.DELIVERYRECEIPT_GROUP.ITEM_ID,
+                   DeliveryReceiptDetails = x.DELIVERYRECEIPT_GROUP.PROPERTYTRANSACTIONDETAILS.Select(y => new EamisDeliveryReceiptDetailsDTO { Id = y.ID, DeliveryReceiptId = y.DELIVERY_RECEIPT_ID }).ToList()
+
+
+                }
 
 
             });
