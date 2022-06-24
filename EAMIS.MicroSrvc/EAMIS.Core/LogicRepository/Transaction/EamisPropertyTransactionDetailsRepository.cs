@@ -128,13 +128,13 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Invoice = x.INVOICE,
                 PropertyCondition = x.PROPERTY_CONDITION,
 
-                DeliveryReceipt = new EamisDeliveryReceiptDetailsDTO
-                {
-                   ItemId = x.DELIVERYRECEIPT_GROUP.ITEM_ID,
-                   DeliveryReceiptDetails = x.DELIVERYRECEIPT_GROUP.PROPERTYTRANSACTIONDETAILS.Select(y => new EamisDeliveryReceiptDetailsDTO { Id = y.ID, DeliveryReceiptId = y.DELIVERY_RECEIPT_ID }).ToList()
+                //DeliveryReceipt = new EamisDeliveryReceiptDetailsDTO
+                //{
+                //   ItemId = x.DELIVERYRECEIPT_GROUP.ITEM_ID,
+                //   DeliveryReceiptDetails = x.DELIVERYRECEIPT_GROUP.PROPERTYTRANSACTIONDETAILS.Select(y => new EamisDeliveryReceiptDetailsDTO { Id = y.ID, DeliveryReceiptId = y.DELIVERY_RECEIPT_ID }).ToList()
 
 
-                }
+                //}
 
 
             });

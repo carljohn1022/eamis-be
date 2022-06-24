@@ -72,10 +72,10 @@ namespace EAMIS.Core.Domain
             //    .WithMany(x => x.ATTACHMENTTYPE)
             //    .HasForeignKey(x => x.ID);
 
-            modelBuilder.Entity<EAMISPROPERTYTRANSACTIONDETAILS>()
-                .HasOne(x => x.DELIVERYRECEIPT_GROUP)
-                .WithMany(x => x.PROPERTYTRANSACTIONDETAILS)
-                .HasForeignKey(x => x.DELIVERY_RECEIPT_ID);
+            //modelBuilder.Entity<EAMISPROPERTYTRANSACTIONDETAILS>()
+            //    .HasOne(x => x.DELIVERYRECEIPT_GROUP)
+            //    .WithMany(x => x.PROPERTYTRANSACTIONDETAILS)
+            //    .HasForeignKey(x => x.DELIVERY_RECEIPT_ID);
 
             modelBuilder.Entity<EAMISPROPERTYTRANSACTIONDETAILS>()
                .HasOne(x => x.PROPERTYTRANSACTION)
