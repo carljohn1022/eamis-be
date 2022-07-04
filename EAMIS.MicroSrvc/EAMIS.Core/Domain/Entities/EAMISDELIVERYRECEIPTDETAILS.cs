@@ -17,6 +17,7 @@ namespace EAMIS.Core.Domain.Entities
         //public DateTime WARRANTY_EXPIRY_DATE { get; set; }
 
         public EAMISPROPERTYITEMS ITEMS_GROUP { get; set; }
+        public EAMISDELIVERYRECEIPT DELIVERY_RECEIPT_GROUP { get;set; }
       
 
     }

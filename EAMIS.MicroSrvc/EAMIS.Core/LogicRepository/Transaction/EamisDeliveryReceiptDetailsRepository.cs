@@ -96,9 +96,18 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 PropertyItem = new EamisPropertyItemsDTO
                 {
                     Id = x.ITEMS_GROUP.ID,
+                    PropertyNo = x.ITEMS_GROUP.PROPERTY_NO,
                     PropertyName = x.ITEMS_GROUP.PROPERTY_NAME,
                     UomId = x.ITEMS_GROUP.UOM_ID,
-                    
+                },
+                DeliveryReceipt = new EamisDeliveryReceiptDTO
+                {
+                    Id = x.DELIVERY_RECEIPT_GROUP.ID,
+                    TransactionType = x.DELIVERY_RECEIPT_GROUP.TRANSACTION_TYPE,
+                    ReceivedBy = x.DELIVERY_RECEIPT_GROUP.RECEIVED_BY,
+                    DateReceived = x.DELIVERY_RECEIPT_GROUP.DATE_RECEIVED,
+                    SupplierId = x.DELIVERY_RECEIPT_GROUP.SUPPLIER_ID,
+                    StockroomId = x.DELIVERY_RECEIPT_GROUP.WAREHOUSE_ID
                 }
             });
         }

@@ -133,6 +133,11 @@ namespace EAMIS.Core.Domain
                 .HasOne(x => x.ITEMS_GROUP)
                 .WithMany(x => x.DELIVERY_RECEIPT_DETAILS)
                 .HasForeignKey(x => x.ITEM_ID);
+
+            modelBuilder.Entity<EAMISDELIVERYRECEIPTDETAILS>()
+                .HasOne(x => x.DELIVERY_RECEIPT_GROUP)
+                .WithMany(x => x.DELIVERY_RECEIPT_DETAILS)
+                .HasForeignKey(x => x.DELIVERY_RECEIPT_ID);
             //modelBuilder.Entity<EAMISITEMCATEGORY>()
             //    .HasOne(x => x.CHART_OF_ACCOUNTS)
             //    .WithOne(x => x.ITEM_CATEGORY)

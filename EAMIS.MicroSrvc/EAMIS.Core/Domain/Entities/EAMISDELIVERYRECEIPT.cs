@@ -36,6 +36,8 @@ namespace EAMIS.Core.Domain.Entities
 
         public EAMISWAREHOUSE WAREHOUSE_GROUP { get; set; }
         public EAMISSUPPLIER SUPPLIER_GROUP { get; set; }
+        public List<EAMISDELIVERYRECEIPTDETAILS> DELIVERY_RECEIPT_DETAILS { get; set; }
+
 
 
     }

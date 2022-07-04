@@ -206,9 +206,6 @@ namespace EAMIS.Core.Migrations
                     b.Property<string>("SALE_INVOICE_NUMBER")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SERIAL_LOT")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("SUPPLIER_ID")
                         .HasColumnType("int");
 
@@ -258,7 +255,7 @@ namespace EAMIS.Core.Migrations
                     b.Property<int>("QTY_REJECTED")
                         .HasColumnType("int");
 
-                    b.Property<int>("SERIAL_NUMBER")
+                    b.Property<int>("SERIAL_LOT")
                         .HasColumnType("int");
 
                     b.Property<int>("UNIT_COST")
@@ -267,10 +264,9 @@ namespace EAMIS.Core.Migrations
                     b.Property<string>("UNIT_OF_MEASUREMENT")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("WARRANTY_EXPIRY_DATE")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("ID");
+
+                    b.HasIndex("DELIVERY_RECEIPT_ID");
 
                     b.HasIndex("ITEM_ID");
 
@@ -854,6 +850,12 @@ namespace EAMIS.Core.Migrations
                     b.Property<int>("BOOK_VALUE")
                         .HasColumnType("int");
 
+                    b.Property<int?>("DELIVERYRECEIPT_GROUPID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DELIVERY_RECEIPT_ID")
+                        .HasColumnType("int");
+
                     b.Property<string>("DEPARTMENT")
                         .HasColumnType("nvarchar(max)");
 
@@ -881,14 +883,14 @@ namespace EAMIS.Core.Migrations
                     b.Property<string>("PR")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PROPERTYTRAN_ID")
-                        .HasColumnType("int");
-
                     b.Property<string>("PROPERTY_CONDITION")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PROPERTY_NUMBER")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PROPERTY_TRANS_ID")
+                        .HasColumnType("int");
 
                     b.Property<int>("QTY")
                         .HasColumnType("int");
@@ -921,6 +923,10 @@ namespace EAMIS.Core.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("DELIVERYRECEIPT_GROUPID");
+
+                    b.HasIndex("PROPERTY_TRANS_ID");
 
                     b.ToTable("EAMIS_PROPERTY_TRANSACTION_DETAILS");
                 });
@@ -1439,11 +1445,19 @@ namespace EAMIS.Core.Migrations
 
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPTDETAILS", b =>
                 {
+                    b.HasOne("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPT", "DELIVERY_RECEIPT_GROUP")
+                        .WithMany("DELIVERY_RECEIPT_DETAILS")
+                        .HasForeignKey("DELIVERY_RECEIPT_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EAMIS.Core.Domain.Entities.EAMISPROPERTYITEMS", "ITEMS_GROUP")
                         .WithMany("DELIVERY_RECEIPT_DETAILS")
                         .HasForeignKey("ITEM_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("DELIVERY_RECEIPT_GROUP");
 
                     b.Navigation("ITEMS_GROUP");
                 });
@@ -1585,6 +1599,23 @@ namespace EAMIS.Core.Migrations
                     b.Navigation("WAREHOUSE_GROUP");
                 });
 
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISPROPERTYTRANSACTIONDETAILS", b =>
+                {
+                    b.HasOne("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPTDETAILS", "DELIVERYRECEIPT_GROUP")
+                        .WithMany()
+                        .HasForeignKey("DELIVERYRECEIPT_GROUPID");
+
+                    b.HasOne("EAMIS.Core.Domain.Entities.EAMISPROPERTYTRANSACTION", "PROPERTYTRANSACTION")
+                        .WithMany("PROPERTYTRANSACTIONDETAILS")
+                        .HasForeignKey("PROPERTY_TRANS_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DELIVERYRECEIPT_GROUP");
+
+                    b.Navigation("PROPERTYTRANSACTION");
+                });
+
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISPROVINCE", b =>
                 {
                     b.HasOne("EAMIS.Core.Domain.Entities.EAMISREGION", null)
@@ -1689,6 +1720,11 @@ namespace EAMIS.Core.Migrations
                     b.Navigation("SUBCLASSIFICIATION");
                 });
 
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPT", b =>
+                {
+                    b.Navigation("DELIVERY_RECEIPT_DETAILS");
+                });
+
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISFINANCINGSOURCE", b =>
                 {
                     b.Navigation("FUND_SOURCE");
@@ -1724,6 +1760,11 @@ namespace EAMIS.Core.Migrations
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISPROPERTYITEMS", b =>
                 {
                     b.Navigation("DELIVERY_RECEIPT_DETAILS");
+                });
+
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISPROPERTYTRANSACTION", b =>
+                {
+                    b.Navigation("PROPERTYTRANSACTIONDETAILS");
                 });
 
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISREGION", b =>

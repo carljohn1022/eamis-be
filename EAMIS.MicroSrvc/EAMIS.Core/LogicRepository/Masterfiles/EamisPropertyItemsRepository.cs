@@ -98,6 +98,14 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             {
                 query = _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().Where(x => x.MODEL.Contains(SearchValue)).AsQueryable();
             }
+            else if (type == "Item Code")
+            {
+                query = _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().Where(x => x.PROPERTY_NO.Contains(SearchValue)).AsQueryable();
+            }
+            else if (type == "Description")
+            {
+                query = _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().Where(x => x.PROPERTY_NAME.Contains(SearchValue)).AsQueryable();
+            }
             
            
            
@@ -182,7 +190,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                     Id = x.ITEM_CATEGORY.ID,
                     CategoryName = x.ITEM_CATEGORY.CATEGORY_NAME,
                     ShortDesc = x.ITEM_CATEGORY.SHORT_DESCRIPTION,
-                    SubCategory = x.ITEM_CATEGORY.ITEM_SUB_CATEGORY.Select(y => new EamisItemSubCategoryDTO { Id = y.ID, CategoryId = y.CATEGORY_ID, SubCategoryName = y.SUB_CATEGORY_NAME }).ToList()
+                    SubCategory = x.ITEM_CATEGORY.ITEM_SUB_CATEGORY.Select(y => new EamisItemSubCategoryDTO { Id = y.ID, CategoryId = y.CATEGORY_ID, SubCategoryName = y.SUB_CATEGORY_NAME }).ToList(),
+                    IsSerialized = x.ITEM_CATEGORY.IS_SERIALIZED,
                 },
                 UnitOfMeasure = new EamisUnitofMeasureDTO
                 {
@@ -234,7 +243,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                     Id = x.ITEM_CATEGORY.ID,
                     CategoryName = x.ITEM_CATEGORY.CATEGORY_NAME,
                     ShortDesc = x.ITEM_CATEGORY.SHORT_DESCRIPTION,
-                    SubCategory = x.ITEM_CATEGORY.ITEM_SUB_CATEGORY.Select(y => new EamisItemSubCategoryDTO {Id = y.ID, CategoryId = y.CATEGORY_ID, SubCategoryName = y.SUB_CATEGORY_NAME}).ToList()
+                    SubCategory = x.ITEM_CATEGORY.ITEM_SUB_CATEGORY.Select(y => new EamisItemSubCategoryDTO {Id = y.ID, CategoryId = y.CATEGORY_ID, SubCategoryName = y.SUB_CATEGORY_NAME}).ToList(),
+                    IsSerialized = x.ITEM_CATEGORY.IS_SERIALIZED
                 },
                 UnitOfMeasure = new EamisUnitofMeasureDTO
                 {
@@ -326,6 +336,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             };
             return  propertyItems;
         }
+
 
         public Task<bool> ValidateExistingItem(string propertyNo)
         {

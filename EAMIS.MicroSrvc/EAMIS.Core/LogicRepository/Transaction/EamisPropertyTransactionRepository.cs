@@ -1,4 +1,6 @@
 ﻿using EAMIS.Common.DTO.Transaction;
+using EAMIS.Core.CommonSvc.Constant;
+using EAMIS.Core.CommonSvc.Utility;
 using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain;
 using EAMIS.Core.Domain.Entities;
@@ -16,13 +18,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
     {
         private readonly EAMISContext _ctx;
         private readonly int _maxPageSize;
-        public EamisPropertyTransactionRepository(EAMISContext ctx)
+        private readonly IEAMISIDProvider _EAMISIDProvider;
+        public EamisPropertyTransactionRepository(EAMISContext ctx, IEAMISIDProvider EAMISIDProvider)
         {
+            _EAMISIDProvider = EAMISIDProvider;
             _ctx = ctx;
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
-               : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
+                : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
-
         public async Task<EamisPropertyTransactionDTO> Delete(EamisPropertyTransactionDTO item)
         {
             EAMISPROPERTYTRANSACTION data = MapToEntity(item);
@@ -49,12 +52,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TIMESTAMP = item.TimeStamp,
                 TRANSACTION_STATUS = item.TransactionStatus
 
-                
-
-
-
-
-
             };
         }
 
@@ -63,6 +60,26 @@ namespace EAMIS.Core.LogicRepository.Transaction
             EAMISPROPERTYTRANSACTION data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
+
+            //ensure that recently added record has the correct transaction type number
+            item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
+
+            string _prType = item.TransactionNumber.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0');
+
+            //check if the forecasted transaction type matches with the actual transaction type (saved/created in DB)
+            //forecasted transaction type = item.TransactionType
+            //actual transaction type = item.TransactionType.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0')
+            if (item.TransactionNumber != _prType)
+            {
+                item.TransactionNumber = _prType; //if not matched, replace value of FTT with  ATT
+
+                //reset context state to avoid error
+                _ctx.Entry(data).State = EntityState.Detached;
+
+                //call the update method, force to update the transaction type in the DB
+                await this.Update(item);
+            }
+
             return item;
         }
 
@@ -156,6 +173,11 @@ namespace EAMIS.Core.LogicRepository.Transaction
             _ctx.Entry(data).State = EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
+        }
+        public async Task<string> GetNextSequenceNumberPR()
+        {
+            var nextId = await _EAMISIDProvider.GetNextSequenceNumberPR(TransactionTypeSettings.PropertyReceiving);
+            return nextId;
         }
     }
 

@@ -132,8 +132,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 //{
                 //   ItemId = x.DELIVERYRECEIPT_GROUP.ITEM_ID,
                 //   DeliveryReceiptDetails = x.DELIVERYRECEIPT_GROUP.PROPERTYTRANSACTIONDETAILS.Select(y => new EamisDeliveryReceiptDetailsDTO { Id = y.ID, DeliveryReceiptId = y.DELIVERY_RECEIPT_ID }).ToList()
-
-
                 //}
 
 
