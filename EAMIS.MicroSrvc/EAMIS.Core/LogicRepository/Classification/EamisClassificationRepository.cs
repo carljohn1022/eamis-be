@@ -6,6 +6,7 @@ using EAMIS.Core.Response.DTO;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +23,11 @@ namespace EAMIS.Core.LogicRepository.Classification
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
               : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
-
+        public async Task<List<EAMISCLASSIFICATION>> ListClassifications(string searchValue)
+        {
+            var result = _ctx.EAMIS_CLASSIFICATION.AsNoTracking().Where(x => x.NAME_CLASSIFICATION == searchValue).ToList();
+            return result;
+        }
         public async Task<DataList<EamisClassificationDTO>> List(EamisClassificationDTO filter, PageConfig config)
         {
             IQueryable<EAMISCLASSIFICATION> query = FilteredEntities(filter);

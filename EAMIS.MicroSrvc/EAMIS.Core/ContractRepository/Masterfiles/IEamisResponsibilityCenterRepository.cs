@@ -15,6 +15,8 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisResponsibilityCenterDTO> Insert(EamisResponsibilityCenterDTO item);
         Task<EamisResponsibilityCenterDTO> Update(EamisResponsibilityCenterDTO item, int id);
         Task<bool> ValidateExistingCode(string ResponsibilityCenter);
-        
+        Task<bool> UpdateValidateExistingCode(string ResponsibilityCenter, int id);
+
+
     }
 }

@@ -1,5 +1,7 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EAMIS.Core.ContractRepository.Masterfiles
@@ -13,5 +15,6 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisWarehouseDTO> Delete(EamisWarehouseDTO item);
         Task<bool> ValidateExistingWarehouse(string warehouseDesc);
         Task<bool> EditValidationWarehouse(int id, string warehouseDesc);
+        Task<List<EAMISWAREHOUSE>> ListAllWarehouse();
     }
 }

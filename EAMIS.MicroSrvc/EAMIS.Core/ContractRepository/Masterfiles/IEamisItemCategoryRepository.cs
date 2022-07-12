@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,8 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisItemCategoryDTO> Delete(EamisItemCategoryDTO item);
         Task<bool> ValidateExistingShortDesc(string shortDesc, string categoryName);
         Task<bool> EditValidateExistingShortDesc(int id, string shortDesc, string categoryName);
+        Task<List<EAMISITEMCATEGORY>> ListAllItemCategories();
+        Task<List<EAMISITEMCATEGORY>> ListCategories(string searchValue);
+        Task<EamisItemCategoryDTO> InsertFromExcel(EamisItemCategoryDTO item);
     }
 }

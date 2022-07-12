@@ -641,7 +641,6 @@ C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.
 C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.AssemblyInfoInputs.cache
 C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.AssemblyInfo.cs
 C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.csproj.CoreCompileInputs.cache
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.dll
 C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\ref\EAMIS.WebApi.dll
@@ -796,4 +795,9 @@ C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.
 C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\scopedcss\bundle\EAMIS.WebApi.styles.css
 C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.RazorTargetAssemblyInfo.cache
 C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.genruntimeconfig.cache
+C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\ClosedXML.dll
+C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\DocumentFormat.OpenXml.dll
+C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\ExcelNumberFormat.dll
+C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\System.IO.Packaging.dll
 C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.csproj.CopyComplete

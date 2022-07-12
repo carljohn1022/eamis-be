@@ -6,6 +6,7 @@ using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,7 +31,14 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             await _ctx.SaveChangesAsync();
             return item;
         }
+        public async Task<List<EAMISWAREHOUSE>> ListAllWarehouse()
+        {
 
+            //IQueryable<EAMISWAREHOUSE> query = _ctx.EAMIS_WAREHOUSE;
+            var result = _ctx.EAMIS_WAREHOUSE.AsNoTracking().ToList();//query.ToListAsync().GetAwaiter().GetResult();
+            return result;
+
+        }
         private EAMISWAREHOUSE MapToEntity(EamisWarehouseDTO item)
         {
             if (item == null) return new EAMISWAREHOUSE();

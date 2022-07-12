@@ -1,5 +1,7 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EAMIS.Core.ContractRepository.Masterfiles
@@ -20,5 +22,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> ValidationForUomExistShortDescNotExist(string ShortDesc, string UomDesc);
         Task<bool> ValidationForShortDescExistUomNotExist(string ShortDesc, string UomDesc);
         Task<bool> ValidateExistDesc(string ShortDesc, string UomDesc);
+        Task<EamisUnitofMeasureDTO> InsertFromExcel(EamisUnitofMeasureDTO item);
+        Task<List<EAMISUNITOFMEASURE>> ListAllIUnitOfMeasurement();
     }
 }

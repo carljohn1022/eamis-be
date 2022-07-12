@@ -17,6 +17,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisProcurementCategoryDTO> Delete(EamisProcurementCategoryDTO item);
         Task<bool> ValidateExistingDesc(string procurementDescription);
         Task<bool> ValidateExistingDescUpdate(int id, string procurementDescription);
+        Task<EamisProcurementCategoryDTO> InsertFromExcel(EamisProcurementCategoryDTO item);
 
     }
 }

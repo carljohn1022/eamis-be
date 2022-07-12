@@ -177,6 +177,10 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             {
                 return _ctx.EAMIS_RESPONSIBILITY_CENTER.AsNoTracking().AnyAsync(x => x.RESPONSIBILITY_CENTER == ResponsibilityCenter);
             }
+            public Task<bool> UpdateValidateExistingCode(string ResponsibilityCenter, int id)
+            {
+                return _ctx.EAMIS_RESPONSIBILITY_CENTER.AsNoTracking().AnyAsync(x => x.RESPONSIBILITY_CENTER == ResponsibilityCenter && x.ID == id);
+            }
         }
 
     }

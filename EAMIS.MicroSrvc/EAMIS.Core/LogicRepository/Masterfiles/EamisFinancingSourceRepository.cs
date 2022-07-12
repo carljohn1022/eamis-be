@@ -24,7 +24,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                 : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
-
+        public async Task<List<EAMISFINANCINGSOURCE>> ListFinancingSource(string searchValue)
+        {
+            var result = _ctx.EAMIS_FINANCING_SOURCE.AsNoTracking().Where(x => x.FINANCING_SOURCE_NAME == searchValue).ToList();
+            return result;
+        }
         public async Task<DataList<EamisFinancingSourceDTO>> List(EamisFinancingSourceDTO filter, PageConfig config)
         {
             IQueryable<EAMISFINANCINGSOURCE> query = FilteredEntites(filter);

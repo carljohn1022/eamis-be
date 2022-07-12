@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace EAMIS.Core.ContractRepository
     public interface IEamisProvinceRepository
     {
         Task<DataList<EamisProvinceDTO>> List(EamisProvinceDTO filter,PageConfig config);
+        Task<List<EAMISPROVINCE>> ListProvince(string searchValue);
     }
 }

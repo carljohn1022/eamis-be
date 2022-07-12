@@ -25,7 +25,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         IEamisWarehouseRepository _eamisWareHouseRepository;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
-        
+
 
         public EamisFileController(IEamisFileHelper eamisFileHelper, IEamisItemCategoryRepository eamisItemCategoryRepository,
                                     IEamisItemSubCategoryRepository eamisItemSubCategoryRepository,
@@ -150,7 +150,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
 
                 IXLWorksheet category =
                 workbook.Worksheet(WorkSheetNames.CategoryList);
-                                
+
 
                 category.Cell(1, 1).Value = "CHART_OF_ACCOUNT_CODE";
                 category.Cell(1, 2).Value = "CATEGORY_NAME";

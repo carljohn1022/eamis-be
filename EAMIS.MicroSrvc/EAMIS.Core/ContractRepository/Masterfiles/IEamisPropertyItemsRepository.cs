@@ -13,6 +13,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<DataList<EamisPropertyItemsDTO>> PublicSearch(string type,string SearchValue);
         Task<DataList<EamisPropertyItemsDTO>> List(EamisPropertyItemsDTO filter, PageConfig config);
         Task<EamisPropertyItemsDTO> Insert(EamisPropertyItemsDTO item);
+        Task<EamisPropertyItemsDTO> InsertFromExcel(EamisPropertyItemsDTO item);
         Task<EamisPropertyItemsDTO> Update(EamisPropertyItemsDTO item, int id);
         Task<EamisPropertyItemsDTO> Delete(EamisPropertyItemsDTO item);
         Task<EamisPropertyItemsDTO> GeneratedProperty();

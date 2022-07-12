@@ -106,6 +106,7 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisDeliveryReceiptRepository, EamisDeliveryReceiptRepository>();
             services.AddScoped<IEamisDeliveryReceiptDetailsRepository, EamisDeliveryReceiptDetailsRepository>();
             services.AddScoped<IEAMISIDProvider, EAMISIDProvider>();
+            services.AddScoped<IEamisFileHelper, EamisFileHelper>();
             //AIS
             services.AddScoped<IAisPersonnelRepository, AisPersonnelRepository>();
             services.AddScoped<IAisOfficeRepository, AisOfficeRepository>();

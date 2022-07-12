@@ -49,15 +49,21 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         [HttpPut("Edit")]
         public async Task<ActionResult<EamisResponsibilityCenterDTO>> Edit([FromBody] EamisResponsibilityCenterDTO item, int id)
         {
-            item.responsibilityCenter = item.mainGroupCode + item.subGroupCode + item.officeCode + item.unitCode;
             var data = new EamisResponsibilityCenterDTO();
-            if (await _eamisResponsibilityCenterRepository.ValidateExistingCode(item.responsibilityCenter))
+            if (await _eamisResponsibilityCenterRepository.UpdateValidateExistingCode(item.responsibilityCenter, item.Id))
+            {
+                if (item == null)
+                    item = new EamisResponsibilityCenterDTO();
+                return Ok(await _eamisResponsibilityCenterRepository.Update(item, id));
+            }
+            else if (await _eamisResponsibilityCenterRepository.ValidateExistingCode(item.responsibilityCenter))
             {
                 return Unauthorized();
             }
-            if (item == null)
-                item = new EamisResponsibilityCenterDTO();
-            return Ok(await _eamisResponsibilityCenterRepository.Update(item,id));
+            else
+            {
+                return Ok(await _eamisResponsibilityCenterRepository.Update(item, id));
+            }
         }
 
 

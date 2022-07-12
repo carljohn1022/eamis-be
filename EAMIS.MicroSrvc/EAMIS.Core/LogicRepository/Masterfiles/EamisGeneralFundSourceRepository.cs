@@ -24,6 +24,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                            : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
+        public async Task<List<EAMISGENERALFUNDSOURCE>> ListGeneralFunds(string searchValue)
+        {
+            var result = _ctx.EAMIS_GENERAL_FUND_SOURCE.AsNoTracking().Where(x => x.NAME == searchValue).ToList();
+            return result;
+        }
         private EAMISGENERALFUNDSOURCE MapToEntity(EamisGeneralFundSourceDTO item)
         {
             if (item == null) return new EAMISGENERALFUNDSOURCE();

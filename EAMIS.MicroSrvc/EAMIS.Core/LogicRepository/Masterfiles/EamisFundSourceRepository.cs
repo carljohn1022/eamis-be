@@ -24,6 +24,20 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                            : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
+        public async Task<EamisFundSourceDTO> InsertFromExcel(EamisFundSourceDTO item)
+        {
+            try
+            {
+                EAMISFUNDSOURCE data = MapToEntity(item);
+                _ctx.Entry(data).State = EntityState.Added;
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return item;
+        }
         public async Task<DataList<EamisFundSourceDTO>> List(EamisFundSourceDTO filter, PageConfig config)
         {
             IQueryable<EAMISFUNDSOURCE> query = FilteredEntities(filter);

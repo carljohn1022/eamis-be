@@ -185,6 +185,9 @@ namespace EAMIS.Core.Migrations
                     b.Property<DateTime>("DATE_RECEIVED")
                         .HasColumnType("Date");
 
+                    b.Property<int?>("EAMISDELIVERYRECEIPTDETAILSID")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("PURCHASE_ORDER_DATE")
                         .HasColumnType("Date");
 
@@ -222,6 +225,8 @@ namespace EAMIS.Core.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("EAMISDELIVERYRECEIPTDETAILSID");
 
                     b.HasIndex("SUPPLIER_ID");
 
@@ -850,9 +855,6 @@ namespace EAMIS.Core.Migrations
                     b.Property<int>("BOOK_VALUE")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DELIVERYRECEIPT_GROUPID")
-                        .HasColumnType("int");
-
                     b.Property<int>("DELIVERY_RECEIPT_ID")
                         .HasColumnType("int");
 
@@ -924,7 +926,7 @@ namespace EAMIS.Core.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("DELIVERYRECEIPT_GROUPID");
+                    b.HasIndex("DELIVERY_RECEIPT_ID");
 
                     b.HasIndex("PROPERTY_TRANS_ID");
 
@@ -1426,6 +1428,10 @@ namespace EAMIS.Core.Migrations
 
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPT", b =>
                 {
+                    b.HasOne("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPTDETAILS", null)
+                        .WithMany("DELIVERY_RECEIPT")
+                        .HasForeignKey("EAMISDELIVERYRECEIPTDETAILSID");
+
                     b.HasOne("EAMIS.Core.Domain.Entities.EAMISSUPPLIER", "SUPPLIER_GROUP")
                         .WithMany("DELIVERY_RECEIPT")
                         .HasForeignKey("SUPPLIER_ID")
@@ -1601,9 +1607,11 @@ namespace EAMIS.Core.Migrations
 
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISPROPERTYTRANSACTIONDETAILS", b =>
                 {
-                    b.HasOne("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPTDETAILS", "DELIVERYRECEIPT_GROUP")
-                        .WithMany()
-                        .HasForeignKey("DELIVERYRECEIPT_GROUPID");
+                    b.HasOne("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPTDETAILS", "DELIVERY_RECEIPT_DETAILS_GROUP")
+                        .WithMany("PROPERTY_TRANSACTION_DETAILS")
+                        .HasForeignKey("DELIVERY_RECEIPT_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("EAMIS.Core.Domain.Entities.EAMISPROPERTYTRANSACTION", "PROPERTYTRANSACTION")
                         .WithMany("PROPERTYTRANSACTIONDETAILS")
@@ -1611,7 +1619,7 @@ namespace EAMIS.Core.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DELIVERYRECEIPT_GROUP");
+                    b.Navigation("DELIVERY_RECEIPT_DETAILS_GROUP");
 
                     b.Navigation("PROPERTYTRANSACTION");
                 });
@@ -1723,6 +1731,13 @@ namespace EAMIS.Core.Migrations
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPT", b =>
                 {
                     b.Navigation("DELIVERY_RECEIPT_DETAILS");
+                });
+
+            modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISDELIVERYRECEIPTDETAILS", b =>
+                {
+                    b.Navigation("DELIVERY_RECEIPT");
+
+                    b.Navigation("PROPERTY_TRANSACTION_DETAILS");
                 });
 
             modelBuilder.Entity("EAMIS.Core.Domain.Entities.EAMISFINANCINGSOURCE", b =>

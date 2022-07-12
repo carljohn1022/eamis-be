@@ -5,6 +5,8 @@ using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,7 +30,27 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             await _ctx.SaveChangesAsync();
             return item;
         }
-
+        public async Task<EamisUnitofMeasureDTO> InsertFromExcel(EamisUnitofMeasureDTO item)
+        {
+            try
+            {
+                EAMISUNITOFMEASURE data = MapToEntity(item);
+                _ctx.Entry(data).State = EntityState.Added;
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return item;
+        }
+        public async Task<List<EAMISUNITOFMEASURE>> ListAllIUnitOfMeasurement()
+        {
+            //IQueryable<EAMISUNITOFMEASURE> query = _ctx.EAMIS_UNITOFMEASURE;
+            //var result = query.ToListAsync().GetAwaiter().GetResult();
+            var result = _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().ToList();
+            return result;
+        }
         private EAMISUNITOFMEASURE MapToEntity(EamisUnitofMeasureDTO item)
         {
             if (item == null) return new EAMISUNITOFMEASURE();

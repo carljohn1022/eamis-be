@@ -39,6 +39,11 @@ namespace EAMIS.Core.LogicRepository
                 REGION_CODE = item.RegionCode,
             };
         }
+        public async Task<List<EAMISMUNICIPALITY>> ListMunicipality(string searchValue)
+        {
+            var result = _ctx.EAMIS_MUNICIPALITY.AsNoTracking().Where(x => x.CITY_MUNICIPALITY_DESCRIPTION == searchValue).ToList();
+            return result;
+        }
         public async Task<DataList<EamisMunicipalityDTO>> List(EamisMunicipalityDTO filter,PageConfig config)
         {
             IQueryable<EAMISMUNICIPALITY> query = FilteredEntities(filter);

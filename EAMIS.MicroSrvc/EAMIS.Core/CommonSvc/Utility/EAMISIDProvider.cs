@@ -32,5 +32,20 @@ namespace EAMIS.Core.CommonSvc.Utility
             }
             return _id;
         }
+        public async Task<string> GetNextSequenceNumberPR(string TransactionNumber)
+        {
+            var maxId = 0;
+            var nextId = 0;
+            string _id = "";
+            switch (TransactionNumber)
+            {
+                case TransactionTypeSettings.PropertyReceiving:
+                    maxId = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION.Max(t => t.ID)).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = PrefixSettings.PRPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');
+                    break;
+            }
+            return _id;
+        }
     }
   }

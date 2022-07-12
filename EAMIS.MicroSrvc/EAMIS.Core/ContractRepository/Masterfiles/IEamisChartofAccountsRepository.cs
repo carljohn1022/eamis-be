@@ -1,5 +1,7 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EAMIS.Core.ContractRepository.Masterfiles
@@ -13,5 +15,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisChartofAccountsDTO> Delete(EamisChartofAccountsDTO item, int Id);
         Task<bool> ValidateExistingAccountCode(string accountCode);
         Task<bool> EditValidationAccountCode(int id, string accountCode);
+        Task<EamisChartofAccountsDTO> InsertFromExcel(EamisChartofAccountsDTO item);
+        Task<List<EAMISCHARTOFACCOUNTS>> ListCOA(string searchValue);
     }
 }

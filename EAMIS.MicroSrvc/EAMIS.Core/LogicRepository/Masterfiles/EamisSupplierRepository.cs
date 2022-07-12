@@ -33,7 +33,29 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             await _ctx.SaveChangesAsync();
             return item;
         }
+        public async Task<EamisSupplierDTO> InsertFromExcel(EamisSupplierDTO item)
+        {
+            try
+            {
+                EAMISSUPPLIER data = MapToEntity(item);
+                _ctx.Entry(data).State = EntityState.Added;
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return item;
+        }
+        public async Task<List<EAMISSUPPLIER>> ListAllSuppliers()
+        {
 
+            //IQueryable<EAMISSUPPLIER> query = _ctx.EAMIS_SUPPLIER;
+            //var result = query.ToListAsync().GetAwaiter().GetResult();
+            var result = _ctx.EAMIS_SUPPLIER.AsNoTracking().ToList();
+            return result;
+
+        }
         private EAMISSUPPLIER MapToEntity(EamisSupplierDTO item)
         {
             if (item == null) return new EAMISSUPPLIER();

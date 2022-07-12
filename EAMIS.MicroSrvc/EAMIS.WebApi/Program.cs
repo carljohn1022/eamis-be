@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,6 +37,15 @@ namespace EAMIS.WebApi
             }
             await host.RunAsync();
 
+        }
+        public static string BaseCreatedDirectory
+        {
+            get
+            {
+                var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"StaticFiles\ExcelTemplates");
+                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                return path;
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

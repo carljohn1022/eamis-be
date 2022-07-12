@@ -24,7 +24,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                 : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
-
+        public async Task<List<EAMISAUTHORIZATION>> ListAuthorization(string searchValue)
+        {
+            var result = _ctx.EAMIS_AUTHORIZATION.AsNoTracking().Where(x => x.AUTHORIZATION_NAME == searchValue).ToList();
+            return result;
+        }
         public async Task<DataList<EamisAuthorizationDTO>> List(EamisAuthorizationDTO filter, PageConfig config)
         {
             IQueryable<EAMISAUTHORIZATION> query = FilteredEntities(filter);

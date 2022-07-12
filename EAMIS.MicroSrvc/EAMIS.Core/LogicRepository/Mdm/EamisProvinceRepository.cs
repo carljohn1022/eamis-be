@@ -38,6 +38,11 @@ namespace EAMIS.Core.LogicRepository
                REGION_CODE = item.RegionCode,
             };
         }
+        public async Task<List<EAMISPROVINCE>> ListProvince(string searchValue)
+        {
+            var result = _ctx.EAMIS_PROVINCE.AsNoTracking().Where(x => x.PROVINCE_DESCRITION == searchValue).ToList();
+            return result;
+        }
         public async Task<DataList<EamisProvinceDTO>> List(EamisProvinceDTO filter,PageConfig config)
         {
             IQueryable<EAMISPROVINCE> query = FilteredEntities(filter);

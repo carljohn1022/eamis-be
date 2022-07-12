@@ -16,9 +16,11 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisItemSubCategoryDTO> Insert(EamisItemSubCategoryDTO item);
         Task<EamisItemSubCategoryDTO> Update(EamisItemSubCategoryDTO item);
         Task<EamisItemSubCategoryDTO> Delete(EamisItemSubCategoryDTO item);
+        Task<EamisItemSubCategoryDTO> InsertFromExcel(EamisItemSubCategoryDTO item);
         Task<bool> ValidateExistingSub(int categoryId);
         Task<bool> ValidateExistingCategoryId(int categoryId);
         Task<bool> ValidateExistingSubUpdate(string SubCategoryName, int categoryId);
         Task<bool> Validation(int categoryId, string subCategoryName);
+        Task<List<EAMISITEMSUBCATEGORY>> ListAllItemSubCategories();
     }
 }

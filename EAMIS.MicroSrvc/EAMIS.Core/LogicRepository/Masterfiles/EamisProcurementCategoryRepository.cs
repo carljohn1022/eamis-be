@@ -24,6 +24,20 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                 : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
+        public async Task<EamisProcurementCategoryDTO> InsertFromExcel(EamisProcurementCategoryDTO item)
+        {
+            try
+            {
+                EAMISPROCUREMENTCATEGORY data = MapToEntity(item);
+                _ctx.Entry(data).State = EntityState.Added;
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return item;
+        }
 
         public async Task<EamisProcurementCategoryDTO> Delete(EamisProcurementCategoryDTO item)
         {

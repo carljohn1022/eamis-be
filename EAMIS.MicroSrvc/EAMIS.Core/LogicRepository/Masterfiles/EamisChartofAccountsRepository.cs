@@ -7,6 +7,7 @@ using EAMIS.Core.Response.DTO;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,7 +24,26 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
+        public async Task<List<EAMISCHARTOFACCOUNTS>> ListCOA(string searchValue)
+        {
+            var result = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().Where(x => x.ACCOUNT_CODE == searchValue).ToList();
+            return result;
+        }
 
+        public async Task<EamisChartofAccountsDTO> InsertFromExcel(EamisChartofAccountsDTO item)
+        {
+            try
+            {
+                EAMISCHARTOFACCOUNTS data = MapToEntity(item);
+                _ctx.Entry(data).State = EntityState.Added;
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return item;
+        }
         public async Task<EamisChartofAccountsDTO> Delete(EamisChartofAccountsDTO item, int Id)
         {
             EAMISCHARTOFACCOUNTS data = MapToEntity(item);

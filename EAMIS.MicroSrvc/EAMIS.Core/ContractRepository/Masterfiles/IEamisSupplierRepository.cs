@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,11 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<DataList<EamisSupplierDTO>> SearchSuppliers(string type, string searchValue);
         Task<DataList<EamisSupplierDTO>> List(EamisSupplierDTO filter, PageConfig config);
         Task<EamisSupplierDTO> Insert(EamisSupplierDTO item);
+        Task<EamisSupplierDTO> InsertFromExcel(EamisSupplierDTO item);
         Task<EamisSupplierDTO> Update(EamisSupplierDTO item ,int id);
         Task<EamisSupplierDTO> Delete(EamisSupplierDTO item);
         Task<bool> ValidateExistingCode(string companynanme);
         Task<bool> UpdateValidationCode(int id, string companyname);
+        Task<List<EAMISSUPPLIER>> ListAllSuppliers();
     }
 }
