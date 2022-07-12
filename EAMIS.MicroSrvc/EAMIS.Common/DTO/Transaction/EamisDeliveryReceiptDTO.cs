@@ -21,6 +21,7 @@ namespace EAMIS.Common.DTO.Transaction
         public int StockroomId { get; set; }
         public EamisWarehouseDTO Warehouse { get; set; }
         public EamisSupplierDTO Supplier { get; set; }
+        public EamisDeliveryReceiptDetailsDTO DeliveryReceiptDetails { get; set; }
 
 
     }

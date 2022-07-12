@@ -9,6 +9,5 @@ namespace EAMIS.Core.CommonSvc.Utility
     public interface IEAMISIDProvider
     {
         Task<string> GetNextSequenceNumber(string TransactionType);
-        Task<string> GetNextSequenceNumberPR(string TransactionNumber);
     }
 }

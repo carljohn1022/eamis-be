@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace EAMIS.Core.Domain.Entities
 {
@@ -18,7 +19,8 @@ namespace EAMIS.Core.Domain.Entities
 
         public EAMISPROPERTYITEMS ITEMS_GROUP { get; set; }
         public EAMISDELIVERYRECEIPT DELIVERY_RECEIPT_GROUP { get;set; }
-      
 
+        public List<EAMISPROPERTYTRANSACTIONDETAILS> PROPERTY_TRANSACTION_DETAILS { get; set; }
+        public List<EAMISDELIVERYRECEIPT> DELIVERY_RECEIPT { get; set; }
     }
 }

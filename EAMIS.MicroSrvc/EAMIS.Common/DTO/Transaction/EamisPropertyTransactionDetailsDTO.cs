@@ -34,7 +34,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string Invoice  { get; set; }
         public string PropertyCondition  { get; set; }
 
-        public EamisDeliveryReceiptDTO DeliveryReceipt { get; set; }
+        public EamisDeliveryReceiptDetailsDTO DeliveryReceiptDetails { get; set; }
 
     }
 

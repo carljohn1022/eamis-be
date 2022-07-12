@@ -82,7 +82,10 @@ namespace EAMIS.Core.Domain
                .WithMany(x => x.PROPERTYTRANSACTIONDETAILS)
                .HasForeignKey(x => x.PROPERTY_TRANS_ID);
 
-
+            modelBuilder.Entity<EAMISPROPERTYTRANSACTIONDETAILS>()
+                 .HasOne(x => x.DELIVERY_RECEIPT_DETAILS_GROUP)
+                 .WithMany(x => x.PROPERTY_TRANSACTION_DETAILS)
+                 .HasForeignKey(x => x.DELIVERY_RECEIPT_ID);
 
             modelBuilder.Entity<EAMISFUNDSOURCE>()
                 .HasOne(x => x.FINANCING_SOURCE)

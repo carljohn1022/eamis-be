@@ -36,6 +36,8 @@ namespace EAMIS.Core.Domain.Entities
         public string PROPERTY_CONDITION { get; set; }
 
         public EAMISPROPERTYTRANSACTION PROPERTYTRANSACTION { get; set; }
-        public EAMISDELIVERYRECEIPTDETAILS DELIVERYRECEIPT_GROUP { get; set; }
+        //public EAMISDELIVERYRECEIPTDETAILS DELIVERYRECEIPT_GROUP { get; set; }
+
+        public EAMISDELIVERYRECEIPTDETAILS DELIVERY_RECEIPT_DETAILS_GROUP { get; set; }
     }
 }

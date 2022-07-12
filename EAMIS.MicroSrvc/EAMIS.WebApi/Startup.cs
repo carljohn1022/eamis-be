@@ -168,7 +168,7 @@ namespace EAMIS.WebApi
 
             app.UseHttpsRedirection();
             app.UseCors(x=>x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200", "http://eamiswebapp.s3-website-ap-southeast-1.amazonaws.com"));
-
+            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().WithExposedHeaders("content-disposition"));
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
