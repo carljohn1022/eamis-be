@@ -103,6 +103,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DeliveryReceipt = new EamisDeliveryReceiptDTO
                 {
                     Id = x.DELIVERY_RECEIPT_GROUP.ID,
+                    PurchaseOrderNumber = x.DELIVERY_RECEIPT_GROUP.PURCHASE_ORDER_NUMBER,
+                    PurchaseRequestNumber = x.DELIVERY_RECEIPT_GROUP.PURCHASE_REQUEST_NUMBER,
                     TransactionType = x.DELIVERY_RECEIPT_GROUP.TRANSACTION_TYPE,
                     ReceivedBy = x.DELIVERY_RECEIPT_GROUP.RECEIVED_BY,
                     DateReceived = x.DELIVERY_RECEIPT_GROUP.DATE_RECEIVED,

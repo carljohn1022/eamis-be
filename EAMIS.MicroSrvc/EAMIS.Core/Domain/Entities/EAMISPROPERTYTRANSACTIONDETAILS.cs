@@ -9,7 +9,6 @@ namespace EAMIS.Core.Domain.Entities
         public int ID { get; set; }
         public int PROPERTY_TRANS_ID { get; set; }
         public bool IS_DEPRECIATION { get; set; }
-        public int DELIVERY_RECEIPT_ID { get; set; }
         public string DR { get; set; }
         public string PROPERTY_NUMBER { get; set; }
         public string ITEM_DESCRIPTION { get; set; }
@@ -35,9 +34,5 @@ namespace EAMIS.Core.Domain.Entities
         public string INVOICE { get; set;}
         public string PROPERTY_CONDITION { get; set; }
 
-        public EAMISPROPERTYTRANSACTION PROPERTYTRANSACTION { get; set; }
-        //public EAMISDELIVERYRECEIPTDETAILS DELIVERYRECEIPT_GROUP { get; set; }
-
-        public EAMISDELIVERYRECEIPTDETAILS DELIVERY_RECEIPT_DETAILS_GROUP { get; set; }
     }
 }

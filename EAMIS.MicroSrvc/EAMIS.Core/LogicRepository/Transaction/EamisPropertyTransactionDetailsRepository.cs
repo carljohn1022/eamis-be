@@ -1,7 +1,5 @@
-﻿using EAMIS.Common.DTO.Masterfiles;
-using EAMIS.Common.DTO.Transaction;
+﻿using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.ContractRepository.Transaction;
-using EAMIS.Core.ContractRepository.Masterfiles;
 using EAMIS.Core.Domain;
 using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
@@ -130,20 +128,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Invoice = x.INVOICE,
                 PropertyCondition = x.PROPERTY_CONDITION,
 
-                DeliveryReceiptDetails = new EamisDeliveryReceiptDetailsDTO
-                {
-                    Id = x.DELIVERY_RECEIPT_DETAILS_GROUP.ID,
-                   //DeliveryReceipt = x.DELIVERY_RECEIPT_DETAILS_GROUP.DELIVERY_RECEIPT.Select(y => new EamisDeliveryReceiptDTO { Id = y.ID, TransactionType = y.TRANSACTION_TYPE }).ToList(),
-                }
 
-                //DeliveryReceipt = new EamisDeliveryReceiptDetailsDTO
-                //{
-                //   ItemId = x.DELIVERYRECEIPT_GROUP.ITEM_ID,
-                //   DeliveryReceiptDetails = x.DELIVERYRECEIPT_GROUP.PROPERTYTRANSACTIONDETAILS.Select(y => new EamisDeliveryReceiptDetailsDTO { Id = y.ID, DeliveryReceiptId = y.DELIVERY_RECEIPT_ID }).ToList()
-                //}
-
-
-            });;
+            });
         }
 
         private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> PagedQuery(IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query, int resolved_size, int resolved_index)

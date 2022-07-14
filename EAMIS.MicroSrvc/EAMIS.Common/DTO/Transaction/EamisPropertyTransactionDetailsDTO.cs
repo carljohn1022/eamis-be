@@ -8,7 +8,6 @@ namespace EAMIS.Common.DTO.Transaction
         public int Id { get; set; }
         public int PropertyTransactionID { get; set; }
         public bool isDepreciation { get; set; }
-        public int DeliveryRecieptID { get; set; }
         public string Dr { get; set; }
         public string PropertyNumber  { get; set; }
         public string ItemDescription  { get; set; }
@@ -33,8 +32,6 @@ namespace EAMIS.Common.DTO.Transaction
         public DateTime WarrantyExpiry  { get; set; }
         public string Invoice  { get; set; }
         public string PropertyCondition  { get; set; }
-
-        public EamisDeliveryReceiptDetailsDTO DeliveryReceiptDetails { get; set; }
 
     }
 
