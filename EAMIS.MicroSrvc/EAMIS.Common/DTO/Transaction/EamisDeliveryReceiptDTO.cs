@@ -1,5 +1,6 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace EAMIS.Common.DTO.Transaction
 {
@@ -8,13 +9,20 @@ namespace EAMIS.Common.DTO.Transaction
         public int Id { get; set; }
         public string TransactionType  { get; set; }
         public string ReceivedBy { get; set; }
+        [DataType(DataType.Date)]
         public DateTime DateReceived { get; set; }
         public int SupplierId  { get; set; }
         public string PurchaseOrderNumber  { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime PurchaseOrderDate  { get; set; }
         public string PurchaseRequestNumber  { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime PurchaseRequestDate  { get; set; }
         public string SaleInvoiceNumber  { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime SaleInvoiceDate  { get; set; }
         public int TotalAmount  { get; set; }
         public string TransactionStatus  { get; set; }

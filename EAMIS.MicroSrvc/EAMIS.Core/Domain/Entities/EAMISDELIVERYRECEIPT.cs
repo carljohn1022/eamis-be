@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -11,23 +12,23 @@ namespace EAMIS.Core.Domain.Entities
         public int ID { get; set; }
         public string TRANSACTION_TYPE { get; set; }
         public string RECEIVED_BY { get; set; }
-        [Column(TypeName = "Date")]
+        [DataType(DataType.Date)]
         public DateTime DATE_RECEIVED { get; set; }
         public int SUPPLIER_ID { get; set; }
        
         public string PURCHASE_ORDER_NUMBER { get; set; }
 
-        [Column(TypeName = "Date")]
+        [DataType(DataType.Date)]
         public DateTime PURCHASE_ORDER_DATE { get; set; }
 
         public string PURCHASE_REQUEST_NUMBER { get; set; }
 
-        [Column(TypeName = "Date")]
+        [DataType(DataType.Date)]
         public DateTime PURCHASE_REQUEST_DATE { get; set; }
 
         public string SALE_INVOICE_NUMBER { get; set; }
 
-        [Column(TypeName = "Date")]
+        [DataType(DataType.Date)]
         public DateTime SALE_INVOICE_DATE { get; set; }
 
         public int TOTAL_AMOUNT { get; set; }
