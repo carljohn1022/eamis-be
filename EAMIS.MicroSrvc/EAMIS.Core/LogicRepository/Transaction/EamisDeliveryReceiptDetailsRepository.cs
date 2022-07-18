@@ -109,14 +109,16 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     ReceivedBy = x.DELIVERY_RECEIPT_GROUP.RECEIVED_BY,
                     DateReceived = x.DELIVERY_RECEIPT_GROUP.DATE_RECEIVED,
                     SupplierId = x.DELIVERY_RECEIPT_GROUP.SUPPLIER_ID,
-                    StockroomId = x.DELIVERY_RECEIPT_GROUP.WAREHOUSE_ID
+                    StockroomId = x.DELIVERY_RECEIPT_GROUP.WAREHOUSE_ID,
+                    SaleInvoiceNumber = x.DELIVERY_RECEIPT_GROUP.SALE_INVOICE_NUMBER,
+                    
                 }
             });
         }
 
         private IQueryable<EAMISDELIVERYRECEIPTDETAILS> PagedQuery(IQueryable<EAMISDELIVERYRECEIPTDETAILS> query, int resolved_size, int resolved_index)
         {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
 
         private IQueryable<EAMISDELIVERYRECEIPTDETAILS> FilteredEntities(EamisDeliveryReceiptDetailsDTO filter, IQueryable<EAMISDELIVERYRECEIPTDETAILS> custom_query = null, bool strict = false)

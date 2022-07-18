@@ -45,7 +45,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 PROPERTY_NUMBER = item.PropertyNumber,
                 ITEM_DESCRIPTION = item.ItemDescription,
                 SERIAL_NUMBER = item.SerialNumber,
-                PO = item.Pr,
+                PO = item.Po,
                 PR = item.Pr,
                 ACQUISITION_DATE = item.AcquisitionDate,
                 ASSIGNEE_CUSTODIAN = item.AssigneeCustodian,
@@ -134,7 +134,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> PagedQuery(IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query, int resolved_size, int resolved_index)
         {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
 
         }
         private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredEntities(EamisPropertyTransactionDetailsDTO filter, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, bool strict = false)
