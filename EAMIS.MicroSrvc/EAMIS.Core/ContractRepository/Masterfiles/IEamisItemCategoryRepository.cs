@@ -22,5 +22,6 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<List<EAMISITEMCATEGORY>> ListAllItemCategories();
         Task<List<EAMISITEMCATEGORY>> ListCategories(string searchValue);
         Task<EamisItemCategoryDTO> InsertFromExcel(EamisItemCategoryDTO item);
+        Task<string> GetPropertyNo (int categoryId);
     }
 }

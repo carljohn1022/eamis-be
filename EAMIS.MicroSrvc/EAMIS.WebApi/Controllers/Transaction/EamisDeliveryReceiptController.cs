@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Transaction;
+using EAMIS.Core.ContractRepository.Masterfiles;
 using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
@@ -13,9 +14,17 @@ namespace EAMIS.WebApi.Controllers.Transaction
     public class EamisDeliveryReceiptController : ControllerBase
     {
         IEamisDeliveryReceiptRepository _eamisDeliveryReceiptRepository;
-        public EamisDeliveryReceiptController(IEamisDeliveryReceiptRepository eamisDeliveryReceiptRepository)
+        private readonly IEamisSupplierRepository _eamisSupplierRepository;
+        public EamisDeliveryReceiptController(IEamisDeliveryReceiptRepository eamisDeliveryReceiptRepository, IEamisSupplierRepository eamisSupplierRepository)
         {
             _eamisDeliveryReceiptRepository = eamisDeliveryReceiptRepository;
+            _eamisSupplierRepository = eamisSupplierRepository;
+        }
+        [HttpGet("getSupplier")]
+        public async Task<string> GetSupplier(int supplierId)
+        {
+            var response = await _eamisSupplierRepository.GetSupplieryById(supplierId);
+            return response;
         }
         [HttpGet("list")]
         public async Task<ActionResult<EAMISDELIVERYRECEIPT>> List([FromQuery] EamisDeliveryReceiptDTO filter, [FromQuery] PageConfig config)

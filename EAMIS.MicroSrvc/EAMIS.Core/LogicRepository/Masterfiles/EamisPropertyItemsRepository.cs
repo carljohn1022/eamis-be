@@ -90,7 +90,14 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             EAMISPROPERTYITEMS data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
-         
+            item.Id = data.ID;
+            string _PropertyNo = item.PropertyNo.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0');
+            if(item.PropertyNo != _PropertyNo)
+            {
+                item.PropertyNo = _PropertyNo;
+                _ctx.Entry(data).State = EntityState.Detached;
+                await this.Update(item);
+            }
             return item;
         }
         
@@ -334,7 +341,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             return query.Where(predicate);
         }
 
-        public async Task<EamisPropertyItemsDTO> Update(EamisPropertyItemsDTO item, int id)
+        public async Task<EamisPropertyItemsDTO> Update(EamisPropertyItemsDTO item)
         {
             EAMISPROPERTYITEMS data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Modified;

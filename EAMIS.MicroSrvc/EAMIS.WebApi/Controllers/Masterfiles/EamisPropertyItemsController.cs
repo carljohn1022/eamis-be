@@ -17,9 +17,11 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
     public class EamisPropertyItemsController : ControllerBase
     {
         IEamisPropertyItemsRepository _eamisPropertyItemsRepository;
-        public EamisPropertyItemsController(IEamisPropertyItemsRepository eamisPropertyItemsRepository)
+        IEamisItemCategoryRepository _eamisItemCategoryRepository;
+        public EamisPropertyItemsController(IEamisPropertyItemsRepository eamisPropertyItemsRepository, IEamisItemCategoryRepository eamisItemCategoryRepository)
         {
             _eamisPropertyItemsRepository = eamisPropertyItemsRepository;
+            _eamisItemCategoryRepository = eamisItemCategoryRepository;
         }
 
         [HttpGet("GeneratedProperty")]
@@ -56,14 +58,14 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         }
 
         [HttpPut("Edit")]
-        public async Task<ActionResult<EamisPropertyItemsDTO>> Edit([FromBody] EamisPropertyItemsDTO item, int id)
+        public async Task<ActionResult<EamisPropertyItemsDTO>> Edit([FromBody] EamisPropertyItemsDTO item)
         {
             var data = new EamisPropertyItemsDTO();
             if (await _eamisPropertyItemsRepository.UpdateValidateExistingItem(item.PropertyNo, item.Id))
             {
                 if (item == null)
                     item = new EamisPropertyItemsDTO();
-                return Ok(await _eamisPropertyItemsRepository.Update(item, id));
+                return Ok(await _eamisPropertyItemsRepository.Update(item));
             }
             else if (await _eamisPropertyItemsRepository.ValidateExistingItem(item.PropertyNo))
             {
@@ -71,8 +73,14 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             }
             else
             {
-                return Ok(await _eamisPropertyItemsRepository.Update(item, id));
+                return Ok(await _eamisPropertyItemsRepository.Update(item));
             }
+        }
+        [HttpGet("getPropertyNo")]
+        public async Task<string> GetSupplier(int categoryId)
+        {
+            var response = await _eamisItemCategoryRepository.GetPropertyNo(categoryId);
+            return response;
         }
     }
 

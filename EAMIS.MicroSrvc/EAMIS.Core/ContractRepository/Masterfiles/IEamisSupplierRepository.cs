@@ -20,5 +20,6 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> ValidateExistingCode(string companynanme);
         Task<bool> UpdateValidationCode(int id, string companyname);
         Task<List<EAMISSUPPLIER>> ListAllSuppliers();
+        Task<string> GetSupplieryById(int supplierId);
     }
 }

@@ -300,5 +300,19 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         {
             return _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().AnyAsync(x => x.ID == id && x.SHORT_DESCRIPTION == shortDesc || x.CATEGORY_NAME == categoryName);
         }
+        public async Task<string> GetPropertyNo(int categoryId)
+        {
+            string retValue = "";
+            var maxId = 0;
+            var nextId = 0;
+            maxId = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.Max(t => t.ID)).ConfigureAwait(false);
+            nextId = maxId + 1;
+            var result = await Task.Run(() => _ctx.EAMIS_ITEM_CATEGORY.Where(s => s.ID == categoryId).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                retValue = result[0].SHORT_DESCRIPTION.ToString() + nextId.ToString().PadLeft(6, '0');
+            }
+            return retValue;
+        }
     }
 }

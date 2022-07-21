@@ -214,7 +214,19 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         {
             return await _ctx.EAMIS_SUPPLIER.AsNoTracking().AnyAsync(x => x.COMPANY_NAME == companyname);
         }
-
+        public async Task<string> GetSupplieryById(int supplierId)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _ctx.EAMIS_SUPPLIER.Where(s => s.ID == supplierId).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                retValue = result[0].BANK.ToString() + "-" +
+                              result[0].ACCOUNT_NAME.ToString() + "-" +
+                              result[0].ACCOUNT_NUMBER.ToString() + "-" +
+                              result[0].BRANCH.ToString();
+            }
+            return retValue;
+        }
         public async Task<bool> UpdateValidationCode(int id, string companyname)
         {
             return await _ctx.EAMIS_SUPPLIER.AsNoTracking().AnyAsync(x => x.ID == id && x.COMPANY_NAME == companyname);
