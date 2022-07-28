@@ -15,7 +15,7 @@ namespace EAMIS.Core.CommonSvc.Constant
     public static class PrefixSettings
     {
         public const string DRPrefix = "DR";
-        public const string PRPrefix = "PR";
+        public const string PRPrefix = "RV";
     }
 
     public static class WorkSheetTemplateNames
