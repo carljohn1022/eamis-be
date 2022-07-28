@@ -20,13 +20,13 @@ namespace EAMIS.Common.DTO.Transaction
         public string Office  { get; set; }
         public string Department { get; set; }
         public string ResponsibilityCode  { get; set; }
-        public int UnitCost  { get; set; }
+        public decimal UnitCost  { get; set; }
         public int Qty  { get; set; }
-        public int SalvageValue  { get; set; }
-        public int BookValue  { get; set; }
+        public decimal SalvageValue  { get; set; }
+        public decimal BookValue  { get; set; }
         public int EstLife  { get; set; }
         public int Area { get; set; }
-        public int Semi { get; set; }
+        public decimal Semi { get; set; }
         public string UserStamp  { get; set; }
         public DateTime TimeStamp  { get; set; }
         public DateTime WarrantyExpiry  { get; set; }

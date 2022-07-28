@@ -25,7 +25,7 @@ namespace EAMIS.Core.CommonSvc.Utility
             switch (TransactionType)
             {
                 case TransactionTypeSettings.DeliveryReceipt:
-                    maxId = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.Max(t => t.ID)).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
+                    maxId = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.Max(t => (int?)t.ID) ?? 0).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
                     nextId = maxId + 1;
                     _id = PrefixSettings.DRPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');
                     break;
@@ -40,7 +40,7 @@ namespace EAMIS.Core.CommonSvc.Utility
             switch (TransactionNumber)
             {
                 case TransactionTypeSettings.PropertyReceiving:
-                    maxId = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION.Max(t => t.ID)).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
+                    maxId = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION.Max(t => (int?) t.ID) ?? 0).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
                     nextId = maxId + 1;
                     _id = PrefixSettings.PRPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');
                     break;

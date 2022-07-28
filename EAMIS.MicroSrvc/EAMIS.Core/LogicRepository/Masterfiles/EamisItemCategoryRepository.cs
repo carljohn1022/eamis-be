@@ -305,7 +305,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             string retValue = "";
             var maxId = 0;
             var nextId = 0;
-            maxId = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.Max(t => t.ID)).ConfigureAwait(false);
+            maxId = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.Max(t => (int?) t.ID) ?? 0).ConfigureAwait(false);
             nextId = maxId + 1;
             var result = await Task.Run(() => _ctx.EAMIS_ITEM_CATEGORY.Where(s => s.ID == categoryId).AsNoTracking().ToList()).ConfigureAwait(false);
             if (result != null)

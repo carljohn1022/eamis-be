@@ -31,6 +31,7 @@ namespace EAMIS.Core.Domain.Entities
         public EAMISBARANGAY BARANGAY_GROUP { get; set; }
         public List<EAMISPROPERTYITEMS> PROPERTY_ITEMS { get; set; }
         public List<EAMISDELIVERYRECEIPT> DELIVERY_RECEIPT { get; set; }
+        public List<EAMISSERVICELOGDETAILS> SERVICE_LOG_DETAILS { get; set; }
 
     }
 }

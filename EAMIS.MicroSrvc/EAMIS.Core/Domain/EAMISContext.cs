@@ -63,6 +63,12 @@ namespace EAMIS.Core.Domain
         public DbSet<EAMISPROPERTYTRANSACTION> EAMIS_PROPERTY_TRANSACTION { get; set; }
         public DbSet<EAMISPROPERTYTRANSACTIONDETAILS> EAMIS_PROPERTY_TRANSACTION_DETAILS { get; set; }
 
+        // SERVICE LOG
+
+        public DbSet<EAMISASSETCONDITIONTYPE> EAMIS_ASSET_CONDITION_TYPE { get; set; }
+        public DbSet<EAMISSERVICELOG> EAMIS_SERVICE_LOG { get; set; }
+        public DbSet<EAMISSERVICELOGDETAILS> EAMIS_SERVICE_LOG_DETAILS { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -134,6 +140,27 @@ namespace EAMIS.Core.Domain
                 .HasOne(x => x.DELIVERY_RECEIPT_GROUP)
                 .WithMany(x => x.DELIVERY_RECEIPT_DETAILS)
                 .HasForeignKey(x => x.DELIVERY_RECEIPT_ID);
+
+            modelBuilder.Entity<EAMISPROPERTYTRANSACTIONDETAILS>()
+                .HasOne(x => x.PROPERTY_TRANSACTION_GROUP)
+                .WithMany(x => x.PROPERTY_TRANSACTION_DETAILS)
+                .HasForeignKey(x => x.PROPERTY_TRANS_ID);
+
+            // SERVICE LOG
+            modelBuilder.Entity<EAMISSERVICELOGDETAILS>()
+                .HasOne(x => x.SUPPLIER_GROUP)
+                .WithMany(x => x.SERVICE_LOG_DETAILS)
+                .HasForeignKey(x => x.SUPPLIER_ID);
+            modelBuilder.Entity<EAMISSERVICELOGDETAILS>()
+                .HasOne(x => x.RECEIVING_GROUP)
+                .WithMany(x => x.SERVICE_LOG_DETAILS)
+                .HasForeignKey(x => x.RECEIVING_TRAN_ID);
+            modelBuilder.Entity<EAMISSERVICELOGDETAILS>()
+                .HasOne(x => x.SERVICE_LOG_GROUP)
+                .WithMany(x => x.SERVICE_LOG_DETAILS)
+                .HasForeignKey(x => x.SERVICE_LOG_ID);
+
+
             //modelBuilder.Entity<EAMISITEMCATEGORY>()
             //    .HasOne(x => x.CHART_OF_ACCOUNTS)
             //    .WithOne(x => x.ITEM_CATEGORY)

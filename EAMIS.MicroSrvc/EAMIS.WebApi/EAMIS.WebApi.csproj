@@ -27,4 +27,8 @@
     <ProjectReference Include="..\EAMIS.Core\EAMIS.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="StaticFiles\Uploaded\Excel\" />
+  </ItemGroup>
+
 </Project>

@@ -21,18 +21,19 @@ namespace EAMIS.Core.Domain.Entities
         public string OFFICE { get; set; }
         public string DEPARTMENT { get; set;}
         public string RESPONSIBILITY_CODE { get; set; }
-        public int UNIT_COST { get; set; }
+        public decimal UNIT_COST { get; set; }
         public int QTY { get; set; }
-        public int SALVAGE_VALUE { get; set; }
-        public int BOOK_VALUE { get; set; }
+        public decimal SALVAGE_VALUE { get; set; }
+        public decimal BOOK_VALUE { get; set; }
         public int ESTIMATED_LIFE { get; set; }
         public int AREA { get; set; }
-        public int SEMI_EXPANDABLE_AMOUNT { get; set; }
+        public decimal SEMI_EXPANDABLE_AMOUNT { get; set; }
         public string USER_STAMP { get; set; }
         public DateTime TIME_STAMP { get; set; }
         public DateTime WARRANTY_EXPIRY { get; set; }
         public string INVOICE { get; set;}
         public string PROPERTY_CONDITION { get; set; }
+        public EAMISPROPERTYTRANSACTION PROPERTY_TRANSACTION_GROUP { get; set; }
 
     }
 }

@@ -12,7 +12,7 @@ namespace EAMIS.Common.DTO.Transaction
         public int QtyDelivered  { get; set; }
         public int QtyRejected  { get; set; }
         public int QtyReceived  { get; set; }
-        public int UnitCost  { get; set; }
+        public decimal UnitCost  { get; set; }
         public int SerialNumber  { get; set; }
         public string UnitOfMeasurement  { get; set; }
         //public DateTime WarrantyExpiryDate  { get; set; }
