@@ -66,6 +66,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 INVOICE = item.Invoice,
                 PROPERTY_CONDITION = item.PropertyCondition
 
+           
             };
         }
 
@@ -127,7 +128,16 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 WarrantyExpiry = x.WARRANTY_EXPIRY,
                 Invoice = x.INVOICE,
                 PropertyCondition = x.PROPERTY_CONDITION,
-
+                
+                PropertyTransactionGroup  = new EamisPropertyTransactionDTO
+                {
+                    Id = x.PROPERTY_TRANSACTION_GROUP.ID,
+                    TransactionStatus = x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_STATUS,
+                    TransactionNumber = x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER,
+                    TransactionDate = x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_DATE,
+                    FiscalPeriod = x.PROPERTY_TRANSACTION_GROUP.FISCALPERIOD,
+                    ReceivedBy = x.PROPERTY_TRANSACTION_GROUP.RECEIVED_BY,
+                }
 
             });
         }
@@ -216,6 +226,39 @@ namespace EAMIS.Core.LogicRepository.Transaction
             _ctx.Entry(data).State = EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
+        }
+        public async Task<EamisPropertyTransactionDetailsDTO> getPropertyItemById(int itemID)
+        {
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().FirstOrDefault(x => x.ID == itemID);
+            return new EamisPropertyTransactionDetailsDTO {
+                Id = result.ID,
+                PropertyTransactionID = result.PROPERTY_TRANS_ID,
+                isDepreciation = result.IS_DEPRECIATION,
+                Dr = result.DR,
+                PropertyNumber = result.PROPERTY_NUMBER,
+                ItemDescription = result.ITEM_DESCRIPTION,
+                SerialNumber = result.SERIAL_NUMBER,
+                Po = result.PO,
+                Pr = result.PR,
+                AcquisitionDate = result.ACQUISITION_DATE,
+                AssigneeCustodian = result.ASSIGNEE_CUSTODIAN,
+                RequestedBy = result.REQUESTED_BY,
+                Office = result.OFFICE,
+                Department = result.DEPARTMENT,
+                ResponsibilityCode = result.RESPONSIBILITY_CODE,
+                UnitCost = result.UNIT_COST,
+                Qty = result.QTY,
+                SalvageValue = result.SALVAGE_VALUE,
+                BookValue = result.BOOK_VALUE,
+                EstLife = result.ESTIMATED_LIFE,
+                Area = result.AREA,
+                Semi = result.SEMI_EXPANDABLE_AMOUNT,
+                UserStamp = result.USER_STAMP,
+                TimeStamp = result.TIME_STAMP,
+                WarrantyExpiry = result.WARRANTY_EXPIRY,
+                Invoice = result.INVOICE,
+                PropertyCondition = result.PROPERTY_CONDITION
+            };
         }
     }
 }

@@ -27,6 +27,12 @@ namespace EAMIS.WebApi.Controllers.Transaction
                 filter = new EamisPropertyTransactionDetailsDTO();
             return Ok(await _eamisPropertyTransactionDetailsRepository.List(filter, config));
         }
+        [HttpGet("editbyid")]
+        public async Task<ActionResult<EamisPropertyTransactionDetailsDTO>> getPropertyItemById(int itemID)
+        {
+          
+            return Ok(await _eamisPropertyTransactionDetailsRepository.getPropertyItemById(itemID));
+        }
         [HttpPost("Add")]
         public async Task<ActionResult<EamisPropertyTransactionDetailsDTO>> Add([FromBody] EamisPropertyTransactionDetailsDTO item)
         {

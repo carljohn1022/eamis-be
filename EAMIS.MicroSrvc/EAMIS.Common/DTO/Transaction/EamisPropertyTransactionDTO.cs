@@ -17,6 +17,5 @@ namespace EAMIS.Common.DTO.Transaction
         public string UserStamp  { get; set; }
         public string TimeStamp  { get; set; }
         public string TransactionStatus { get; set; }
-
     }
 }
