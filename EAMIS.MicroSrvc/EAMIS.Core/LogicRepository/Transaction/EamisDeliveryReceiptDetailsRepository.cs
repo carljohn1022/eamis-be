@@ -17,9 +17,12 @@ namespace EAMIS.Core.LogicRepository.Transaction
     {
         private readonly EAMISContext _ctx;
         private readonly int _maxPageSize;
-        public EamisDeliveryReceiptDetailsRepository(EAMISContext ctx)
+        private readonly IEamisPropertyTransactionDetailsRepository _eamisPropertyTransactionDetailsRepository;
+        public EamisDeliveryReceiptDetailsRepository(EAMISContext ctx,
+            IEamisPropertyTransactionDetailsRepository eamisPropertyTransactionDetailsRepository)
         {
             _ctx = ctx;
+            _eamisPropertyTransactionDetailsRepository = eamisPropertyTransactionDetailsRepository;
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
@@ -56,6 +59,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
             EAMISDELIVERYRECEIPTDETAILS data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
+            //update property_items table quantity in stock
+            await _eamisPropertyTransactionDetailsRepository.UpdatePropertyItemQty(item);
             return item;
         }
 

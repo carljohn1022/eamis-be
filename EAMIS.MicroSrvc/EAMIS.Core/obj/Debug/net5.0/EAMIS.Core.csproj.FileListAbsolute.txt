@@ -32,4 +32,3 @@ C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS
 C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\ref\EAMIS.Core.dll
 C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.pdb
 C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.genruntimeconfig.cache
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CopyComplete

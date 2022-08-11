@@ -1,6 +1,7 @@
 using EAMIS.Common.DTO;
 using EAMIS.Core.BusinessLogic;
 using EAMIS.Core.BusinessLogic.Masterfiles;
+using EAMIS.Core.CommonSvc.Helper;
 using EAMIS.Core.CommonSvc.Utility;
 using EAMIS.Core.ContractRepository;
 using EAMIS.Core.ContractRepository.Ais;
@@ -107,6 +108,10 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisDeliveryReceiptDetailsRepository, EamisDeliveryReceiptDetailsRepository>();
             services.AddScoped<IEAMISIDProvider, EAMISIDProvider>();
             services.AddScoped<IEamisFileHelper, EamisFileHelper>();
+            services.AddScoped<IEamisPropertyIssuanceRepository, EamisPropertyIssuanceRepository>();
+            services.AddScoped<IEamisPropertyTransferRepository, EamisPropertyTransferRepository>();
+            services.AddScoped<IEamisServiceLogRepository, EamisServiceLogRepository>();
+            services.AddScoped<IEamisServiceLogDetailsRepository, EamisServiceLogDetailsRepository>();
             //AIS
             services.AddScoped<IAisPersonnelRepository, AisPersonnelRepository>();
             services.AddScoped<IAisOfficeRepository, AisOfficeRepository>();
@@ -121,7 +126,12 @@ namespace EAMIS.WebApi
             });
             services.AddControllersWithViews()
                 .AddViewComponentsAsServices();
-            services.AddControllers(x => x.AllowEmptyInputInBodyModelBinding = true);
+            //services.AddControllers(x => x.AllowEmptyInputInBodyModelBinding = true);
+            services.AddControllers(x => x.AllowEmptyInputInBodyModelBinding = true)
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new DateConverter());
+                });
             services.AddCors();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
