@@ -13,5 +13,6 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item);
         Task<EamisPropertyTransactionDetailsDTO> getPropertyItemById(int itemID);
 
+        Task<string> UpdatePropertyItemQty(EamisDeliveryReceiptDetailsDTO item);
     }
 }

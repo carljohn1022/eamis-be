@@ -42,6 +42,7 @@ namespace EAMIS.Core.CommonSvc.Utility
         private readonly IEamisGeneralFundSourceRepository _eamisGeneralFundSourceRepository;
 
         private readonly IEamisProcurementCategoryRepository _eamisProcurementCategoryRepository;
+        private readonly IEamisResponsibilityCenterRepository _eamisResponsibilityCenterRepository;
         #endregion dependency injection
 
 
@@ -69,7 +70,8 @@ namespace EAMIS.Core.CommonSvc.Utility
                                IEamisAuthorizationRepository eamisAuthorizationRepository,
                                IEamisFinancingSourceRepository eamisFinancingSourceRepository,
                                IEamisGeneralFundSourceRepository eamisGeneralFundSourceRepository,
-                               IEamisProcurementCategoryRepository eamisProcurementCategoryRepository)
+                               IEamisProcurementCategoryRepository eamisProcurementCategoryRepository,
+                               IEamisResponsibilityCenterRepository eamisResponsibilityCenterRepository)
         {
             _eamisPropertyItemsRepository = eamisPropertyItemsRepository;
             _eamisWarehouseRepository = eamisWarehouseRepository;
@@ -90,6 +92,7 @@ namespace EAMIS.Core.CommonSvc.Utility
             _eamisFinancingSourceRepository = eamisFinancingSourceRepository;
             _eamisGeneralFundSourceRepository = eamisGeneralFundSourceRepository;
             _eamisProcurementCategoryRepository = eamisProcurementCategoryRepository;
+            _eamisResponsibilityCenterRepository = eamisResponsibilityCenterRepository;
         }
         #endregion constructor
 

@@ -273,5 +273,22 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 }).Where(i => i.Id == result.PROPERTY_TRANS_ID).FirstOrDefault()
             };
         }
+
+        public async Task<string> UpdatePropertyItemQty(EamisDeliveryReceiptDetailsDTO item)
+        {
+            string strResult = "";
+            //check item in DB
+            var itemInDB = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.FirstOrDefault(i => i.ID == item.ItemId)).ConfigureAwait(false);
+            if(itemInDB != null)
+            {
+                itemInDB.QUANTITY = itemInDB.QUANTITY + item.QtyReceived;
+                var result = await _ctx.SaveChangesAsync();
+                if(result > 0)
+                {
+                    strResult = "Successfully updated.";
+                }
+            }
+            return strResult;
+        }
     }
 }

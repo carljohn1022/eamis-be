@@ -32,6 +32,7 @@ C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS
 C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\ref\EAMIS.Core.dll
 C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.pdb
 C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.genruntimeconfig.cache
+<<<<<<< HEAD
 C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CopyComplete
 C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.deps.json
 C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.runtimeconfig.json
@@ -51,3 +52,5 @@ C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\E
 C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\ref\EAMIS.Core.dll
 C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.pdb
 C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.genruntimeconfig.cache
+=======
+>>>>>>> 38dc629efbed6b0705e6908725c28249d38b6016
