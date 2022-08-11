@@ -34,7 +34,7 @@ namespace EAMIS.Common.DTO.Transaction
         public decimal Semi { get; set; }
         public string UserStamp { get; set; }
         public DateTime TimeStamp { get; set; }
-        public DateTime WarrantyExpiry { get; set; }
+        public int WarrantyExpiry { get; set; }
         public string Invoice { get; set; }
         public string PropertyCondition { get; set; }
         public int NewAssigneeCustodian { get; set; }
