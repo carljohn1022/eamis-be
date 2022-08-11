@@ -9,6 +9,7 @@ namespace EAMIS.Common.DTO.Transaction
         public int PropertyTransactionID { get; set; }
         public bool isDepreciation { get; set; }
         public string Dr { get; set; }
+        public string ItemCode { get; set; }
         public string PropertyNumber  { get; set; }
         public string ItemDescription  { get; set; }
         public string SerialNumber  { get; set; }
@@ -29,7 +30,7 @@ namespace EAMIS.Common.DTO.Transaction
         public decimal Semi { get; set; }
         public string UserStamp  { get; set; }
         public DateTime TimeStamp  { get; set; }
-        public DateTime WarrantyExpiry  { get; set; }
+        public int WarrantyExpiry  { get; set; }
         public string Invoice  { get; set; }
         public string PropertyCondition  { get; set; }
         public EamisPropertyTransactionDTO PropertyTransactionGroup { get; set; }

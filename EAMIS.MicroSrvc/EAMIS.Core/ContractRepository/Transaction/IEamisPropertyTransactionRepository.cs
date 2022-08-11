@@ -11,5 +11,6 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<EamisPropertyTransactionDTO> Update(EamisPropertyTransactionDTO item);
         Task<EamisPropertyTransactionDTO> Delete(EamisPropertyTransactionDTO item);
         Task<string> GetNextSequenceNumberPR();
+        Task<EamisPropertyTransactionDTO> getPropertyItemById(int itemID);
     }
 }

@@ -124,7 +124,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         private IQueryable<EAMISPROPERTYTRANSACTION> PagedQuery(IQueryable<EAMISPROPERTYTRANSACTION> query, int resolved_size, int resolved_index)
         {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
 
         private IQueryable<EAMISPROPERTYTRANSACTION> FilteredEntities(EamisPropertyTransactionDTO filter, IQueryable<EAMISPROPERTYTRANSACTION> custom_query = null, bool strict = false)
@@ -179,6 +179,58 @@ namespace EAMIS.Core.LogicRepository.Transaction
             var nextId = await _EAMISIDProvider.GetNextSequenceNumberPR(TransactionTypeSettings.PropertyReceiving);
             return nextId;
         }
+        public async Task<EamisPropertyTransactionDTO> getPropertyItemById(int itemID)
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().FirstOrDefaultAsync(x => x.ID == itemID)).ConfigureAwait(false);
+            return new EamisPropertyTransactionDTO
+            {
+                Id = result.ID,
+                TransactionNumber = result.TRANSACTION_NUMBER,
+                TransactionDate = result.TRANSACTION_DATE,
+                FiscalPeriod = result.FISCALPERIOD,
+                TransactionType = result.TRANSACTION_TYPE,
+                Memo = result.MEMO,
+                ReceivedBy = result.RECEIVED_BY,
+                ApprovedBy = result.APPROVED_BY,
+                DeliveryDate = result.DELIVERY_DATE,
+                UserStamp = result.USER_STAMP,
+                TimeStamp = result.TIMESTAMP,
+                TransactionStatus = result.TRANSACTION_STATUS,
+                PropertyTransactionDetails = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Select(x => new EamisPropertyTransactionDetailsDTO
+                {
+                    Id = x.ID,
+                    PropertyTransactionID = x.PROPERTY_TRANS_ID,
+                    isDepreciation = x.IS_DEPRECIATION,
+                    Dr = x.DR,
+                    PropertyNumber = x.PROPERTY_NUMBER,
+                    ItemCode = x.ITEM_CODE,
+                    ItemDescription = x.ITEM_DESCRIPTION,
+                    SerialNumber = x.SERIAL_NUMBER,
+                    Po = x.PO,
+                    Pr = x.PR,
+                    AcquisitionDate = x.ACQUISITION_DATE,
+                    AssigneeCustodian = x.ASSIGNEE_CUSTODIAN,
+                    RequestedBy = x.REQUESTED_BY,
+                    Office = x.OFFICE,
+                    Department = x.DEPARTMENT,
+                    ResponsibilityCode = x.RESPONSIBILITY_CODE,
+                    UnitCost = x.UNIT_COST,
+                    Qty = x.QTY,
+                    SalvageValue = x.SALVAGE_VALUE,
+                    BookValue = x.BOOK_VALUE,
+                    EstLife = x.ESTIMATED_LIFE,
+                    Area = x.AREA,
+                    Semi = x.SEMI_EXPANDABLE_AMOUNT,
+                    UserStamp = x.USER_STAMP,
+                    TimeStamp = x.TIME_STAMP,
+                    WarrantyExpiry = x.WARRANTY_EXPIRY,
+                    Invoice = x.INVOICE,
+                    PropertyCondition = x.PROPERTY_CONDITION
+                }).Where(i => i.PropertyTransactionID == result.ID).ToList()
+            };
+        }
+
     }
+
 
 }

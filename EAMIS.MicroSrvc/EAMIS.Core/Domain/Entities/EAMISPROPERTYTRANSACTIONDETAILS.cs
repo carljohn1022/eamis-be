@@ -10,6 +10,7 @@ namespace EAMIS.Core.Domain.Entities
         public int PROPERTY_TRANS_ID { get; set; }
         public bool IS_DEPRECIATION { get; set; }
         public string DR { get; set; }
+        public string ITEM_CODE { get; set; }
         public string PROPERTY_NUMBER { get; set; }
         public string ITEM_DESCRIPTION { get; set; }
         public string SERIAL_NUMBER { get; set; }
@@ -30,7 +31,7 @@ namespace EAMIS.Core.Domain.Entities
         public decimal SEMI_EXPANDABLE_AMOUNT { get; set; }
         public string USER_STAMP { get; set; }
         public DateTime TIME_STAMP { get; set; }
-        public DateTime WARRANTY_EXPIRY { get; set; }
+        public int WARRANTY_EXPIRY { get; set; }
         public string INVOICE { get; set;}
         public string PROPERTY_CONDITION { get; set; }
         public EAMISPROPERTYTRANSACTION PROPERTY_TRANSACTION_GROUP { get; set; }

@@ -50,5 +50,10 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var nextId = await _eamisPropertyTransactionRepository.GetNextSequenceNumberPR();
             return nextId;
         }
+        [HttpGet("editbyid")]
+        public async Task<ActionResult<EamisPropertyTransactionDTO>> getPropertyItemById(int itemID)
+        {
+            return Ok(await _eamisPropertyTransactionRepository.getPropertyItemById(itemID));
+        }
     }
 }

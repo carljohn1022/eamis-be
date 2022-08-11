@@ -880,6 +880,9 @@ namespace EAMIS.Core.Migrations
                     b.Property<bool>("IS_DEPRECIATION")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ITEM_CODE")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ITEM_DESCRIPTION")
                         .HasColumnType("nvarchar(max)");
 
@@ -928,8 +931,8 @@ namespace EAMIS.Core.Migrations
                     b.Property<string>("USER_STAMP")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("WARRANTY_EXPIRY")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("WARRANTY_EXPIRY")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 

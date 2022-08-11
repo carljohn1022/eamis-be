@@ -43,6 +43,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 IS_DEPRECIATION = item.isDepreciation,
                 DR = item.Dr,
                 PROPERTY_NUMBER = item.PropertyNumber,
+                ITEM_CODE = item.ItemCode,
                 ITEM_DESCRIPTION = item.ItemDescription,
                 SERIAL_NUMBER = item.SerialNumber,
                 PO = item.Po,
@@ -106,6 +107,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 isDepreciation = x.IS_DEPRECIATION,
                 Dr = x.DR,
                 PropertyNumber = x.PROPERTY_NUMBER,
+                ItemCode = x.ITEM_CODE,
                 ItemDescription = x.ITEM_DESCRIPTION,
                 SerialNumber = x.SERIAL_NUMBER,
                 Po = x.PO,
@@ -207,8 +209,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     : predicate.And(x => x.USER_STAMP.Contains(filter.UserStamp.ToLower()));
             if (filter.TimeStamp != null && filter.TimeStamp != DateTime.MinValue)
                 predicate = predicate.And(x => x.TIME_STAMP == filter.TimeStamp);
-            if (filter.WarrantyExpiry != null && filter.WarrantyExpiry != DateTime.MinValue)
-                predicate = predicate.And(x => x.WARRANTY_EXPIRY == filter.WarrantyExpiry);
             if (!string.IsNullOrEmpty(filter.Invoice)) predicate = (strict)
                     ? predicate.And(x => x.INVOICE.ToLower() == filter.Invoice.ToLower())
                     : predicate.And(x => x.INVOICE.Contains(filter.Invoice.ToLower()));
@@ -229,12 +229,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
         }
         public async Task<EamisPropertyTransactionDetailsDTO> getPropertyItemById(int itemID)
         {
-            var result = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().FirstOrDefault(x => x.ID == itemID);
-            return new EamisPropertyTransactionDetailsDTO {
+            var result = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().FirstOrDefaultAsync(x => x.ID == itemID)).ConfigureAwait(false);
+            return new EamisPropertyTransactionDetailsDTO
+            {
                 Id = result.ID,
                 PropertyTransactionID = result.PROPERTY_TRANS_ID,
                 isDepreciation = result.IS_DEPRECIATION,
                 Dr = result.DR,
+                ItemCode = result.ITEM_CODE,
                 PropertyNumber = result.PROPERTY_NUMBER,
                 ItemDescription = result.ITEM_DESCRIPTION,
                 SerialNumber = result.SERIAL_NUMBER,
@@ -258,6 +260,17 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 WarrantyExpiry = result.WARRANTY_EXPIRY,
                 Invoice = result.INVOICE,
                 PropertyCondition = result.PROPERTY_CONDITION
+                ,
+                PropertyTransactionGroup = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Select(x => new EamisPropertyTransactionDTO
+                {
+                    Id = x.ID,
+                    DeliveryDate = x.DELIVERY_DATE,
+                    TransactionStatus = x.TRANSACTION_STATUS,
+                    TransactionNumber = x.TRANSACTION_NUMBER,
+                    TransactionDate = x.TRANSACTION_DATE,
+                    FiscalPeriod = x.FISCALPERIOD,
+                    ReceivedBy = x.RECEIVED_BY
+                }).Where(i => i.Id == result.PROPERTY_TRANS_ID).FirstOrDefault()
             };
         }
     }
