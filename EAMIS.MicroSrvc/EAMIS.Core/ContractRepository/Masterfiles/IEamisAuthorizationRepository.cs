@@ -13,5 +13,6 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
     {
         Task<DataList<EamisAuthorizationDTO>> List(EamisAuthorizationDTO filter, PageConfig config);
         Task<List<EAMISAUTHORIZATION>> ListAuthorization(string searchValue);
+        Task<List<EAMISAUTHORIZATION>> ListAuthorizationById(int authorizationId);
     }
 }

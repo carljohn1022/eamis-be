@@ -223,7 +223,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
         public async Task<EamisPropertyTransactionDetailsDTO> Update(EamisPropertyTransactionDetailsDTO item)
         {
             EAMISPROPERTYTRANSACTIONDETAILS data = MapToEntity(item);
-            _ctx.Entry(data).State = EntityState.Modified;
+            _ctx.Entry(data).State = data.ID == 0 ? EntityState.Added : EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
         }

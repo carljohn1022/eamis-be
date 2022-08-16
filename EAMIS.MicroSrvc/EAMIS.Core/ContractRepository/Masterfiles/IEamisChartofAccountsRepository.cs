@@ -17,5 +17,8 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> EditValidationAccountCode(int id, string accountCode);
         Task<EamisChartofAccountsDTO> InsertFromExcel(EamisChartofAccountsDTO item);
         Task<List<EAMISCHARTOFACCOUNTS>> ListCOA(string searchValue);
+        Task<List<EAMISCHARTOFACCOUNTS>> ListCOAById(int coaId);
+
+        Task<List<EAMISCHARTOFACCOUNTS>> ListAllCOA();
     }
 }

@@ -36,6 +36,11 @@ namespace EAMIS.Core.LogicRepository
              REGION_DESCRIPTION = item.RegionDescription
             };
         }
+        public async Task<List<EAMISREGION>> ListRegionById(int regionId)
+        {
+            var result = _ctx.EAMIS_REGION.AsNoTracking().Where(x => x.REGION_CODE == regionId).ToList();
+            return result;
+        }
         public async Task<List<EAMISREGION>> ListRegion(string searchValue)
         {
             var result = _ctx.EAMIS_REGION.AsNoTracking().Where(x => x.REGION_DESCRIPTION == searchValue).ToList();

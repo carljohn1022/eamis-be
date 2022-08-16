@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> ValidateExistingDesc(string procurementDescription);
         Task<bool> ValidateExistingDescUpdate(int id, string procurementDescription);
         Task<EamisProcurementCategoryDTO> InsertFromExcel(EamisProcurementCategoryDTO item);
+        Task<List<EAMISPROCUREMENTCATEGORY>> ListAllProcurements();
+
 
     }
 }

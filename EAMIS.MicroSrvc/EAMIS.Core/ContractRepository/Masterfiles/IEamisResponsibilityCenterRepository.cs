@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,8 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisResponsibilityCenterDTO> Update(EamisResponsibilityCenterDTO item, int id);
         Task<bool> ValidateExistingCode(string ResponsibilityCenter);
         Task<bool> UpdateValidateExistingCode(string ResponsibilityCenter, int id);
-
+        Task<EamisResponsibilityCenterDTO> InsertFromExcel(EamisResponsibilityCenterDTO item);
+        Task<List<EAMISRESPONSIBILITYCENTER>> GetAllResponsibilityCenters();
 
     }
 }

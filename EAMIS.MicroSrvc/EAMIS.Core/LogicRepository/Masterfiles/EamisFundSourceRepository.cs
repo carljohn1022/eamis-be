@@ -151,6 +151,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             await _ctx.SaveChangesAsync();
             return item;
         }
+        public async Task<List<EAMISFUNDSOURCE>> ListAllFundSources()
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_FUND_SOURCE.AsNoTracking().ToList()).ConfigureAwait(false);
+            return result;
+        }
 
         public async Task<EamisFundSourceDTO> Insert(EamisFundSourceDTO item)
         {

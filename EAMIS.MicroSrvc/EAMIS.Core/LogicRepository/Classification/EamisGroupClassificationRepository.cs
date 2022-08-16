@@ -28,6 +28,11 @@ namespace EAMIS.Core.LogicRepository.Classification
             var result = _ctx.EAMIS_GROUP_CLASSIFICATION.AsNoTracking().Where(x => x.NAME_GROUPCLASSIFICATION == searchValue).ToList();
             return result;
         }
+        public async Task<List<EAMISGROUPCLASSIFICATION>> ListGroupById(int groupId)
+        {
+            var result = _ctx.EAMIS_GROUP_CLASSIFICATION.AsNoTracking().Where(x => x.ID == groupId).ToList();
+            return result;
+        }
         public async Task<EamisGroupClassificationDTO> Delete(EamisGroupClassificationDTO item, int Id)
         {
             EAMISGROUPCLASSIFICATION data = MapToEntity(item);

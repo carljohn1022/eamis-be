@@ -5,6 +5,8 @@ using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -61,6 +63,29 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                     Items = await QueryToDTO(paged).ToListAsync(),
 
                 };
+            }
+            public async Task<List<EAMISRESPONSIBILITYCENTER>> GetAllResponsibilityCenters()
+            {
+                var result = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.ToList()).ConfigureAwait(false);
+                return result;
+            }
+            public async Task<EamisResponsibilityCenterDTO> InsertFromExcel(EamisResponsibilityCenterDTO item)
+            {
+                try
+                {
+                    EAMISRESPONSIBILITYCENTER data = MapToEntity(item);
+                    _ctx.Entry(data).State = EntityState.Added;
+
+                    _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
+                }
+
+
+                return item;
             }
             private IQueryable<EamisResponsibilityCenterDTO> QueryToDTO(IQueryable<EAMISRESPONSIBILITYCENTER> query)
             {

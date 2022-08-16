@@ -36,6 +36,11 @@ namespace EAMIS.Core.LogicRepository
                 BRGY_CODE = item.BrgyCode,
             };
         }
+        public async Task<List<EAMISBARANGAY>> ListBarangayById(int barangayId)
+        {
+            var result = _ctx.EAMIS_BARANGAY.AsNoTracking().Where(x => x.BRGY_CODE == barangayId).ToList();
+            return result;
+        }
         public async Task<List<EAMISBARANGAY>> ListBarangay(string searchValue)
         {
             var result = _ctx.EAMIS_BARANGAY.AsNoTracking().Where(x => x.BRGY_DESCRIPTION == searchValue).ToList();

@@ -13,5 +13,6 @@ namespace EAMIS.Core.ContractRepository
     {
         Task<DataList<EamisMunicipalityDTO>> List(EamisMunicipalityDTO filter, PageConfig config);
         Task<List<EAMISMUNICIPALITY>> ListMunicipality(string searchValue);
+        Task<List<EAMISMUNICIPALITY>> ListMunicipalityById(int municipalityId);
     }
 }

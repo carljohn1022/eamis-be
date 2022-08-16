@@ -14,5 +14,6 @@ namespace EAMIS.Core.ContractRepository
         Task<DataList<EamisBarangayDTO>> List(EamisBarangayDTO filter,PageConfig config);
         Task<DataList<EamisBarangayDTO>> PublicSearch(string SearchType, string SearchValue, PageConfig config);
         Task<List<EAMISBARANGAY>> ListBarangay(string searchValue);
+        Task<List<EAMISBARANGAY>> ListBarangayById(int barangayId);
     }
 }

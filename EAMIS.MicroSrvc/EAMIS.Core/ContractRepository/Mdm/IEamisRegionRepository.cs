@@ -13,5 +13,6 @@ namespace EAMIS.Core.ContractRepository
     {
         Task<DataList<EamisRegionDTO>> List(EamisRegionDTO filter,PageConfig config);
         Task<List<EAMISREGION>> ListRegion(string searchValue);
+        Task<List<EAMISREGION>> ListRegionById(int regionId);
     }
 }

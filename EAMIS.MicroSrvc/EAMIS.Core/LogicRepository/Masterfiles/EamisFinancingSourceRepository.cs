@@ -29,6 +29,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             var result = _ctx.EAMIS_FINANCING_SOURCE.AsNoTracking().Where(x => x.FINANCING_SOURCE_NAME == searchValue).ToList();
             return result;
         }
+        public async Task<List<EAMISFINANCINGSOURCE>> ListFinancingSourceById(int financeSourceId)
+        {
+            var result = _ctx.EAMIS_FINANCING_SOURCE.AsNoTracking().Where(x => x.ID == financeSourceId).ToList();
+            return result;
+        }
         public async Task<DataList<EamisFinancingSourceDTO>> List(EamisFinancingSourceDTO filter, PageConfig config)
         {
             IQueryable<EAMISFINANCINGSOURCE> query = FilteredEntites(filter);
