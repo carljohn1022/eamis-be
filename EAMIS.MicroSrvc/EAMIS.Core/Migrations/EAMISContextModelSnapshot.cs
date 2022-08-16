@@ -255,6 +255,12 @@ namespace EAMIS.Core.Migrations
                     b.Property<int>("DELIVERY_RECEIPT_ID")
                         .HasColumnType("int");
 
+                    b.Property<string>("ITEM_CODE")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ITEM_DESCRIPTION")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ITEM_ID")
                         .HasColumnType("int");
 
@@ -272,6 +278,9 @@ namespace EAMIS.Core.Migrations
 
                     b.Property<int>("SERIAL_LOT")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("SUB_TOTAL")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("UNIT_COST")
                         .HasColumnType("decimal(18,2)");

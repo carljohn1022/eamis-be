@@ -43,6 +43,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TRANSACTION_NUMBER = item.TransactionNumber,
                 TRANSACTION_DATE = item.TransactionDate,
                 FISCALPERIOD = item.FiscalPeriod,
+                FUND_SOURCE = item.FundSource,
                 TRANSACTION_TYPE = item.TransactionType,
                 MEMO = item.Memo,
                 RECEIVED_BY = item.ReceivedBy,

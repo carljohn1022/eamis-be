@@ -8,6 +8,8 @@ namespace EAMIS.Common.DTO.Transaction
         public int Id { get; set; }
         public int DeliveryReceiptId  { get; set; }
         public int ItemId { get; set; }
+        public string ItemCode { get; set; }
+        public string ItemDescription { get; set; }
         public int QtyOrder  { get; set; }
         public int QtyDelivered  { get; set; }
         public int QtyRejected  { get; set; }
@@ -15,6 +17,7 @@ namespace EAMIS.Common.DTO.Transaction
         public decimal UnitCost  { get; set; }
         public int SerialNumber  { get; set; }
         public string UnitOfMeasurement  { get; set; }
+        public decimal SubTotal { get; set; }
         //public DateTime WarrantyExpiryDate  { get; set; }
         public EamisPropertyItemsDTO PropertyItem { get; set; }
         public EamisDeliveryReceiptDTO DeliveryReceipt { get; set; }

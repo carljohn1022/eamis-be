@@ -224,5 +224,62 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Items = await QueryToDTO(paged).ToListAsync()
             };
         }
+        public async Task<EamisDeliveryReceiptDTO> getDeliveryItemById(int itemID)
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.AsNoTracking().FirstOrDefaultAsync(x => x.ID == itemID)).ConfigureAwait(false);
+            return new EamisDeliveryReceiptDTO
+            {
+                Id = result.ID,
+                TransactionType = result.TRANSACTION_TYPE,
+                ReceivedBy = result.RECEIVED_BY,
+                DateReceived = result.DATE_RECEIVED,
+                SupplierId = result.SUPPLIER_ID,
+                PurchaseOrderNumber = result.PURCHASE_ORDER_NUMBER,
+                PurchaseOrderDate = result.PURCHASE_ORDER_DATE,
+                PurchaseRequestNumber = result.PURCHASE_REQUEST_NUMBER,
+                PurchaseRequestDate = result.PURCHASE_REQUEST_DATE,
+                SaleInvoiceNumber = result.SALE_INVOICE_NUMBER,
+                SaleInvoiceDate = result.SALE_INVOICE_DATE,
+                TotalAmount = result.TOTAL_AMOUNT,
+                TransactionStatus = result.TRANSACTION_STATUS,
+                StockroomId = result.WAREHOUSE_ID,
+                Warehouse = _ctx.EAMIS_WAREHOUSE.AsNoTracking().Select(w => new EamisWarehouseDTO
+                {
+                    Id = w.ID,
+                    Warehouse_Description = w.WAREHOUSE_DESCRIPTION,
+                    Barangay_Code = w.BARANGAY_CODE,
+                    IsActive = w.IS_ACTIVE,
+                    Street_Name = w.STREET_NAME,
+
+                }).FirstOrDefault(x => x.Id == result.WAREHOUSE_ID),
+                Supplier = _ctx.EAMIS_SUPPLIER.AsNoTracking().Select(s => new EamisSupplierDTO
+                {
+                    Id = s.ID,
+                    CompanyName = s.COMPANY_NAME
+                }).FirstOrDefault(x => x.Id == result.SUPPLIER_ID),
+                DeliveryReceiptDetails = _ctx.EAMIS_DELIVERY_RECEIPT_DETAILS.AsNoTracking().Select(d => new EamisDeliveryReceiptDetailsDTO
+                {
+                    Id = d.ID,
+                    ItemId = d.ITEM_ID,
+                    DeliveryReceiptId = d.DELIVERY_RECEIPT_ID,
+                    QtyOrder = d.QTY_ORDER,
+                    QtyDelivered = d.QTY_DELIVERED,
+                    QtyRejected = d.QTY_REJECTED,
+                    QtyReceived = d.QTY_RECEIVED,
+                    UnitCost = d.UNIT_COST,
+                    SubTotal = d.SUB_TOTAL,
+                    SerialNumber = d.SERIAL_LOT,
+                    UnitOfMeasurement = d.UNIT_OF_MEASUREMENT,
+                    PropertyItem = _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().Select(p => new EamisPropertyItemsDTO
+                    {
+                        PropertyNo = p.PROPERTY_NO,
+                        PropertyName = p.PROPERTY_NAME,
+                        Id = p.ID
+                    }).FirstOrDefault(x => x.Id == d.ITEM_ID)
+                }).Where(drId => drId.DeliveryReceiptId == result.ID).ToList()
+            };
+        }
+
+     
     }
 }

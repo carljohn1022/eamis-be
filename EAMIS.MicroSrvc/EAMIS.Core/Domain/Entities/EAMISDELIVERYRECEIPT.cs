@@ -31,7 +31,7 @@ namespace EAMIS.Core.Domain.Entities
         [DataType(DataType.Date)]
         public DateTime SALE_INVOICE_DATE { get; set; }
 
-        public int TOTAL_AMOUNT { get; set; }
+        public decimal TOTAL_AMOUNT { get; set; }
         public string  TRANSACTION_STATUS { get; set; }
         public int WAREHOUSE_ID { get; set; }
 

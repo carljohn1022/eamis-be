@@ -43,6 +43,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ID = item.Id,
                 DELIVERY_RECEIPT_ID = item.DeliveryReceiptId,
                 ITEM_ID = item.ItemId,
+                ITEM_CODE = item.ItemCode,
+                ITEM_DESCRIPTION = item.ItemDescription,
                 QTY_ORDER = item.QtyOrder,
                 QTY_DELIVERED = item.QtyDelivered,
                 QTY_RECEIVED = item.QtyReceived,
@@ -50,6 +52,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 UNIT_COST = item.UnitCost,
                 SERIAL_LOT = item.SerialNumber,
                 UNIT_OF_MEASUREMENT = item.UnitOfMeasurement,
+                SUB_TOTAL = item.SubTotal
                 //WARRANTY_EXPIRY_DATE = item.WarrantyExpiryDate
             };
         }
@@ -90,6 +93,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Id = x.ID,
                 DeliveryReceiptId = x.DELIVERY_RECEIPT_ID,
                 ItemId = x.ITEM_ID,
+                //ItemCode = x.ITEM_CODE,
+               // ItemDescription = x.ITEM_DESCRIPTION,
                 QtyOrder = x.QTY_ORDER,
                 QtyDelivered = x.QTY_DELIVERED,
                 QtyRejected = x.QTY_REJECTED,
@@ -97,6 +102,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 UnitCost = x.UNIT_COST,
                 SerialNumber = x.SERIAL_LOT,
                 UnitOfMeasurement = x.UNIT_OF_MEASUREMENT,
+                SubTotal = x.SUB_TOTAL,
                 //WarrantyExpiryDate = x.WARRANTY_EXPIRY_DATE,
                 PropertyItem = new EamisPropertyItemsDTO
                 {
@@ -160,9 +166,21 @@ namespace EAMIS.Core.LogicRepository.Transaction
         public async Task<EamisDeliveryReceiptDetailsDTO> Update(EamisDeliveryReceiptDetailsDTO item)
         {
             EAMISDELIVERYRECEIPTDETAILS data = MapToEntity(item);
-            _ctx.Entry(data).State = EntityState.Modified;
+            _ctx.Entry(data).State = data.ID ==  0 ? EntityState.Added : EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
+        }
+
+        public async Task<string> GetItemById(int itemId)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.Where(s => s.ID == itemId).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                retValue = result[0].PROPERTY_NO.ToString() + ":" +
+                           result[0].PROPERTY_NAME.ToString();
+            }
+            return retValue;
         }
     }
 }

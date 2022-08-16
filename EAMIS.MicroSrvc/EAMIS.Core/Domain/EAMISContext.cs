@@ -63,6 +63,10 @@ namespace EAMIS.Core.Domain
         public DbSet<EAMISPROPERTYTRANSACTION> EAMIS_PROPERTY_TRANSACTION { get; set; }
         public DbSet<EAMISPROPERTYTRANSACTIONDETAILS> EAMIS_PROPERTY_TRANSACTION_DETAILS { get; set; }
 
+        //SERIAL TRAN
+
+        public DbSet<EAMISSERIALTRAN> EAMIS_SERIAL_TRAN { get; set; }
+
         // SERVICE LOG
 
         public DbSet<EAMISASSETCONDITIONTYPE> EAMIS_ASSET_CONDITION_TYPE { get; set; }
@@ -160,6 +164,12 @@ namespace EAMIS.Core.Domain
                 .WithMany(x => x.SERVICE_LOG_DETAILS)
                 .HasForeignKey(x => x.SERVICE_LOG_ID);
 
+            // SERIAL TRAN
+            modelBuilder.Entity<EAMISSERIALTRAN>()
+                .HasOne(x => x.DELIVERY_RECEIPT_DETAILS_GROUP)
+                .WithMany(x => x.SERIAL_TRAN)
+                .HasForeignKey(x => x.DELIVERY_RECEIPT_DETAILS_ID);
+            
 
             //modelBuilder.Entity<EAMISITEMCATEGORY>()
             //    .HasOne(x => x.CHART_OF_ACCOUNTS)

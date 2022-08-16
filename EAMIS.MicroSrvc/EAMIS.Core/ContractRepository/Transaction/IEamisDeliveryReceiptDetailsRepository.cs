@@ -10,5 +10,6 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<EamisDeliveryReceiptDetailsDTO> Insert(EamisDeliveryReceiptDetailsDTO item);
         Task<EamisDeliveryReceiptDetailsDTO> Update(EamisDeliveryReceiptDetailsDTO item);
         Task<EamisDeliveryReceiptDetailsDTO> Delete(EamisDeliveryReceiptDetailsDTO item);
+        Task<string> GetItemById(int itemId);
     }
 }

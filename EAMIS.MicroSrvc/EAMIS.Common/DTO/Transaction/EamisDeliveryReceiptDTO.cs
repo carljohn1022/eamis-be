@@ -1,5 +1,6 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace EAMIS.Common.DTO.Transaction
@@ -24,13 +25,12 @@ namespace EAMIS.Common.DTO.Transaction
 
         [DataType(DataType.Date)]
         public DateTime SaleInvoiceDate  { get; set; }
-        public int TotalAmount  { get; set; }
+        public decimal TotalAmount  { get; set; }
         public string TransactionStatus  { get; set; }
         public int StockroomId { get; set; }
         public EamisWarehouseDTO Warehouse { get; set; }
         public EamisSupplierDTO Supplier { get; set; }
-        public EamisDeliveryReceiptDetailsDTO DeliveryReceiptDetails { get; set; }
-
-
+        public List<EamisDeliveryReceiptDetailsDTO> DeliveryReceiptDetails { get; set; } = new List<EamisDeliveryReceiptDetailsDTO>();
+        //public List<EamisDeliveryReceiptDetailsDTO> DeliveryReceiptDetailsList { get; set; } = new List<EamisDeliveryReceiptDetailsDTO>();
     }
 }

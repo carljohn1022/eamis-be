@@ -162,6 +162,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 if (!string.IsNullOrEmpty(filter.unitDesc)) predicate = (strict)
                          ? predicate.And(x => x.UNIT_DESC.ToLower() == filter.unitDesc.ToLower())
                          : predicate.And(x => x.UNIT_DESC.Contains(filter.unitDesc.ToLower()));
+                if (filter.isActive != null && filter.isActive != false)
+                    predicate = predicate.And(x => x.IS_ACTIVE == filter.isActive);
 
                 var query = custom_query ?? _ctx.EAMIS_RESPONSIBILITY_CENTER;
                 return query.Where(predicate);

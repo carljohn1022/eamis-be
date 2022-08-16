@@ -29,13 +29,22 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return nextId;
         }
 
-        [HttpGet("list")]
-        public async Task<ActionResult<EAMISPROPERTYDETAILS>> List([FromQuery] EamisPropertyItemsDTO filter, [FromQuery] PageConfig config)
-        {
-            if (filter == null)
-                filter = new EamisPropertyItemsDTO();
-            return Ok(await _eamisPropertyIssuanceRepository.List(filter, config));
-        }
+        //[HttpGet("list")]
+        //public async Task<ActionResult<EAMISPROPERTYDETAILS>> List([FromQuery] EamisPropertyItemsDTO filter, [FromQuery] PageConfig config)
+        //{
+        //    if (filter == null)
+        //        filter = new EamisPropertyItemsDTO();
+        //    return Ok(await _eamisPropertyIssuanceRepository.List(filter, config));
+        //}
+
+        //[HttpGet("list")]
+        //public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> List([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config)
+        //{
+        //    if (filter == null)
+        //        filter = new EamisPropertyTransactionDetailsDTO();
+        //    return Ok(await _eamisPropertyIssuanceRepository.List(filter, config));
+        //}
+
 
         [HttpPost("AddPropertyTransaction")]
         public async Task<ActionResult<EAMISPROPERTYTRANSACTION>> AddPropertyTransaction([FromBody] EamisPropertyTransactionDTO eamisPropertyTransactionDTO)
@@ -51,14 +60,30 @@ namespace EAMIS.WebApi.Controllers.Transaction
         }
 
         [HttpPost("UpdatePropertyTransaction")]
-        public async Task<ActionResult<EAMISPROPERTYTRANSACTION>> UpdatePropertyTransaction([FromBody] EamisPropertyTransactionDTO eamisPropertyTransactionDTO)
+        public async Task<ActionResult<EamisPropertyTransactionDTO>> Edit([FromBody] EamisPropertyTransactionDTO item)
         {
-            var result = await _eamisPropertyIssuanceRepository.UpdateProperty(eamisPropertyTransactionDTO);
-            if (result == null)
-                return BadRequest();
-            return Ok(result);
+            if (item == null)
+                item = new EamisPropertyTransactionDTO();
+            return Ok(await _eamisPropertyIssuanceRepository.UpdateProperty(item));
         }
 
+        [HttpPut("UpdatePropertyTransactionDetails")]
+        public async Task<ActionResult<EamisPropertyTransactionDetailsDTO>> Edit([FromBody] EamisPropertyTransactionDetailsDTO item)
+        {
+            if (item == null)
+                item = new EamisPropertyTransactionDetailsDTO();
+            return Ok(await _eamisPropertyIssuanceRepository.UpdateDetails(item));
+        }
+        //[HttpGet("editbyid")]
+        //public async Task<ActionResult<EamisPropertyTransactionDetailsDTO>> getPropertyItemById(int itemID)
+        //{
+        //    return Ok(await _eamisPropertyIssuanceRepository.getPropertyItemById(itemID));
+        //}
+        [HttpGet("editbyid")]
+        public async Task<ActionResult<EamisPropertyTransactionDTO>> getPropertyItemById(int itemID)
+        {
+            return Ok(await _eamisPropertyIssuanceRepository.getPropertyItemById(itemID));
+        }
         [HttpPost("AddPropertyTransactionDetails")]
         public async Task<ActionResult<EAMISPROPERTYTRANSACTION>> AddPropertyTransactionDetails([FromBody] EamisPropertyTransactionDetailsDTO eamisPropertyTransactionDetailsDTO)
         {
@@ -86,5 +111,17 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return Ok();//use "return Ok(result) if the result is needed to return.
         }
 
+        //[HttpGet("listForReceivingItems")]
+        //public async Task<ActionResult<EamisPropertyTransactionDetailsDTO>> ListItemsForReceivingItems()
+        //{
+        //    return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceivingItems());
+        //}
+        [HttpGet("listitemsforreceiving")]
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> ListItemsForReceiving([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config)
+        {
+            if (filter == null)
+                filter = new EamisPropertyTransactionDetailsDTO();
+            return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceiving(filter, config));
+        }
     }
 }
