@@ -24,9 +24,19 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
+        public async Task<List<EAMISCHARTOFACCOUNTS>> ListAllCOA()
+        {
+            var result = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().ToList();
+            return result;
+        }
         public async Task<List<EAMISCHARTOFACCOUNTS>> ListCOA(string searchValue)
         {
             var result = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().Where(x => x.ACCOUNT_CODE == searchValue).ToList();
+            return result;
+        }
+        public async Task<List<EAMISCHARTOFACCOUNTS>> ListCOAById(int coaId)
+        {
+            var result = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().Where(x => x.ID == coaId).ToList();
             return result;
         }
 

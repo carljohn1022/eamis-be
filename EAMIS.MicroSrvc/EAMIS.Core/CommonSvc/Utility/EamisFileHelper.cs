@@ -9,6 +9,7 @@ using EAMIS.Core.Domain;
 using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -96,6 +97,172 @@ namespace EAMIS.Core.CommonSvc.Utility
         }
         #endregion constructor
 
+        public async Task<List<EAMISPROPERTYITEMS>> DownloadPropertyItems()
+        {
+            var result = await _eamisPropertyItemsRepository.GetAllPropertyItems();
+
+            var warehouses = await _eamisWarehouseRepository.ListAllWarehouse();
+            var uom = await _eamisUnitofMeasureRepository.ListAllIUnitOfMeasurement();
+            var supplier = await _eamisSupplierRepository.ListAllSuppliers();
+            var category = await _eamisItemCategoryRepository.ListAllItemCategories();
+            var subcategory = await _eamisItemSubCategoryRepository.ListAllItemSubCategories();
+
+            foreach (var propItem in result)
+            {
+                propItem.WAREHOUSE_GROUP = new EAMISWAREHOUSE();
+                propItem.SUPPLIER_GROUP = new EAMISSUPPLIER();
+                propItem.ITEM_CATEGORY = new EAMISITEMCATEGORY();
+                propItem.UOM_GROUP = new EAMISUNITOFMEASURE();
+
+                foreach (var item in warehouses)
+                {
+                    if (item.ID == propItem.WAREHOUSE_ID)
+                    {
+                        propItem.WAREHOUSE_GROUP.WAREHOUSE_DESCRIPTION = item.WAREHOUSE_DESCRIPTION;
+                        break;
+                    }
+                }
+
+                foreach (var item in uom)
+                {
+                    if (item.ID == propItem.UOM_ID)
+                    {
+                        propItem.UOM_GROUP.UOM_DESCRIPTION = item.UOM_DESCRIPTION;
+                        break;
+                    }
+                }
+
+                foreach (var item in supplier)
+                {
+                    if (item.ID == propItem.SUPPLIER_ID)
+                    {
+                        propItem.SUPPLIER_GROUP.COMPANY_DESCRIPTION = item.COMPANY_DESCRIPTION;
+                        break;
+                    }
+                }
+
+                foreach (var item in category)
+                {
+                    if (item.ID == propItem.CATEGORY_ID)
+                    {
+                        propItem.ITEM_CATEGORY.CATEGORY_NAME = item.CATEGORY_NAME;
+                        break;
+                    }
+                }
+
+                foreach (var item in subcategory)
+                {
+                    if (item.ID == propItem.SUBCATEGORY_ID)
+                    {
+                        propItem.ITEM_CATEGORY.SHORT_DESCRIPTION = item.SUB_CATEGORY_NAME;
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<List<EAMISSUPPLIER>> DownloadSuppliers()
+        {
+            var result = await _eamisSupplierRepository.GetAllSuppliers();
+            foreach (var item in result)
+            {
+                item.BARANGAY_GROUP = new EAMISBARANGAY();
+                item.BARANGAY_GROUP.PROVINCE = new EAMISPROVINCE();
+                item.BARANGAY_GROUP.MUNICIPALITY = new EAMISMUNICIPALITY();
+                item.BARANGAY_GROUP.REGION = new EAMISREGION();
+
+                var region = _eamisRegionRepository.ListRegionById(item.REGION_CODE);
+                item.BARANGAY_GROUP.REGION.REGION_DESCRIPTION = region.Result == null ? "" : region.Result[0].REGION_DESCRIPTION;
+
+                var province = _eamisProvinceRepository.ListProvinceById(item.PROVINCE_CODE);
+                item.BARANGAY_GROUP.PROVINCE.PROVINCE_DESCRITION = province.Result == null ? "" : province.Result[0].PROVINCE_DESCRITION;
+
+                var city = _eamisMunicipalityRepository.ListMunicipalityById(item.CITY_MUNICIPALITY_CODE);
+                item.BARANGAY_GROUP.MUNICIPALITY.CITY_MUNICIPALITY_DESCRIPTION = city.Result == null ? "" : city.Result[0].CITY_MUNICIPALITY_DESCRIPTION;
+
+                var brgy = _eamisBarangayRepository.ListBarangayById(item.BRGY_CODE);
+                item.BARANGAY_GROUP.BRGY_DESCRIPTION = brgy.Result == null ? "" : brgy.Result[0].BRGY_DESCRIPTION;
+            }
+            return result;
+        }
+
+        public async Task<List<EAMISITEMCATEGORY>> DownloadCategories()
+        {
+            var result = await _eamisItemCategoryRepository.GetAllItemCategories();
+
+            foreach (var item in result)
+            {
+                var coa = _eamisChartofAccountsRepository.ListCOAById(item.CHART_OF_ACCOUNT_ID);
+                item.CHART_OF_ACCOUNTS = new EAMISCHARTOFACCOUNTS();
+                item.CHART_OF_ACCOUNTS.ACCOUNT_CODE = coa.Result == null ? "" : coa.Result[0].ACCOUNT_CODE;
+            }
+            return result;
+        }
+
+        public async Task<List<EAMISCHARTOFACCOUNTS>> DownloadChartOfAccounts()
+        {
+            var result = await _eamisChartofAccountsRepository.ListAllCOA();
+
+            foreach (var item in result)
+            {
+                item.GROUPCLASSIFICATION = new EAMISGROUPCLASSIFICATION();
+                var groupId = _eamisGroupClassificationRepository.ListGroupById(item.GROUP_ID);
+                item.GROUPCLASSIFICATION.NAME_GROUPCLASSIFICATION = groupId.Result == null ? "" : groupId.Result[0].NAME_GROUPCLASSIFICATION;
+            }
+            return result;
+        }
+
+        public async Task<List<EAMISFUNDSOURCE>> DownloadFundSources()
+        {
+            var result = await _eamisFundSourceRepository.ListAllFundSources();
+            foreach (var item in result)
+            {
+                item.AUTHORIZATION = new EAMISAUTHORIZATION();
+                item.FINANCING_SOURCE = new EAMISFINANCINGSOURCE();
+                item.GENERALFUNDSOURCE = new EAMISGENERALFUNDSOURCE();
+
+                var fundId = _eamisGeneralFundSourceRepository.ListGeneralFundsById(item.GENERAL_FUND_SOURCE_ID);
+                item.GENERALFUNDSOURCE.NAME = fundId.Result == null ? "" : fundId.Result[0].NAME;
+
+                var financeSourceId = _eamisFinancingSourceRepository.ListFinancingSourceById(item.FINANCING_SOURCE_ID);
+                item.FINANCING_SOURCE.FINANCING_SOURCE_NAME = financeSourceId.Result == null ? "" : financeSourceId.Result[0].FINANCING_SOURCE_NAME;
+
+                var authorizationId = _eamisAuthorizationRepository.ListAuthorizationById(item.AUTHORIZATION_ID);
+                item.AUTHORIZATION.AUTHORIZATION_NAME = authorizationId.Result == null ? "" : authorizationId.Result[0].AUTHORIZATION_NAME;
+            }
+            return result;
+        }
+
+        public async Task<List<EAMISITEMSUBCATEGORY>> DownloadSubCategories()
+        {
+            var result = await _eamisItemSubCategoryRepository.ListAllItemSubCategories();
+            foreach (var item in result)
+            {
+                item.ITEM_CATEGORY = new EAMISITEMCATEGORY();
+                var catmain = _eamisItemCategoryRepository.ListCategoriesById(item.CATEGORY_ID);
+                item.ITEM_CATEGORY.CATEGORY_NAME = catmain.Result == null ? "" : catmain.Result[0].CATEGORY_NAME;
+            }
+            return result;
+        }
+
+        public async Task<List<EAMISPROCUREMENTCATEGORY>> DownloadProcurements()
+        {
+            var result = await _eamisProcurementCategoryRepository.ListAllProcurements();
+            return result;
+        }
+
+        public async Task<List<EAMISUNITOFMEASURE>> DownloadUOM()
+        {
+            var result = await _eamisUnitofMeasureRepository.ListAllIUnitOfMeasurement();
+            return result;
+        }
+
+        public async Task<List<EAMISRESPONSIBILITYCENTER>> DownloadResponsibilityCenters()
+        {
+            var result = await _eamisResponsibilityCenterRepository.GetAllResponsibilityCenters();
+            return result;
+        }
 
         public Task<string> DownloadExcelTemplate(string WorkSheetTemplateName)
         {
@@ -400,7 +567,32 @@ namespace EAMIS.Core.CommonSvc.Utility
                                 row = worksheet.Row(rowCtr);
                             }
                             break;
-                            #endregion UOM
+                        #endregion UOM
+
+                        #region Responsibility Center
+                        case WorkSheetTemplateNames.ResponsibilityCenter:
+                            rowCtr += 1;
+                            row = worksheet.Row(rowCtr);
+
+                            while (!row.IsEmpty())
+                            {
+                                EamisResponsibilityCenterDTO eamisResponsibilityCenterDTO = new EamisResponsibilityCenterDTO();
+                                string officecode = row.Cell(5).Value.ToString().PadLeft(10, '0');
+                                eamisResponsibilityCenterDTO.mainGroupCode = row.Cell(1).Value.ToString();
+                                eamisResponsibilityCenterDTO.mainGroupDesc = row.Cell(2).Value.ToString();
+                                eamisResponsibilityCenterDTO.subGroupCode = row.Cell(3).Value.ToString();
+                                eamisResponsibilityCenterDTO.subGroupDesc = row.Cell(4).Value.ToString();
+                                eamisResponsibilityCenterDTO.officeCode = row.Cell(5).Value.ToString();
+                                eamisResponsibilityCenterDTO.officeDesc = row.Cell(6).Value.ToString();
+                                eamisResponsibilityCenterDTO.unitCode = row.Cell(7).Value.ToString();
+                                eamisResponsibilityCenterDTO.unitDesc = row.Cell(8).Value.ToString();
+                                eamisResponsibilityCenterDTO.isActive = Convert.ToBoolean(row.Cell(9).Value);
+                                rowCtr += 1;
+                                var result = await _eamisResponsibilityCenterRepository.InsertFromExcel(eamisResponsibilityCenterDTO);
+                                row = worksheet.Row(rowCtr);
+                            }
+                            break;
+                            #endregion Responsibility Center
                     }
 
                 }
@@ -410,8 +602,6 @@ namespace EAMIS.Core.CommonSvc.Utility
             {
                 bolerror = false;
                 _errorMessage = ex.Message;
-                return false;
-                
             }
             return bolerror;
         }

@@ -25,7 +25,9 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         IEamisWarehouseRepository _eamisWareHouseRepository;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
+        private bool bolWithData = false;
 
+        private bool TemplateWithData { get => bolWithData; set => value = bolWithData; }
 
         public EamisFileController(IEamisFileHelper eamisFileHelper, IEamisItemCategoryRepository eamisItemCategoryRepository,
                                     IEamisItemSubCategoryRepository eamisItemSubCategoryRepository,
@@ -40,8 +42,9 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         }
 
         [HttpGet("DownloadExcelWorkSheetTemplate")]
-        public async Task<ActionResult> ExportToExcel(string WorkSheetTemplateName)
+        public async Task<ActionResult> ExportToExcel(string WorkSheetTemplateName, bool bolWithData = false)
         {
+            this.bolWithData = bolWithData;
             switch (WorkSheetTemplateName)
             {
                 case WorkSheetTemplateNames.Items:
@@ -62,6 +65,8 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                     return await ProcurementCategory();
                 case WorkSheetTemplateNames.UnitofMeasurement:
                     return await UnitOfMeasurement();
+                case WorkSheetTemplateNames.ResponsibilityCenter:
+                    return await ResponsibilityCenter();
             }
             return null;
         }
@@ -90,6 +95,28 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                 item.Cell(1, 12).Value = "PROPERTY_NO";
                 item.Cell(1, 13).Value = "SUBCATEGORY_NAME";
                 //required using System.IO;
+                int rowCtr = 2;
+                if (TemplateWithData)
+                {
+                    List<EAMISPROPERTYITEMS> result = await _eamisFileHelper.DownloadPropertyItems();
+                    foreach (var propItem in result)
+                    {
+                        item.Cell(rowCtr, 1).Value = propItem.WAREHOUSE_GROUP.WAREHOUSE_DESCRIPTION;
+                        item.Cell(rowCtr, 2).Value = propItem.PROPERTY_NAME;
+                        item.Cell(rowCtr, 3).Value = propItem.BRAND;
+                        item.Cell(rowCtr, 4).Value = propItem.MODEL;
+                        item.Cell(rowCtr, 5).Value = propItem.PROPERTY_TYPE;
+                        item.Cell(rowCtr, 6).Value = propItem.UOM_GROUP.UOM_DESCRIPTION;
+                        item.Cell(rowCtr, 7).Value = propItem.SUPPLIER_GROUP.COMPANY_DESCRIPTION;
+                        item.Cell(rowCtr, 8).Value = propItem.QUANTITY;
+                        item.Cell(rowCtr, 9).Value = propItem.APP_NO;
+                        item.Cell(rowCtr, 10).Value = propItem.ITEM_CATEGORY.CATEGORY_NAME;
+                        item.Cell(rowCtr, 11).Value = propItem.IS_ACTIVE;
+                        item.Cell(rowCtr, 12).Value = propItem.PROPERTY_NO;
+                        item.Cell(rowCtr, 13).Value = propItem.ITEM_CATEGORY.SHORT_DESCRIPTION;
+                        rowCtr++;
+                    }
+                }
                 using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);
@@ -126,7 +153,30 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                 supplier.Cell(1, 12).Value = "ACCOUNT_NUMBER";
                 supplier.Cell(1, 13).Value = "BRANCH";
                 supplier.Cell(1, 14).Value = "IS_ACTIVE";
+                int rowCtr = 2;
+                if (TemplateWithData)
+                {
+                    List<EAMISSUPPLIER> suppliers = await _eamisFileHelper.DownloadSuppliers();
+                    foreach (var item in suppliers)
+                    {
+                        supplier.Cell(rowCtr, 1).Value = item.COMPANY_NAME;
+                        supplier.Cell(rowCtr, 2).Value = item.COMPANY_DESCRIPTION;
+                        supplier.Cell(rowCtr, 3).Value = item.CONTACT_PERSON_NAME;
+                        supplier.Cell(rowCtr, 4).Value = item.CONTACT_PERSON_NUMBER;
+                        supplier.Cell(rowCtr, 5).Value = item.BARANGAY_GROUP.REGION.REGION_DESCRIPTION;
+                        supplier.Cell(rowCtr, 6).Value = item.BARANGAY_GROUP.PROVINCE.PROVINCE_DESCRITION;
+                        supplier.Cell(rowCtr, 7).Value = item.BARANGAY_GROUP.MUNICIPALITY.CITY_MUNICIPALITY_DESCRIPTION;
+                        supplier.Cell(rowCtr, 8).Value = item.BARANGAY_GROUP.BRGY_DESCRIPTION;
+                        supplier.Cell(rowCtr, 9).Value = item.STREET;
+                        supplier.Cell(rowCtr, 10).Value = item.BANK;
+                        supplier.Cell(rowCtr, 11).Value = item.ACCOUNT_NAME;
+                        supplier.Cell(rowCtr, 12).Value = item.ACCOUNT_NUMBER;
+                        supplier.Cell(rowCtr, 13).Value = item.BRANCH;
+                        supplier.Cell(rowCtr, 14).Value = item.IS_ACTIVE;
+                        rowCtr++;
+                    }
 
+                }
                 //required using System.IO;
                 using (var stream = new MemoryStream())
                 {
@@ -164,6 +214,26 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                 category.Cell(1, 10).Value = "DEPRECIATION_METHOD";
                 category.Cell(1, 11).Value = "ACTIVE";
 
+                if (TemplateWithData)
+                {
+                    List<EAMISITEMCATEGORY> categories = await _eamisFileHelper.DownloadCategories();
+                    int rowCtr = 2;
+                    foreach (var item in categories)
+                    {
+                        category.Cell(rowCtr, 1).Value = item.CHART_OF_ACCOUNTS.ACCOUNT_CODE;
+                        category.Cell(rowCtr, 2).Value = item.CATEGORY_NAME;
+                        category.Cell(rowCtr, 3).Value = item.SHORT_DESCRIPTION;
+                        category.Cell(rowCtr, 4).Value = item.IS_SUPPLIES;
+                        category.Cell(rowCtr, 5).Value = item.IS_ASSET;
+                        category.Cell(rowCtr, 6).Value = item.IS_SERIALIZED;
+                        category.Cell(rowCtr, 7).Value = item.IS_STOCKABLE;
+                        category.Cell(rowCtr, 8).Value = item.COST_METHOD;
+                        category.Cell(rowCtr, 9).Value = item.ESTIMATED_LIFE;
+                        category.Cell(rowCtr, 10).Value = item.DEPRECIATION_METHOD;
+                        category.Cell(rowCtr, 11).Value = item.IS_ACTIVE;
+                        rowCtr++;
+                    }
+                }
                 //required using System.IO;
                 using (var stream = new MemoryStream())
                 {
@@ -187,11 +257,24 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
 
                 IXLWorksheet subcategory =
                 workbook.Worksheet(WorkSheetNames.SubCategoryList);
-                subcategory.Cell(1, 1).Value = "Category ID"; //Category ID
-                subcategory.Cell(1, 2).Value = "Sub Category Name"; //Sub Category Name
-                subcategory.Cell(1, 3).Value = "Property item id"; //Property item id
-                subcategory.Cell(1, 4).Value = "Short Description"; //Short Description
+                subcategory.Cell(1, 1).Value = "Category_Name"; //Category ID
+                subcategory.Cell(1, 2).Value = "Sub_Category_Name"; //Sub Category Name
+                //subcategory.Cell(1, 3).Value = "Property item id"; //Property item id
+                subcategory.Cell(1, 3).Value = "Active"; //Short Description
 
+                if (TemplateWithData)
+                {
+                    List<EAMISITEMSUBCATEGORY> subcategories = await _eamisFileHelper.DownloadSubCategories();
+                    int rowCtr = 2;
+                    foreach (var item in subcategories)
+                    {
+                        subcategory.Cell(rowCtr, 1).Value = item.ITEM_CATEGORY.CATEGORY_NAME; //Category ID
+                        subcategory.Cell(rowCtr, 2).Value = item.SUB_CATEGORY_NAME; //Sub Category Name
+                        //subcategory.Cell(rowCtr, 3).Value = item.PROPERTY_ITEM; //Property item id
+                        subcategory.Cell(rowCtr, 3).Value = item.IS_ACTIVE; //Short Description
+                        rowCtr++;
+                    }
+                }
                 //required using System.IO;
                 using (var stream = new MemoryStream())
                 {
@@ -253,7 +336,22 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                 coa.Cell(1, 5).Value = "UACS";
                 coa.Cell(1, 6).Value = "PART_OF_INVENTORY";
                 coa.Cell(1, 7).Value = "ACTIVE";
-
+                if (TemplateWithData)
+                {
+                    List<EAMISCHARTOFACCOUNTS> coas = await _eamisFileHelper.DownloadChartOfAccounts();
+                    int rowCtr = 2;
+                    foreach (var item in coas)
+                    {
+                        //coa.Cell(rowCtr, 1).Value = item.CLASSIFICATION;
+                        //coa.Cell(rowCtr, 2).Value = "SUBCLASSIFICATION";
+                        coa.Cell(rowCtr, 3).Value = item.GROUPCLASSIFICATION.NAME_GROUPCLASSIFICATION;
+                        coa.Cell(rowCtr, 4).Value = item.OBJECT_CODE;
+                        coa.Cell(rowCtr, 5).Value = item.ACCOUNT_CODE;
+                        coa.Cell(rowCtr, 6).Value = item.IS_PART_OF_INVENTORY;
+                        coa.Cell(rowCtr, 7).Value = item.IS_ACTIVE;
+                        rowCtr++;
+                    }
+                }
                 //required using System.IO;
                 using (var stream = new MemoryStream())
                 {
@@ -275,13 +373,29 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
 
                 workbook.Worksheets.Add(WorkSheetTemplateNames.Funds);
 
-                IXLWorksheet coa = workbook.Worksheet(WorkSheetTemplateNames.Funds);
-                coa.Cell(1, 1).Value = "FUND";
-                coa.Cell(1, 2).Value = "CODE";
-                coa.Cell(1, 3).Value = "FINANCIAL_SOURCE";
-                coa.Cell(1, 4).Value = "AUTHORIZATION";
-                coa.Cell(1, 5).Value = "FUND_CATEGORY";
-                coa.Cell(1, 6).Value = "ACTIVE";
+                IXLWorksheet fundsource = workbook.Worksheet(WorkSheetTemplateNames.Funds);
+                fundsource.Cell(1, 1).Value = "FUND";
+                fundsource.Cell(1, 2).Value = "CODE";
+                fundsource.Cell(1, 3).Value = "FINANCIAL_SOURCE";
+                fundsource.Cell(1, 4).Value = "AUTHORIZATION";
+                fundsource.Cell(1, 5).Value = "FUND_CATEGORY";
+                fundsource.Cell(1, 6).Value = "ACTIVE";
+
+                if (TemplateWithData)
+                {
+                    List<EAMISFUNDSOURCE> result = await _eamisFileHelper.DownloadFundSources();
+                    int rowCtr = 2;
+                    foreach (var item in result)
+                    {
+                        fundsource.Cell(rowCtr, 1).Value = item.FUND_CATEGORY;
+                        fundsource.Cell(rowCtr, 2).Value = item.CODE;
+                        fundsource.Cell(rowCtr, 3).Value = item.FINANCING_SOURCE.FINANCING_SOURCE_NAME;
+                        fundsource.Cell(rowCtr, 4).Value = item.AUTHORIZATION.AUTHORIZATION_NAME;
+                        fundsource.Cell(rowCtr, 5).Value = item.GENERALFUNDSOURCE.NAME;
+                        fundsource.Cell(rowCtr, 6).Value = item.IS_ACTIVE;
+                        rowCtr++;
+                    }
+                }
 
                 //required using System.IO;
                 using (var stream = new MemoryStream())
@@ -308,6 +422,17 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                 coa.Cell(1, 1).Value = "CATEGORY_DESC";
                 coa.Cell(1, 2).Value = "ACTIVE";
 
+                if (TemplateWithData)
+                {
+                    List<EAMISPROCUREMENTCATEGORY> result = await _eamisFileHelper.DownloadProcurements();
+                    int rowCtr = 2;
+                    foreach (var item in result)
+                    {
+                        coa.Cell(rowCtr, 1).Value = item.PROCUREMENT_DESCRIPTION;
+                        coa.Cell(rowCtr, 2).Value = item.IS_ACTIVE;
+                        rowCtr++;
+                    }
+                }
                 //required using System.IO;
                 using (var stream = new MemoryStream())
                 {
@@ -328,11 +453,72 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             {
 
                 workbook.Worksheets.Add(WorkSheetTemplateNames.UnitofMeasurement);
-                IXLWorksheet coa = workbook.Worksheet(WorkSheetTemplateNames.UnitofMeasurement);
-                coa.Cell(1, 1).Value = "UOM_SHORTDESC";
-                coa.Cell(1, 2).Value = "UOM_DESC";
-                coa.Cell(1, 3).Value = "ACTIVE";
+                IXLWorksheet uom = workbook.Worksheet(WorkSheetTemplateNames.UnitofMeasurement);
+                uom.Cell(1, 1).Value = "UOM_SHORTDESC";
+                uom.Cell(1, 2).Value = "UOM_DESC";
+                uom.Cell(1, 3).Value = "ACTIVE";
 
+                if (TemplateWithData)
+                {
+                    List<EAMISUNITOFMEASURE> result = await _eamisFileHelper.DownloadUOM();
+                    int rowCtr = 2;
+                    foreach (var item in result)
+                    {
+                        uom.Cell(rowCtr, 1).Value = item.SHORT_DESCRIPTION;
+                        uom.Cell(rowCtr, 2).Value = item.UOM_DESCRIPTION;
+                        uom.Cell(rowCtr, 3).Value = item.IS_ACTIVE;
+                        rowCtr++;
+                    }
+                }
+                //required using System.IO;
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return await Task.Run(() => File(
+                       content,
+                       FileType.SpreadSheetType,
+                       filename)).ConfigureAwait(false);
+                }
+            }
+        }
+
+        private async Task<ActionResult> ResponsibilityCenter()
+        {
+            string filename = WorkSheetTemplateNames.ResponsibilityCenter + ".xlsx";
+            using (var workbook = new XLWorkbook())
+            {
+
+                workbook.Worksheets.Add(WorkSheetTemplateNames.ResponsibilityCenter);
+                IXLWorksheet center = workbook.Worksheet(WorkSheetTemplateNames.ResponsibilityCenter);
+                center.Cell(1, 1).Value = "Main Code";
+                center.Cell(1, 2).Value = "Main Description";
+                center.Cell(1, 3).Value = "Sub Code";
+                center.Cell(1, 4).Value = "Sub Description";
+                center.Cell(1, 5).Value = "Office Code";
+                center.Cell(1, 6).Value = "Office Description";
+                center.Cell(1, 7).Value = "Unit Code";
+                center.Cell(1, 8).Value = "Unit Description";
+                center.Cell(1, 9).Value = "Active";
+
+                if (TemplateWithData)
+                {
+                    List<EAMISRESPONSIBILITYCENTER> result = await _eamisFileHelper.DownloadResponsibilityCenters();
+                    int rowCtr = 2;
+                    foreach (var item in result)
+                    {
+                        center.Cell(rowCtr, 1).Value = item.MAIN_GROUP_CODE;
+                        center.Cell(rowCtr, 2).Value = item.MAIN_GROUP_DESC;
+                        center.Cell(rowCtr, 3).Value = item.SUB_GROUP_CODE;
+                        center.Cell(rowCtr, 4).Value = item.SUB_GROUP_DESC;
+                        center.Cell(rowCtr, 5).Value = item.OFFICE_CODE;
+                        center.Cell(rowCtr, 6).Value = item.OFFICE_DESC;
+                        center.Cell(rowCtr, 7).Value = item.UNIT_CODE;
+                        center.Cell(rowCtr, 8).Value = item.UNIT_DESC;
+                        center.Cell(rowCtr, 9).Value = item.IS_ACTIVE;
+                        rowCtr++;
+                    }
+                }
                 //required using System.IO;
                 using (var stream = new MemoryStream())
                 {
@@ -348,7 +534,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         #endregion
 
         [HttpPost("UploadExcelFile")]
-        public ActionResult UploadExcel(IFormFile file, string TemplateName = "")
+        public ActionResult UploadExcel(IFormFile file, string TemplateName = "Items")
         {
             string fileName = "";
             if (file != null && System.IO.Path.GetExtension(file.FileName).ToLower() == ".xlsx")

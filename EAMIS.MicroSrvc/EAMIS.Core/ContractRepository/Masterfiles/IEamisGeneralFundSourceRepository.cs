@@ -16,5 +16,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisGeneralFundSourceDTO> Update(EamisGeneralFundSourceDTO item,int Id);
         Task<EamisGeneralFundSourceDTO> Delete(EamisGeneralFundSourceDTO item,int Id);
         Task<List<EAMISGENERALFUNDSOURCE>> ListGeneralFunds(string searchValue);
+        Task<List<EAMISGENERALFUNDSOURCE>> ListGeneralFundsById(int fundId);
+
     }
 }

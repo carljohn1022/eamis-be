@@ -24,9 +24,13 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             new EamisPropertyTypeDTO{ Id = 2, Amount = 15000 ,DescriptionRules ="Sample",Name = "PPE" },
             new EamisPropertyTypeDTO { Id = 1, Amount = 500,DescriptionRules ="Sample",Name = "PPE" }
         };
-       
 
-      
+        public async Task<List<EAMISPROPERTYITEMS>> GetAllPropertyItems()
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.ToList()).ConfigureAwait(false);
+            return result;
+        }
+
 
         public EamisPropertyItemsRepository(EAMISContext ctx)
         {
@@ -34,6 +38,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                 : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
+ 
         public async Task<EamisPropertyItemsDTO> InsertFromExcel(EamisPropertyItemsDTO item)
         {
             try
@@ -347,6 +352,15 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _ctx.Entry(data).State = EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
+        }
+        public string GetPropertyImageFileName(int propertyItemId)
+        {
+            var result = _ctx.EAMIS_PROPERTYITEMS.Where(i => i.ID == propertyItemId).AsNoTracking().ToList();
+            if (result != null)
+            {
+                return result[0].IMG_URL;
+            }
+            return string.Empty;
         }
 
         public async Task<EamisPropertyItemsDTO> GeneratedProperty()

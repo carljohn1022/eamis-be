@@ -29,6 +29,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             var result = _ctx.EAMIS_AUTHORIZATION.AsNoTracking().Where(x => x.AUTHORIZATION_NAME == searchValue).ToList();
             return result;
         }
+        public async Task<List<EAMISAUTHORIZATION>> ListAuthorizationById(int authorizationId)
+        {
+            var result = _ctx.EAMIS_AUTHORIZATION.AsNoTracking().Where(x => x.ID == authorizationId).ToList();
+            return result;
+        }
         public async Task<DataList<EamisAuthorizationDTO>> List(EamisAuthorizationDTO filter, PageConfig config)
         {
             IQueryable<EAMISAUTHORIZATION> query = FilteredEntities(filter);

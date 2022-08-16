@@ -39,6 +39,16 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             var result = _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().Where(x => x.CATEGORY_NAME == searchValue).ToList();
             return result;
         }
+        public async Task<List<EAMISITEMCATEGORY>> ListCategoriesById(int categoryId)
+        {
+            var result = _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().Where(x => x.ID == categoryId).ToList();
+            return result;
+        }
+        public async Task<List<EAMISITEMCATEGORY>> GetAllItemCategories()
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_ITEM_CATEGORY.ToList()).ConfigureAwait(false);
+            return result;
+        }
         public async Task<EamisItemCategoryDTO> InsertFromExcel(EamisItemCategoryDTO item)
         {
             try

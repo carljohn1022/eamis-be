@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,12 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<DataList<EamisPropertyItemsDTO>> List(EamisPropertyItemsDTO filter, PageConfig config);
         Task<EamisPropertyItemsDTO> Insert(EamisPropertyItemsDTO item);
         Task<EamisPropertyItemsDTO> InsertFromExcel(EamisPropertyItemsDTO item);
+        Task<List<EAMISPROPERTYITEMS>> GetAllPropertyItems();
         Task<EamisPropertyItemsDTO> Update(EamisPropertyItemsDTO item);
         Task<EamisPropertyItemsDTO> Delete(EamisPropertyItemsDTO item);
         Task<EamisPropertyItemsDTO> GeneratedProperty();
         Task<bool> ValidateExistingItem(string propertyNo);
         Task<bool> UpdateValidateExistingItem(string propertyNo, int id);
+        string GetPropertyImageFileName(int propertyItemId);
     }
 }

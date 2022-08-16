@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,6 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> ValidateExistingCode(string code);
         Task<bool> UpdateValidateExistingCode(string code, int id);
         Task<EamisFundSourceDTO> InsertFromExcel(EamisFundSourceDTO item);
+        Task<List<EAMISFUNDSOURCE>> ListAllFundSources();
     }
 }

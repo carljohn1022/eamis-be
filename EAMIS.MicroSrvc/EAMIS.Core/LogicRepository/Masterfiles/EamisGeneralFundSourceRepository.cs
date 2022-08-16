@@ -29,6 +29,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             var result = _ctx.EAMIS_GENERAL_FUND_SOURCE.AsNoTracking().Where(x => x.NAME == searchValue).ToList();
             return result;
         }
+        public async Task<List<EAMISGENERALFUNDSOURCE>> ListGeneralFundsById(int fundId)
+        {
+            var result = _ctx.EAMIS_GENERAL_FUND_SOURCE.AsNoTracking().Where(x => x.ID == fundId).ToList();
+            return result;
+        }
         private EAMISGENERALFUNDSOURCE MapToEntity(EamisGeneralFundSourceDTO item)
         {
             if (item == null) return new EAMISGENERALFUNDSOURCE();

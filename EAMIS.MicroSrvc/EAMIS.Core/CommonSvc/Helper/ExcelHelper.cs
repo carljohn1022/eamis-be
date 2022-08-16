@@ -50,11 +50,11 @@ namespace EAMIS.Core.CommonSvc.Helper
                     {
                         workbook.SaveAs(stream);
                         var content = stream.ToArray();
-                       
+
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

@@ -13,5 +13,6 @@ namespace EAMIS.Core.ContractRepository.Classification
         Task<EamisGroupClassificationDTO> Update(EamisGroupClassificationDTO item, int Id);
         Task<EamisGroupClassificationDTO> Delete(EamisGroupClassificationDTO item, int Id);
         Task<List<EAMISGROUPCLASSIFICATION>> ListGroups(string searchValue);
+        Task<List<EAMISGROUPCLASSIFICATION>> ListGroupById(int groupId);
     }
 }

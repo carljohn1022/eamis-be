@@ -13,5 +13,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
     {
         Task<DataList<EamisFinancingSourceDTO>> List(EamisFinancingSourceDTO filter, PageConfig config);
         Task<List<EAMISFINANCINGSOURCE>> ListFinancingSource(string searchValue);
+        Task<List<EAMISFINANCINGSOURCE>> ListFinancingSourceById(int financeSourceId);
+
     }
 }

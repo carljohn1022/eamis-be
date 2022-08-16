@@ -25,7 +25,6 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                 : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
-
         public async Task<EamisSupplierDTO> Delete(EamisSupplierDTO item)
         {
             EAMISSUPPLIER data = MapToEntity(item);
@@ -46,6 +45,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 throw ex;
             }
             return item;
+        }
+        public async Task<List<EAMISSUPPLIER>> GetAllSuppliers()
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_SUPPLIER.ToList()).ConfigureAwait(false);
+            return result;
         }
         public async Task<List<EAMISSUPPLIER>> ListAllSuppliers()
         {
