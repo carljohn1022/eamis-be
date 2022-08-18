@@ -39,6 +39,10 @@ namespace EAMIS.Core.LogicRepository.Transaction
             var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.Issuance);
             return nextId;
         }
+        private string issuanceString()
+        {
+            return "anyTask";
+        }
 
         public async Task<string> UpdatePropertyItemQty(EamisDeliveryReceiptDetailsDTO item)
         {
