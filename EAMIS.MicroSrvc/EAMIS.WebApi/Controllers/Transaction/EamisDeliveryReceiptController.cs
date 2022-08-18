@@ -64,7 +64,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
         }
 
         [HttpGet("Search")]
-        public async Task<ActionResult<EAMISRESPONSIBILITYCENTER>> Search(string type, string searchValue)
+        public async Task<ActionResult<EAMISDELIVERYRECEIPT>> Search(string type, string searchValue)
         {
             return Ok(await _eamisDeliveryReceiptRepository.SearchDeliveryReceipt(type, searchValue));
         }

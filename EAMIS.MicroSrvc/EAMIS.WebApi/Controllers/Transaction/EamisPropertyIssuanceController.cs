@@ -17,9 +17,11 @@ namespace EAMIS.WebApi.Controllers.Transaction
     public class EamisPropertyIssuanceController : ControllerBase
     {
         IEamisPropertyIssuanceRepository _eamisPropertyIssuanceRepository;
-        public EamisPropertyIssuanceController(IEamisPropertyIssuanceRepository eamisPropertyIssuanceRepository)
+        IEamisPropertyTransactionRepository _eamisPropertyTransactionRepository;
+        public EamisPropertyIssuanceController(IEamisPropertyIssuanceRepository eamisPropertyIssuanceRepository, IEamisPropertyTransactionRepository eamisPropertyTransactionRepository)
         {
             _eamisPropertyIssuanceRepository = eamisPropertyIssuanceRepository;
+            _eamisPropertyTransactionRepository = eamisPropertyTransactionRepository;
         }
 
         [HttpGet("getNextSequence")]
@@ -28,7 +30,11 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var nextId = await _eamisPropertyIssuanceRepository.GetNextSequenceNumber();
             return nextId;
         }
-
+        [HttpGet("Search")]
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTION>> Search(string type, string searchValue)
+        {
+            return Ok(await _eamisPropertyTransactionRepository.SearchReceiving(type, searchValue));
+        }
         //[HttpGet("list")]
         //public async Task<ActionResult<EAMISPROPERTYDETAILS>> List([FromQuery] EamisPropertyItemsDTO filter, [FromQuery] PageConfig config)
         //{
@@ -123,5 +129,17 @@ namespace EAMIS.WebApi.Controllers.Transaction
                 filter = new EamisPropertyTransactionDetailsDTO();
             return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceiving(filter, config));
         }
+        [HttpGet("SearchReceiving")]
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> SearchReceiving(string type, string searchValue)
+        {
+            return Ok(await _eamisPropertyIssuanceRepository.SearchReceiving(type, searchValue));
+        }
+        //[HttpDelete("Delete")]
+        //public async Task<ActionResult<EamisPropertyTransactionDetailsDTO>> Delete([FromBody] EamisPropertyTransactionDetailsDTO item)
+        //{
+        //    if (item == null)
+        //        item = new EamisPropertyTransactionDetailsDTO();
+        //    return Ok(await _eamisPropertyIssuanceRepository.Delete(item));
+        //}
     }
 }

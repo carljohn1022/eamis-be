@@ -26,6 +26,33 @@ namespace EAMIS.Core.LogicRepository.Transaction
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                 : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
+
+        public async Task<DataList<EamisPropertyTransactionDTO>> SearchReceiving(string type, string searchValue)
+        {
+            IQueryable<EAMISPROPERTYTRANSACTION> query = null;
+            if (type == "Transaction #")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == "Issuance/Releasing" && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Received by")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == "Issuance/Releasing" && x.RECEIVED_BY.Contains(searchValue)).AsQueryable();
+            }
+            else
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == "Issuance/Releasing" && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+            }
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisPropertyTransactionDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync()
+            };
+        }
+        private IQueryable<EAMISPROPERTYTRANSACTION> PagedQueryForSearch(IQueryable<EAMISPROPERTYTRANSACTION> query)
+        {
+            return query;
+        }
         public async Task<EamisPropertyTransactionDTO> Delete(EamisPropertyTransactionDTO item)
         {
             EAMISPROPERTYTRANSACTION data = MapToEntity(item);

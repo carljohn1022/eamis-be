@@ -295,7 +295,37 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
             };
         }
-
+        public async Task<DataList<EamisPropertyTransactionDetailsDTO>> SearchReceiving(string type, string searchValue)
+        {
+            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = null;
+            if (type == "Item Code")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == "Property Receiving" && x.ITEM_CODE.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Item Description")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == "Property Receiving" && x.ITEM_DESCRIPTION.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Transaction Number")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == "Property Receiving" && x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+            }
+            else
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == "Property Receiving" &&  x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+            }
+            
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisPropertyTransactionDetailsDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTOItemsForReceiving(paged).ToListAsync()
+            };
+        }
+        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> PagedQueryForSearch(IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query)
+        {
+            return query;
+        }
 
         public async Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config)
         {
@@ -413,5 +443,13 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
+
+        //public async Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item)
+        //{
+        //    EAMISPROPERTYTRANSACTIONDETAILS data = MapToEntity(item);
+        //    _ctx.Entry(data).State = EntityState.Deleted;
+        //    await _ctx.SaveChangesAsync();
+        //    return item;
+        //}
     }
 }
