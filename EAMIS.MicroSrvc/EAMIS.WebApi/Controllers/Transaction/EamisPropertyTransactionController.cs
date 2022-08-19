@@ -12,9 +12,11 @@ namespace EAMIS.WebApi.Controllers.Transaction
     public class EamisPropertyTransactionController : ControllerBase
     {
         IEamisPropertyTransactionRepository _eamisPropertyTransactionRepository;
-        public EamisPropertyTransactionController(IEamisPropertyTransactionRepository eamisPropertyTransactionRepository)
+        IEamisDeliveryReceiptDetailsRepository _eamisDeliveryReceiptDetailsRepository;
+        public EamisPropertyTransactionController(IEamisPropertyTransactionRepository eamisPropertyTransactionRepository, IEamisDeliveryReceiptDetailsRepository eamisDeliveryReceiptDetailsRepository)
         {
             _eamisPropertyTransactionRepository = eamisPropertyTransactionRepository;
+            _eamisDeliveryReceiptDetailsRepository = eamisDeliveryReceiptDetailsRepository;
         }
         [HttpGet("list")]
         public async Task<ActionResult<EamisPropertyTransactionDTO>> List([FromQuery] EamisPropertyTransactionDTO filter, [FromQuery] PageConfig config)
@@ -54,6 +56,16 @@ namespace EAMIS.WebApi.Controllers.Transaction
         public async Task<ActionResult<EamisPropertyTransactionDTO>> getPropertyItemById(int itemID)
         {
             return Ok(await _eamisPropertyTransactionRepository.getPropertyItemById(itemID));
+        }
+        [HttpGet("Search")]
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTION>> Search(string type, string searchValue)
+        {
+            return Ok(await _eamisPropertyTransactionRepository.SearchReceivingforList(type, searchValue));
+        }
+        [HttpGet("SearchDeliveryReceiptDetails")]
+        public async Task<ActionResult<EAMISDELIVERYRECEIPTDETAILS>> SearchDR(string type, string searchValue)
+        {
+            return Ok(await _eamisDeliveryReceiptDetailsRepository.SearchDeliveryDetailsforReceiving(type, searchValue));
         }
     }
 }

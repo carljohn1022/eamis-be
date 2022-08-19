@@ -27,7 +27,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
 
-        public async Task<DataList<EamisPropertyTransactionDTO>> SearchReceiving(string type, string searchValue)
+        public async Task<DataList<EamisPropertyTransactionDTO>> SearchReceivingforIssuance(string type, string searchValue)
         {
             IQueryable<EAMISPROPERTYTRANSACTION> query = null;
             if (type == "Transaction #")
@@ -41,6 +41,28 @@ namespace EAMIS.Core.LogicRepository.Transaction
             else
             {
                 query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == "Issuance/Releasing" && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+            }
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisPropertyTransactionDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync()
+            };
+        }
+        public async Task<DataList<EamisPropertyTransactionDTO>> SearchReceivingforList(string type, string searchValue)
+        {
+            IQueryable<EAMISPROPERTYTRANSACTION> query = null;
+            if (type == "Transaction #")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == "Property Receiving" && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Received By")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == "Property Receiving" && x.RECEIVED_BY.Contains(searchValue)).AsQueryable();
+            }
+            else
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == "Property Receiving" && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
             }
             var paged = PagedQueryForSearch(query);
             return new DataList<EamisPropertyTransactionDTO>

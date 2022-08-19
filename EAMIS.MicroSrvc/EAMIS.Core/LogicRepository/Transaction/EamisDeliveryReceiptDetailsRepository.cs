@@ -56,7 +56,32 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 //WARRANTY_EXPIRY_DATE = item.WarrantyExpiryDate
             };
         }
-
+        public async Task<DataList<EamisDeliveryReceiptDetailsDTO>> SearchDeliveryDetailsforReceiving(string type, string searchValue)
+        {
+            IQueryable<EAMISDELIVERYRECEIPTDETAILS> query = null;
+            if (type == "Transaction #")
+            {
+                query = _ctx.EAMIS_DELIVERY_RECEIPT_DETAILS.AsNoTracking().Where(x => x.DELIVERY_RECEIPT_GROUP.TRANSACTION_TYPE.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Item Description")
+            {
+                query = _ctx.EAMIS_DELIVERY_RECEIPT_DETAILS.AsNoTracking().Where(x => x.ITEMS_GROUP.PROPERTY_NAME.Contains(searchValue)).AsQueryable();
+            }
+            else
+            {
+                query = _ctx.EAMIS_DELIVERY_RECEIPT_DETAILS.AsNoTracking().Where(x => x.DELIVERY_RECEIPT_GROUP.TRANSACTION_TYPE.Contains(searchValue)).AsQueryable();
+            }
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisDeliveryReceiptDetailsDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync()
+            };
+        }
+        private IQueryable<EAMISDELIVERYRECEIPTDETAILS> PagedQueryForSearch(IQueryable<EAMISDELIVERYRECEIPTDETAILS> query)
+        {
+            return query;
+        }
         public async Task<EamisDeliveryReceiptDetailsDTO> Insert(EamisDeliveryReceiptDetailsDTO item)
         {
             EAMISDELIVERYRECEIPTDETAILS data = MapToEntity(item);

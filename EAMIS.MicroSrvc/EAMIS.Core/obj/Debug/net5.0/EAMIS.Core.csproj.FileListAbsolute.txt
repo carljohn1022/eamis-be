@@ -1,59 +1,3 @@
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.deps.json
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.runtimeconfig.json
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.runtimeconfig.dev.json
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.dll
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\ref\EAMIS.Core.dll
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.pdb
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Common.dll
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Common.pdb
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfoInputs.cache
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfo.cs
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CoreCompileInputs.cache
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.dll
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\ref\EAMIS.Core.dll
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.pdb
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.genruntimeconfig.cache
-C:\Users\npala\Desktop\New Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.AssemblyReference.cache
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.deps.json
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.runtimeconfig.json
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.runtimeconfig.dev.json
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.dll
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\ref\EAMIS.Core.dll
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.pdb
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Common.dll
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Common.pdb
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.AssemblyReference.cache
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfoInputs.cache
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfo.cs
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CoreCompileInputs.cache
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.dll
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\ref\EAMIS.Core.dll
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.pdb
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.genruntimeconfig.cache
-<<<<<<< HEAD
-C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CopyComplete
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.deps.json
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.runtimeconfig.json
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.runtimeconfig.dev.json
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.dll
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\ref\EAMIS.Core.dll
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.pdb
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Common.dll
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Common.pdb
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.AssemblyReference.cache
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfoInputs.cache
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfo.cs
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CoreCompileInputs.cache
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CopyComplete
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.dll
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\ref\EAMIS.Core.dll
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.pdb
-C:\Users\revil\OneDrive\Documents\EAMISv10\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.genruntimeconfig.cache
-=======
->>>>>>> 38dc629efbed6b0705e6908725c28249d38b6016
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.deps.json
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.runtimeconfig.json
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.runtimeconfig.dev.json
@@ -67,6 +11,7 @@ C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAM
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfoInputs.cache
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfo.cs
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CoreCompileInputs.cache
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CopyComplete
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.dll
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\ref\EAMIS.Core.dll
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.pdb

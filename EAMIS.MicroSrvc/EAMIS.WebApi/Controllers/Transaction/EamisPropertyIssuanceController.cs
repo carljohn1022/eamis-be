@@ -33,7 +33,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
         [HttpGet("Search")]
         public async Task<ActionResult<EAMISPROPERTYTRANSACTION>> Search(string type, string searchValue)
         {
-            return Ok(await _eamisPropertyTransactionRepository.SearchReceiving(type, searchValue));
+            return Ok(await _eamisPropertyTransactionRepository.SearchReceivingforIssuance(type, searchValue));
         }
         //[HttpGet("list")]
         //public async Task<ActionResult<EAMISPROPERTYDETAILS>> List([FromQuery] EamisPropertyItemsDTO filter, [FromQuery] PageConfig config)
