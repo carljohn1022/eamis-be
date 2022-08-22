@@ -178,31 +178,34 @@ namespace EAMIS.Core.LogicRepository.Transaction
         private IQueryable<EAMISSERVICELOGDETAILS> FilteredEntitiesServiceLogDetailsForCreation(EamisPropertyTransactionDetailsDTO filter, IQueryable<EAMISSERVICELOGDETAILS> custom_query = null, bool strict = false)
         {
             var predicate = PredicateBuilder.New<EAMISSERVICELOGDETAILS>(true);
-            string strQuery = "SELECT ID, 0 SERVICE_LOG_ID," +
-                              "P.PROPERTY_TRANS_ID RECEIVING_TRAN_ID, " +
-                              "P.PROPERTY_NUMBER,P.ITEM_DESCRIPTION PROPERTY_DESC, " +
-                              "'' ASSET_CONDITION, " +
-                              "CONVERT(decimal(6,2), 0) RECEIVING_AMOUNT, " +
-                              "P.SUPPLIER_ID, " +
-                              "P.COMPANY_NAME SUPPLIER_DESC, " +
-                              "NULL SERVICE_DATE, " +
-                              "NULL DUE_DATE, " +
-                              "CONVERT(decimal(6,2), 0) ASSESSED_VALUE, " +
-                              "CONVERT(decimal(6,2), 0) APPRAISED_VALUE, " +
-                              "CONVERT(decimal(6,2), 0) APPRAISAL_INCREMENT, " +
-                              "CONVERT(decimal(6,2), 0) REAL_ESTATE_TAX_PAYMENT, " +
-                              "CONVERT(decimal(6,2), P.AREA) AREA_SQM, " +
-                              "'' NOTES " +
-                              "FROM(SELECT P.*, D.SUPPLIER_ID, S.COMPANY_NAME FROM EAMIS_PROPERTY_TRANSACTION_DETAILS P " +
-                              "LEFT OUTER JOIN EAMIS_DELIVERY_RECEIPT D " +
-                              "ON P.DR = D.TRANSACTION_TYPE " +
-                              "INNER JOIN EAMIS_SUPPLIER S " +
-                              "ON D.SUPPLIER_ID = S.ID " +
-                              "INNER JOIN[dbo].[EAMIS_PROPERTY_TRANSACTION] H " +
-                              "ON P.PROPERTY_TRANS_ID = H.ID " +
-                              "WHERE H.TRANSACTION_TYPE IN('Property Receiving') AND " +
-                              "P.PROPERTY_TRANS_ID NOT IN(SELECT RECEIVING_TRAN_ID FROM EAMIS_SERVICE_LOG_DETAILS)) AS P";
-            var query = custom_query ?? _ctx.EAMIS_SERVICE_LOG_DETAILS.FromSqlRaw(strQuery);
+            //get items under service logs and exclude it from the list
+            var arrservicelogs = _ctx.EAMIS_SERVICE_LOG_DETAILS.AsNoTracking()
+                                                               .Where(pn => !(pn.PROPERTY_NUMBER == null || pn.PROPERTY_NUMBER.Trim() == string.Empty))
+                                                               .Select(x => x.PROPERTY_NUMBER)
+                                                               .ToList();
+            //var arrservicelogs = new List<int> { 217, 218, 219 };
+            var query = custom_query ??
+                        _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                        .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                               d => d.PROPERTY_TRANS_ID,
+                                               h => h.ID,
+                                               (d, h) => new { d, h })
+                                        .Join(_ctx.EAMIS_DELIVERY_RECEIPT,
+                                               d1 => d1.d.DR,
+                                               dr => dr.TRANSACTION_TYPE,
+                                               (d1, dr) => new { d1, dr })
+                                        .Where(x => x.d1.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving)
+                                        .Select(x => new EAMISSERVICELOGDETAILS
+                                        {
+                                            ID = 0,
+                                            RECEIVING_TRAN_ID = x.d1.d.PROPERTY_TRANS_ID,
+                                            PROPERTY_NUMBER = x.d1.d.PROPERTY_NUMBER,
+                                            PROPERTY_DESC = x.d1.d.ITEM_DESCRIPTION,
+                                            SUPPLIER_ID = x.dr.SUPPLIER_ID,
+                                            SUPPLIER_DESC = x.dr.SUPPLIER_GROUP.COMPANY_NAME,
+                                            AREA_SQM = x.d1.d.AREA
+                                        }).Where(x => !arrservicelogs.Contains(x.PROPERTY_NUMBER));
+
 
             return query.Where(predicate);
         }

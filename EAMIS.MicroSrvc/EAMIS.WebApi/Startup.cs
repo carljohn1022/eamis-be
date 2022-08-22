@@ -112,10 +112,15 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisPropertyTransferRepository, EamisPropertyTransferRepository>();
             services.AddScoped<IEamisServiceLogRepository, EamisServiceLogRepository>();
             services.AddScoped<IEamisServiceLogDetailsRepository, EamisServiceLogDetailsRepository>();
+
+            services.AddScoped<IEamisPropertyRevalutionRepository, EamisPropertyRevalutionRepository>();
+            services.AddScoped<IEamisPropertyRevalutionDetailsRepository, EamisPropertyRevalutionDetailsRepository>();
+            services.AddScoped<IFactorType, FactorType>();
             //AIS
             services.AddScoped<IAisPersonnelRepository, AisPersonnelRepository>();
             services.AddScoped<IAisOfficeRepository, AisOfficeRepository>();
             services.AddScoped<IAisCodeListValueRepository, AisCodeListValueRepository>();
+
             services.AddDbContext<EAMISContext>(options =>
             {
                 options.UseSqlServer(_config.GetConnectionString("DenrEamis"));

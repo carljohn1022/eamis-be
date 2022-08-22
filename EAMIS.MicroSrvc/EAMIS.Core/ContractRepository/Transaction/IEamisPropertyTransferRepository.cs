@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace EAMIS.Core.ContractRepository.Transaction
 {
-   public interface IEamisPropertyTransferRepository
+    public interface IEamisPropertyTransferRepository
     {
         Task<DataList<EamisPropertyTransactionDTO>> List(EamisPropertyTransactionDTO filter, PageConfig config);
-        Task<DataList<EamisPropertyTransferDetailsDTO>> List(EamisPropertyTransferDetailsDTO filter, PageConfig config);
         Task<string> GetNextSequenceNumber();
         Task<EamisPropertyTransactionDTO> Insert(EamisPropertyTransactionDTO item);
-        Task<EamisPropertyTransferDetailsDTO> Insert(EamisPropertyTransferDetailsDTO item);
+        Task<EamisPropertyTransactionDTO> Update(EamisPropertyTransactionDTO item);
     }
 }
