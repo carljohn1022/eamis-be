@@ -30,7 +30,7 @@ namespace EAMIS.Core.Domain
         public DbSet<EAMISPROPERTYDETAILS> EAMIS_PROPERTY_DETAILS { get; set; }
         public DbSet<EAMISPRECONDITIONS> EAMIS_PPECONDITIONS { get; set; }
         public DbSet<EAMISUNITOFMEASURE> EAMIS_UNITOFMEASURE { get; set; }
-        public DbSet<EAMISWAREHOUSE> EAMIS_WAREHOUSE { get;set; }
+        public DbSet<EAMISWAREHOUSE> EAMIS_WAREHOUSE { get; set; }
         public DbSet<EAMISPROCUREMENTCATEGORY> EAMIS_PROCUREMENTCATEGORY { get; set; }
         public DbSet<EAMISPROPERTYITEMS> EAMIS_PROPERTYITEMS { get; set; }
         public DbSet<EAMISENVIRONMENTALIMPACTS> EAMIS_ENVIRONMENTALIMPACTS { get; set; }
@@ -49,7 +49,7 @@ namespace EAMIS.Core.Domain
         public DbSet<EAMISCLASSIFICATION> EAMIS_CLASSIFICATION { get; set; }
         public DbSet<EAMISSUBCLASSIFICATION> EAMIS_SUB_CLASSIFICATION { get; set; }
         public DbSet<EAMISGROUPCLASSIFICATION> EAMIS_GROUP_CLASSIFICATION { get; set; }
-        
+
         public DbSet<EAMISGENERALCHARTOFACCOUNTS> EAMIS_GENERAL_CHART_OF_ACCOUNTS { get; set; }
         public DbSet<EAMISFINANCINGSOURCE> EAMIS_FINANCING_SOURCE { get; set; }
         public DbSet<EAMISAUTHORIZATION> EAMIS_AUTHORIZATION { get; set; }
@@ -57,7 +57,7 @@ namespace EAMIS.Core.Domain
         public DbSet<EAMISRESPONSIBILITYCENTER> EAMIS_RESPONSIBILITY_CENTER { get; set; }
 
         //Transaction
-      
+
         public DbSet<EAMISDELIVERYRECEIPT> EAMIS_DELIVERY_RECEIPT { get; set; }
         public DbSet<EAMISDELIVERYRECEIPTDETAILS> EAMIS_DELIVERY_RECEIPT_DETAILS { get; set; }
         public DbSet<EAMISPROPERTYTRANSACTION> EAMIS_PROPERTY_TRANSACTION { get; set; }
@@ -73,8 +73,13 @@ namespace EAMIS.Core.Domain
         public DbSet<EAMISSERVICELOG> EAMIS_SERVICE_LOG { get; set; }
         public DbSet<EAMISSERVICELOGDETAILS> EAMIS_SERVICE_LOG_DETAILS { get; set; }
 
+        //DEPRECIATION/REVALUATION/ASSET SCHEDULE
+        public DbSet<EAMISPROPERTYREVALUATION> EAMIS_PROPERTY_REVALUATION { get; set; }
+        public DbSet<EAMISPROPERTYREVALUATIONDETAILS> EAMIS_PROPERTY_REVALUATION_DETAILS { get; set; }
 
+        public DbSet<EAMISPROPERTYSCHEDULE> EAMIS_PROPERTY_SCHEDULE { get; set; }
 
+        public DbSet<EAMISFACTORTYPE> EAMIS_FACTOR_TYPE { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<EAMISATTACHMENTTYPE>()
@@ -86,9 +91,6 @@ namespace EAMIS.Core.Domain
             //    .HasOne(x => x.DELIVERYRECEIPT_GROUP)
             //    .WithMany(x => x.PROPERTYTRANSACTIONDETAILS)
             //    .HasForeignKey(x => x.DELIVERY_RECEIPT_ID);
-
-          
-
 
             modelBuilder.Entity<EAMISFUNDSOURCE>()
                 .HasOne(x => x.FINANCING_SOURCE)
@@ -169,7 +171,9 @@ namespace EAMIS.Core.Domain
                 .HasOne(x => x.DELIVERY_RECEIPT_DETAILS_GROUP)
                 .WithMany(x => x.SERIAL_TRAN)
                 .HasForeignKey(x => x.DELIVERY_RECEIPT_DETAILS_ID);
-            
+
+            //modelBuilder.Entity<EAMISPROPERTYREVALUATION>()
+            //   .HasMany(x => );
 
             //modelBuilder.Entity<EAMISITEMCATEGORY>()
             //    .HasOne(x => x.CHART_OF_ACCOUNTS)
@@ -193,8 +197,8 @@ namespace EAMIS.Core.Domain
                 .HasIndex(x => x.MUNICIPALITY_CODE)
                 .IsUnique();
             modelBuilder.Entity<EAMISBARANGAY>()
-                .HasIndex(x => x.BRGY_CODE) 
-                .IsUnique();       
+                .HasIndex(x => x.BRGY_CODE)
+                .IsUnique();
 
             modelBuilder.Entity<EAMISUNITOFMEASURE>()
                 .HasIndex(a => a.SHORT_DESCRIPTION)
@@ -219,7 +223,7 @@ namespace EAMIS.Core.Domain
             //    .HasForeignKey<EAMISUSERS>(x => x.PERSONNEL_INFO_ID);
 
 
-          
+
 
             modelBuilder.Entity<EAMISGROUPCLASSIFICATION>()
                 .HasOne(x => x.CLASSIFICATION)
@@ -236,7 +240,7 @@ namespace EAMIS.Core.Domain
                 .HasOne(a => a.SUBCLASSIFICATION)
                 .WithMany(b => b.GROUPCLASSIFICATION)
                 .HasForeignKey(c => c.SUB_CLASSIFICATION_ID);
-            
+
             modelBuilder.Entity<EAMISFUNDSOURCE>()
                  .HasOne(q => q.GENERALFUNDSOURCE)
                  .WithMany(q => q.FUNDSOURCE)
@@ -247,7 +251,7 @@ namespace EAMIS.Core.Domain
                 .HasOne(a => a.GROUPCLASSIFICATION)
                 .WithMany(b => b.CHARTOFACCOUNTS)
                 .HasForeignKey(x => x.GROUP_ID);
-           
+
 
             modelBuilder.Entity<EAMISITEMSUBCATEGORY>()
                  .HasOne(q => q.ITEM_CATEGORY)
@@ -279,7 +283,7 @@ namespace EAMIS.Core.Domain
                 .WithMany(b => b.EAMISUSER_LOGIN)
                 .HasForeignKey(b => b.USER_ID);
 
-    
+
 
 
 

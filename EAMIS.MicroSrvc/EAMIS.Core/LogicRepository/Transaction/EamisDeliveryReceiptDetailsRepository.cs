@@ -18,13 +18,22 @@ namespace EAMIS.Core.LogicRepository.Transaction
         private readonly EAMISContext _ctx;
         private readonly int _maxPageSize;
         private readonly IEamisPropertyTransactionDetailsRepository _eamisPropertyTransactionDetailsRepository;
+        private readonly IEamisPropertyRevalutionRepository _eamisPropertyRevalutionRepository;
+
+        private string _errorMessage = "";
+        public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
+
+        private bool bolerror = false;
+        public bool HasError { get => bolerror; set => value = bolerror; }
         public EamisDeliveryReceiptDetailsRepository(EAMISContext ctx,
-            IEamisPropertyTransactionDetailsRepository eamisPropertyTransactionDetailsRepository)
+            IEamisPropertyTransactionDetailsRepository eamisPropertyTransactionDetailsRepository,
+            IEamisPropertyRevalutionRepository eamisPropertyRevalutionRepository)
         {
             _ctx = ctx;
             _eamisPropertyTransactionDetailsRepository = eamisPropertyTransactionDetailsRepository;
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
+            _eamisPropertyRevalutionRepository = eamisPropertyRevalutionRepository;
         }
 
         public async Task<EamisDeliveryReceiptDetailsDTO> Delete(EamisDeliveryReceiptDetailsDTO item)
@@ -85,10 +94,23 @@ namespace EAMIS.Core.LogicRepository.Transaction
         public async Task<EamisDeliveryReceiptDetailsDTO> Insert(EamisDeliveryReceiptDetailsDTO item)
         {
             EAMISDELIVERYRECEIPTDETAILS data = MapToEntity(item);
-            _ctx.Entry(data).State = EntityState.Added;
-            await _ctx.SaveChangesAsync();
-            //update property_items table quantity in stock
-            await _eamisPropertyTransactionDetailsRepository.UpdatePropertyItemQty(item);
+            var transaction = _ctx.Database.BeginTransaction();
+            try
+            {
+                _ctx.Entry(data).State = EntityState.Added;
+                await _ctx.SaveChangesAsync();
+
+                //update property_items table quantity in stock
+                await _eamisPropertyTransactionDetailsRepository.UpdatePropertyItemQty(item);
+
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                _errorMessage = ex.Message;
+                bolerror = true;
+            }
             return item;
         }
 
@@ -119,7 +141,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DeliveryReceiptId = x.DELIVERY_RECEIPT_ID,
                 ItemId = x.ITEM_ID,
                 //ItemCode = x.ITEM_CODE,
-               // ItemDescription = x.ITEM_DESCRIPTION,
+                // ItemDescription = x.ITEM_DESCRIPTION,
                 QtyOrder = x.QTY_ORDER,
                 QtyDelivered = x.QTY_DELIVERED,
                 QtyRejected = x.QTY_REJECTED,
@@ -147,7 +169,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     SupplierId = x.DELIVERY_RECEIPT_GROUP.SUPPLIER_ID,
                     StockroomId = x.DELIVERY_RECEIPT_GROUP.WAREHOUSE_ID,
                     SaleInvoiceNumber = x.DELIVERY_RECEIPT_GROUP.SALE_INVOICE_NUMBER,
-                    
+
                 }
             });
         }
@@ -191,7 +213,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
         public async Task<EamisDeliveryReceiptDetailsDTO> Update(EamisDeliveryReceiptDetailsDTO item)
         {
             EAMISDELIVERYRECEIPTDETAILS data = MapToEntity(item);
-            _ctx.Entry(data).State = data.ID ==  0 ? EntityState.Added : EntityState.Modified;
+            _ctx.Entry(data).State = data.ID == 0 ? EntityState.Added : EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
         }
