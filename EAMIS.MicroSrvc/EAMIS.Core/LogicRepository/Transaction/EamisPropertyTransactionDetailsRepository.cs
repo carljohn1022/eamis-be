@@ -1,4 +1,6 @@
 ﻿using EAMIS.Common.DTO.Transaction;
+using EAMIS.Core.CommonSvc.Constant;
+using EAMIS.Core.CommonSvc.Utility;
 using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain;
 using EAMIS.Core.Domain.Entities;
@@ -17,12 +19,136 @@ namespace EAMIS.Core.LogicRepository.Transaction
     public class EamisPropertyTransactionDetailsRepository : IEamisPropertyTransactionDetailsRepository
     {
         private readonly EAMISContext _ctx;
+        private readonly IFactorType _factorType;
         private readonly int _maxPageSize;
-        public EamisPropertyTransactionDetailsRepository(EAMISContext ctx )
+
+        private readonly IEamisPropertyRevalutionRepository _eamisPropertyRevalutionRepository;
+
+        private string _errorMessage = "";
+        public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
+
+        private bool bolerror = false;
+        public bool HasError { get => bolerror; set => value = bolerror; }
+
+        private string _categoryName = "";
+        private string CategoryName { get => _categoryName; set => value = _categoryName; }
+
+        private string _subCategoryName = "";
+        private string SubCategoryName { get => _subCategoryName; set => value = _subCategoryName; }
+
+        public EamisPropertyTransactionDetailsRepository(EAMISContext ctx,
+            IEamisPropertyRevalutionRepository eamisPropertyRevalutionRepository,
+            IFactorType factorType)
         {
             _ctx = ctx;
+            _factorType = factorType;
+            _eamisPropertyRevalutionRepository = eamisPropertyRevalutionRepository;
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
+        }
+
+
+        private bool IsAssetPropertyItem(string itemCode)
+        {
+            var result = _ctx.EAMIS_PROPERTYITEMS
+                        .Join(_ctx.EAMIS_ITEM_CATEGORY,
+                        item => item.CATEGORY_ID,
+                        category => category.ID,
+                        (item, category) => new { item, category })
+                        .Join(_ctx.EAMIS_ITEMS_SUB_CATEGORY,
+                        itemSubCategory => itemSubCategory.item.SUBCATEGORY_ID,
+                        subCategory => subCategory.ID,
+                        (itemSubCategory, subCategory) => new { itemSubCategory, subCategory })
+                        .Where(p => p.itemSubCategory.item.PROPERTY_NO == itemCode)
+                        .Select(c => new { c.itemSubCategory.category.IS_ASSET, c.itemSubCategory.category.CATEGORY_NAME, c.subCategory.SUB_CATEGORY_NAME }).FirstOrDefault();
+            if (result != null)
+            {
+                _categoryName = result.CATEGORY_NAME;
+                _subCategoryName = result.SUB_CATEGORY_NAME;
+                return result.IS_ASSET;
+            }
+            return false;
+        }
+
+        private EAMISPROPERTYSCHEDULE MapAssetScheduleEntity(EamisPropertyTransactionDetailsDTO item)
+        {
+            //Construct the asset schedule data
+            return new EAMISPROPERTYSCHEDULE
+            {
+                ID = 0,
+                ACQUISITION_COST = item.UnitCost,
+                ACQUISITION_DATE = item.AcquisitionDate,
+                APPRAISAL_INCREMENT = 0,
+                APPRAISED_VALUE = 0,
+                AREA_SQM = item.Area,
+                ASSESSED_VALUE = 0,
+                ASSET_CONDITION = string.Empty,
+                ASSET_TAG = string.Empty,
+                BOOK_VALUE = item.BookValue,
+                CATEGORY = CategoryName, //get from category, link to property item
+                COST_CENTER = string.Empty,
+                DEPARTMENT = item.Department,
+                DEPREC_AMOUNT = 0,
+                DETAILS = string.Empty,
+                DISPOSED_AMOUNT = 0,
+                EST_LIFE = item.EstLife,
+                FOR_DEPRECIATION = string.Empty,
+                INVOICE_NO = item.Invoice,
+                ITEM_DESCRIPTION = item.ItemDescription,
+                LAST_DEPARTMENT = string.Empty,
+                LAST_POSTED_DATE = DateTime.Now,
+                LOCATION = string.Empty,
+                NAMES = string.Empty,
+                POREF = 0,
+                PROPERTY_NUMBER = item.PropertyNumber,
+                REAL_ESTATE_TAX_PAYMENT = 0,
+                REVALUATION_COST = 0,
+                RRDATE = DateTime.Now,
+                RRREF = 0,
+                SALVAGE_VALUE = item.SalvageValue,
+                SERIAL_NO = item.SerialNumber,
+                STATUS = string.Empty,
+                SUB_CATEGORY = SubCategoryName, //get from sub category, link to property item/Category
+                SVC_AGREEMENT_NO = 0,
+                VENDORNAME = string.Empty,
+                WARRANTY = string.Empty, //item.WarrantyExpiry?
+                WARRANTY_DATE = DateTime.Now  //item.WarrantyExpiry?
+            };
+        }
+
+        private async Task<EAMISPROPERTYREVALUATION> MapPropertyRevaluation()
+        {
+            return new EAMISPROPERTYREVALUATION
+            {
+                ID = 0,
+                PARTICULARS = string.Empty,
+                TRAN_DATE = DateTime.Now,
+                TRAN_ID = await Task.Run(() => _eamisPropertyRevalutionRepository.GetNextSequenceNumber()).ConfigureAwait(false)
+            };
+        }
+
+        private EAMISPROPERTYREVALUATIONDETAILS MapPropertyRevaluationDetails(int revaluationId, EamisPropertyTransactionDetailsDTO item)
+        {
+            decimal salvageValue = _factorType.GetFactorTypeValue(FactorTypes.SalvageValue); //Get salvage value factor
+            decimal bookValue = item.UnitCost - (item.UnitCost * salvageValue); //Unit Cost * Salvage value factor
+            decimal monthlyDepreciation = bookValue / item.EstLife;
+            return new EAMISPROPERTYREVALUATIONDETAILS
+            {
+                ID = 0,
+                ACCUMULATIVE_DEPRECIATION = monthlyDepreciation, //Monthly Depreciation * Estimated Life
+                ACQ_COST = item.UnitCost, //to be confirmed, assumption, value is the same with property item unit cost
+                DEPRECIATION = item.AcquisitionDate, //to be confirmed, Default Depreciation date is Acquisition date plus the estimated life in months
+                FAIR_VALUE = 0, //to be confirmed, Book Value after revaluation
+                ITEM_CODE = item.ItemCode,
+                ITEM_DESC = item.ItemDescription,
+                NET_BOOK_VALUE = bookValue, //to be confirmed
+                NEW_DEP = item.AcquisitionDate, //to be confirmed, Default value same as Depreciation Date
+                PREV_REVALUATION = string.Empty, //to be confirmed
+                REMAINING_LIFE = item.EstLife, //to be confirmed, Default value is the same with item estimated life in months
+                REVALUED_AMT = 0, //to be confirmed
+                SALVAGE_VALUE = item.SalvageValue,
+                PROPERTY_REVALUATION_ID = revaluationId
+            };
         }
 
         public async Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item)
@@ -67,18 +193,48 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 INVOICE = item.Invoice,
                 PROPERTY_CONDITION = item.PropertyCondition
 
-           
+
             };
         }
 
         public async Task<EamisPropertyTransactionDetailsDTO> Insert(EamisPropertyTransactionDetailsDTO item)
         {
             EAMISPROPERTYTRANSACTIONDETAILS data = MapToEntity(item);
-            _ctx.Entry(data).State = EntityState.Added;
-            await _ctx.SaveChangesAsync();
+            var transaction = _ctx.Database.BeginTransaction();
+            try
+            {
+                _ctx.Entry(data).State = EntityState.Added;
+                await _ctx.SaveChangesAsync();
+
+                if (IsAssetPropertyItem(item.ItemCode)) //check if property item category is under asset
+                {
+                    //insert new record to asset schedule
+                    EAMISPROPERTYSCHEDULE asset = MapAssetScheduleEntity(item);
+                    _ctx.Entry(asset).State = EntityState.Added;
+                    await _ctx.SaveChangesAsync();
+
+                    //insert new record to property revaluation
+                    EAMISPROPERTYREVALUATION revaluation = await MapPropertyRevaluation();
+                    _ctx.Entry(revaluation).State = EntityState.Added;
+                    await _ctx.SaveChangesAsync();
+
+                    //insert new record to property revaluation details
+                    EAMISPROPERTYREVALUATIONDETAILS revaluationDetails = MapPropertyRevaluationDetails(revaluation.ID, item);
+                    _ctx.Entry(revaluationDetails).State = EntityState.Added;
+                    await _ctx.SaveChangesAsync();
+                }
+                transaction.Commit();
+                item.Id = data.ID;
+            }
+            catch (Exception ex)
+            {
+                _errorMessage = ex.Message;
+                bolerror = true;
+                transaction.Rollback();
+            }
             return item;
         }
-
+         
         public async Task<DataList<EamisPropertyTransactionDetailsDTO>> List(EamisPropertyTransactionDetailsDTO filter, PageConfig config)
         {
             IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredEntities(filter);
@@ -130,8 +286,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 WarrantyExpiry = x.WARRANTY_EXPIRY,
                 Invoice = x.INVOICE,
                 PropertyCondition = x.PROPERTY_CONDITION,
-                
-                PropertyTransactionGroup  = new EamisPropertyTransactionDTO
+
+                PropertyTransactionGroup = new EamisPropertyTransactionDTO
                 {
                     Id = x.PROPERTY_TRANSACTION_GROUP.ID,
                     TransactionStatus = x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_STATUS,
@@ -155,7 +311,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (filter.Id != null && filter.Id != 0)
                 predicate = predicate.And(x => x.ID == filter.Id);
             if (filter.isDepreciation != null && filter.isDepreciation != false)
-                    predicate = predicate.And(x => x.IS_DEPRECIATION == filter.isDepreciation);
+                predicate = predicate.And(x => x.IS_DEPRECIATION == filter.isDepreciation);
             if (!string.IsNullOrEmpty(filter.Dr)) predicate = (strict)
                      ? predicate.And(x => x.DR.ToLower() == filter.Dr.ToLower())
                      : predicate.And(x => x.DR.Contains(filter.Dr.ToLower()));
@@ -223,7 +379,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
         public async Task<EamisPropertyTransactionDetailsDTO> Update(EamisPropertyTransactionDetailsDTO item)
         {
             EAMISPROPERTYTRANSACTIONDETAILS data = MapToEntity(item);
-       
+
             _ctx.Entry(data).State = data.ID == 0 ? EntityState.Added : EntityState.Modified; ;
             await _ctx.SaveChangesAsync();
             return item;
@@ -280,11 +436,11 @@ namespace EAMIS.Core.LogicRepository.Transaction
             string strResult = "";
             //check item in DB
             var itemInDB = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.FirstOrDefault(i => i.ID == item.ItemId)).ConfigureAwait(false);
-            if(itemInDB != null)
+            if (itemInDB != null)
             {
                 itemInDB.QUANTITY = itemInDB.QUANTITY + item.QtyReceived;
                 var result = await _ctx.SaveChangesAsync();
-                if(result > 0)
+                if (result > 0)
                 {
                     strResult = "Successfully updated.";
                 }

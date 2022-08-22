@@ -27,22 +27,32 @@ namespace EAMIS.Core.CommonSvc.Utility
                 case TransactionTypeSettings.DeliveryReceipt:
                     maxId = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.Max(t => (int?)t.ID) ?? 0).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
                     nextId = maxId + 1;
-                    _id = PrefixSettings.DRPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');
+                    _id = PrefixSettings.DRPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
                     break;
                 case TransactionTypeSettings.Issuance:
                     maxId = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION.Max(t => (int?)t.ID) ?? 0).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
                     nextId = maxId + 1;
-                    _id = PrefixSettings.ISPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');
+                    _id = PrefixSettings.ISPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
                     break;
                 case TransactionTypeSettings.PropertyTransfer:
-                    maxId = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION.Max(t => (int?)t.ID) ?? 0).ConfigureAwait(false);
+                    maxId = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION.Max(t => (int?)t.ID) ?? 0).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
                     nextId = maxId + 1;
-                    _id = PrefixSettings.PTPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');
+                    _id = PrefixSettings.PTPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
                     break;
                 case TransactionTypeSettings.ServiceLog:
-                    maxId = await Task.Run(() => _ctx.EAMIS_SERVICE_LOG.Max(t => (int?)t.ID) ?? 0).ConfigureAwait(false);
+                    maxId = await Task.Run(() => _ctx.EAMIS_SERVICE_LOG.Max(t => (int?)t.ID) ?? 0).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
                     nextId = maxId + 1;
-                    _id = PrefixSettings.SLPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');
+                    _id = PrefixSettings.SLPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    break;
+                case TransactionTypeSettings.PropertyDisposal:
+                    maxId = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION.Max(t => (int?)t.ID) ?? 0).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = PrefixSettings.PDPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    break;
+                case TransactionTypeSettings.PropertyRevaluation:
+                    maxId = await Task.Run(() => _ctx.EAMIS_PROPERTY_REVALUATION.Max(t => (int?)t.ID) ?? 0).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = PrefixSettings.PVPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
                     break;
             }
             return _id;
