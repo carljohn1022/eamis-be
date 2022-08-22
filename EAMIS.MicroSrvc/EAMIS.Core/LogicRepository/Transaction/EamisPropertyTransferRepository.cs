@@ -57,23 +57,27 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTION>(true);
 
-            string strQuery = "SELECT * FROM [dbo].[EAMIS_PROPERTY_TRANSACTION] " +
-                              "WHERE ID IN(" +
-                              "SELECT D.PROPERTY_TRANS_ID FROM[dbo].[EAMIS_PROPERTY_TRANSACTION_DETAILS] D " +
-                              "INNER JOIN[dbo].[EAMIS_PROPERTY_TRANSACTION] H " +
-                              "ON D.PROPERTY_TRANS_ID = H.ID " +
-                              "WHERE H.TRANSACTION_TYPE IN('Property Transfer') " +
-                              "UNION " +
-                              "SELECT D.PROPERTY_TRANS_ID FROM[dbo].[EAMIS_PROPERTY_TRANSACTION_DETAILS] D " +
-                              "INNER JOIN[dbo].[EAMIS_PROPERTY_TRANSACTION] H " +
-                              "ON D.PROPERTY_TRANS_ID = H.ID " +
-                              "WHERE H.TRANSACTION_TYPE IN('Property Issuance') AND " +
-                              "D.PROPERTY_NUMBER NOT IN " +
-                              "(SELECT D.PROPERTY_NUMBER FROM[dbo].[EAMIS_PROPERTY_TRANSACTION_DETAILS] D " +
-                              "INNER JOIN[dbo].[EAMIS_PROPERTY_TRANSACTION] H " +
-                              "ON D.PROPERTY_TRANS_ID = H.ID " +
-                              "WHERE H.TRANSACTION_TYPE IN('Property Transfer')))";
-            var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION.FromSqlRaw(strQuery);
+            var propertyItemTransfer = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                        .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                        d => d.PROPERTY_TRANS_ID,
+                                        h => h.ID,
+                                        (d, h) => new { d, h })
+                                        .Where(x => x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer)
+                                        .Select(y => y.d.PROPERTY_TRANS_ID)
+                                        .ToList();
+            var propertyItemIssuance = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                        .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                        d => d.PROPERTY_TRANS_ID,
+                                        h => h.ID,
+                                        (d, h) => new { d, h })
+                                        .Where(x => x.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance &&
+                                               !propertyItemTransfer.Contains(x.d.PROPERTY_TRANS_ID))
+                                        .Select(y => y.d.PROPERTY_TRANS_ID)
+                                        .ToList();
+
+            var ids = propertyItemTransfer.AsEnumerable().Union(propertyItemIssuance);
+
+            var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION.Where(x => ids.Contains(x.ID));
             return query.Where(predicate);
         }
         private IQueryable<EAMISPROPERTYTRANSACTION> PagedQuery(IQueryable<EAMISPROPERTYTRANSACTION> query, int resolved_size, int resolved_index)
@@ -95,8 +99,38 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DeliveryDate = x.DELIVERY_DATE,
                 UserStamp = x.USER_STAMP,
                 TimeStamp = x.TIMESTAMP,
-                TransactionStatus = x.TRANSACTION_STATUS
-
+                TransactionStatus = x.TRANSACTION_STATUS,
+                PropertyTransactionDetails = x.PROPERTY_TRANSACTION_DETAILS.Select
+                                (d => new EamisPropertyTransactionDetailsDTO
+                                {
+                                    Id = d.ID,
+                                    PropertyTransactionID = d.PROPERTY_TRANS_ID,
+                                    isDepreciation = d.IS_DEPRECIATION,
+                                    Dr = d.DR,
+                                    PropertyNumber = d.PROPERTY_NUMBER,
+                                    ItemDescription = d.ITEM_DESCRIPTION,
+                                    SerialNumber = d.SERIAL_NUMBER,
+                                    Po = d.PO,
+                                    Pr = d.PR,
+                                    AcquisitionDate = d.ACQUISITION_DATE,
+                                    AssigneeCustodian = d.ASSIGNEE_CUSTODIAN,
+                                    RequestedBy = d.REQUESTED_BY,
+                                    Office = d.OFFICE,
+                                    Department = d.DEPARTMENT,
+                                    ResponsibilityCode = d.RESPONSIBILITY_CODE,
+                                    UnitCost = d.UNIT_COST,
+                                    Qty = d.QTY,
+                                    SalvageValue = d.SALVAGE_VALUE,
+                                    BookValue = d.BOOK_VALUE,
+                                    EstLife = d.ESTIMATED_LIFE,
+                                    Area = d.AREA,
+                                    Semi = d.SEMI_EXPANDABLE_AMOUNT,
+                                    UserStamp = d.USER_STAMP,
+                                    TimeStamp = d.TIME_STAMP,
+                                    WarrantyExpiry = d.WARRANTY_EXPIRY,
+                                    Invoice = d.INVOICE,
+                                    PropertyCondition = d.PROPERTY_CONDITION,
+                                }).ToList()
             });
         }
         public async Task<EamisPropertyTransactionDTO> Insert(EamisPropertyTransactionDTO item)
@@ -108,7 +142,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             //ensure that recently added record has the correct transaction type number
             item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
 
-            string _drType = PrefixSettings.PTPrefix + Convert.ToString(data.ID).PadLeft(6, '0');
+            string _drType = PrefixSettings.PTPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
 
             //check if the forecasted transaction type matches with the actual transaction type (saved/created in DB)
             //forecasted transaction type = item.TransactionType
@@ -153,122 +187,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
         }
         #endregion property transaction
 
-        #region Property transaction details 
-        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredDetails(EamisPropertyTransferDetailsDTO filter, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, bool strict = false)
-        {
-            var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
-            if (filter.PropertyTransactionID != 0)
-                predicate = predicate.And(x => x.PROPERTY_TRANS_ID == filter.PropertyTransactionID);
-            var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS;
-            return query.Where(predicate);
-        }
-        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> PagedDetailsQuery(IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query, int resolved_size, int resolved_index)
-        {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
-        }
-        public async Task<DataList<EamisPropertyTransferDetailsDTO>> List(EamisPropertyTransferDetailsDTO filter, PageConfig config)
-        {
-            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredDetails(filter);
 
-            string resolved_sort = config.SortBy ?? "Id";
-            bool resolves_isAscending = (config.IsAscending) ? config.IsAscending : false;
-            int resolved_size = config.Size ?? _maxPageSize;
-            if (resolved_size > _maxPageSize) resolved_size = _maxPageSize;
-            int resolved_index = config.Index ?? 1;
-
-            var paged = PagedDetailsQuery(query, resolved_size, resolved_index);
-
-            return new DataList<EamisPropertyTransferDetailsDTO>
-            {
-                Count = await query.CountAsync(),
-                Items = await QueryDetailsToDTO(paged).ToListAsync(),
-
-            };
-        }
-        private IQueryable<EamisPropertyTransferDetailsDTO> QueryDetailsToDTO(IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query)
-        {
-            return query.Select(x => new EamisPropertyTransferDetailsDTO
-            {
-                Id = x.ID,
-                PropertyTransactionID = x.PROPERTY_TRANS_ID,
-                isDepreciation = x.IS_DEPRECIATION,
-                Dr = x.DR,
-                PropertyNumber = x.PROPERTY_NUMBER,
-                ItemDescription = x.ITEM_DESCRIPTION,
-                SerialNumber = x.SERIAL_NUMBER,
-                Po = x.PO,
-                Pr = x.PR,
-                AcquisitionDate = x.ACQUISITION_DATE,
-                AssigneeCustodian = x.ASSIGNEE_CUSTODIAN,
-                RequestedBy = x.REQUESTED_BY,
-                Office = x.OFFICE,
-                Department = x.DEPARTMENT,
-                ResponsibilityCode = x.RESPONSIBILITY_CODE,
-                UnitCost = x.UNIT_COST,
-                Qty = x.QTY,
-                SalvageValue = x.SALVAGE_VALUE,
-                BookValue = x.BOOK_VALUE,
-                EstLife = x.ESTIMATED_LIFE,
-                Area = x.AREA,
-                Semi = x.SEMI_EXPANDABLE_AMOUNT,
-                UserStamp = x.USER_STAMP,
-                TimeStamp = x.TIME_STAMP,
-                WarrantyExpiry = x.WARRANTY_EXPIRY,
-                Invoice = x.INVOICE,
-                PropertyCondition = x.PROPERTY_CONDITION
-            });
-        }
-        public async Task<EamisPropertyTransferDetailsDTO> Insert(EamisPropertyTransferDetailsDTO item)
-        {
-            EAMISPROPERTYTRANSACTIONDETAILS data = MapToEntity(item);
-            try
-            {
-                _ctx.Entry(data).State = EntityState.Added;
-                await _ctx.SaveChangesAsync();
-                item.Id = data.ID;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
-            return item;
-        }
-        private EAMISPROPERTYTRANSACTIONDETAILS MapToEntity(EamisPropertyTransferDetailsDTO item)
-        {
-            if (item == null) return new EAMISPROPERTYTRANSACTIONDETAILS();
-            return new EAMISPROPERTYTRANSACTIONDETAILS
-            {
-                ID = item.Id,
-                PROPERTY_TRANS_ID = item.PropertyTransactionID,
-                IS_DEPRECIATION = item.isDepreciation,
-                DR = item.Dr,
-                PROPERTY_NUMBER = item.PropertyNumber,
-                ITEM_DESCRIPTION = item.ItemDescription,
-                SERIAL_NUMBER = item.SerialNumber,
-                PO = item.Pr,
-                PR = item.Pr,
-                ACQUISITION_DATE = item.AcquisitionDate,
-                ASSIGNEE_CUSTODIAN = item.NewAssigneeCustodian, // item.AssigneeCustodian,
-                REQUESTED_BY = item.RequestedBy,
-                OFFICE = item.Office,
-                DEPARTMENT = item.Department,
-                RESPONSIBILITY_CODE = item.NewResponsibilityCode, // item.ResponsibilityCode,
-                UNIT_COST = item.UnitCost,
-                QTY = item.Qty,
-                SALVAGE_VALUE = item.SalvageValue,
-                BOOK_VALUE = item.BookValue,
-                ESTIMATED_LIFE = item.EstLife,
-                AREA = item.Area,
-                SEMI_EXPANDABLE_AMOUNT = item.Semi,
-                USER_STAMP = item.UserStamp,
-                TIME_STAMP = item.TimeStamp,
-                WARRANTY_EXPIRY = item.WarrantyExpiry,
-                INVOICE = item.Invoice,
-                PROPERTY_CONDITION = item.PropertyCondition
-
-            };
-        }
-        #endregion Property transaction details
     }
 }

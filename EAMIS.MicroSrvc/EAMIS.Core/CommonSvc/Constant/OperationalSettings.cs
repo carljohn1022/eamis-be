@@ -18,19 +18,34 @@ namespace EAMIS.Core.CommonSvc.Constant
     {
         public const string DeliveryReceipt = "Delivery Receipt";
         public const string PropertyReceiving = "Property Receiving";
-        public const string Issuance = "Issuance";
+        public const string Issuance = "Property Issuance";
         public const string PropertyTransfer = "Property Transfer";
         public const string ServiceLog = "Service Log";
+        public const string PropertyDisposal = "Property Disposal";
+        public const string PropertyRevaluation = "Property Revaluation";
+        public const string AssetSchedule = "Asset Schedule";
+    }
 
+    public static class PropertyItemStatus
+    {
+        public const string ForCondemn = "FOR CONDEMN";
+    }
+
+    public static class FactorTypes
+    {
+        public const string SalvageValue = "SV";
     }
 
     public static class PrefixSettings
     {
-        public const string DRPrefix = "DR";
-        public const string PRPrefix = "RV";
-        public const string ISPrefix = "I";
-        public const string PTPrefix = "PT";
-        public const string SLPrefix = "SL";
+        public const string DRPrefix = "DR";//Delivery receipt prefix. change according to the business rule.
+        public const string PRPrefix = "PR";//Property receiving prefix. change according to the business rule.
+        public const string ISPrefix = "I"; //Propery issuance prefix. change according to the business rule.
+        public const string PTPrefix = "PT"; //Property transfer prefix. change according to the business rule.
+        public const string SLPrefix = "SL"; //Service Log prefix. change according to the business rule.
+        public const string PDPrefix = "PD"; //Property Disposal prefix. change according to the business rule.
+        public const string ASPrefix = "AS"; //Asset Schedule prefix. change according to the business rule.
+        public const string PVPrefix = "PV"; //Property Revaluation prefix. change according to the business rule.
     }
 
     public static class WorkSheetTemplateNames

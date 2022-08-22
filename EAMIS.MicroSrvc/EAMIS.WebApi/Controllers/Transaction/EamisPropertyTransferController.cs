@@ -36,13 +36,6 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return Ok(await _eamisPropertyTransferRepository.List(filter, config));
         }
 
-        [HttpGet("GetPropertyTransferDetailsById")]
-        public async Task<ActionResult<EamisPropertyTransferDetailsDTO>> GetPropertyTransferDetailsById([FromQuery] EamisPropertyTransferDetailsDTO filter, [FromQuery] PageConfig config)
-        {
-            if (filter == null)
-                filter = new EamisPropertyTransferDetailsDTO();
-            return Ok(await _eamisPropertyTransferRepository.List(filter, config));
-        }
 
         /// <summary>
         /// this will create a new record/row in [EAMIS_PROPERTY_TRANSACTION]
@@ -57,17 +50,5 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return Ok(await _eamisPropertyTransferRepository.Insert(item));
         }
 
-        /// <summary>
-        /// this will create a new record/row in [EAMIS_PROPERTY_TRANSACTION_DETAILS]
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        [HttpPost("AddPropertyTransferDetails")]
-        public async Task<ActionResult<EamisPropertyTransferDetailsDTO>> AddPropertyTransferDetails([FromBody] EamisPropertyTransferDetailsDTO item)
-        {
-            if (item == null)
-                item = new EamisPropertyTransferDetailsDTO();
-            return Ok(await _eamisPropertyTransferRepository.Insert(item));
-        }
     }
 }

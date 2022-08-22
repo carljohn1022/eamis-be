@@ -11,5 +11,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<EamisDeliveryReceiptDetailsDTO> Update(EamisDeliveryReceiptDetailsDTO item);
         Task<EamisDeliveryReceiptDetailsDTO> Delete(EamisDeliveryReceiptDetailsDTO item);
         Task<string> GetItemById(int itemId);
+        string ErrorMessage { get; set; }
+        bool HasError { get; set; }
     }
 }

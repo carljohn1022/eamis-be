@@ -7,4 +7,4 @@ build_property.PublishSingleFile =
 build_property.IncludeAllContentForSelfExtract = 
 build_property._SupportedPlatformList = Android,iOS,Linux,macOS,Windows
 build_property.RootNamespace = EAMIS.Common
-build_property.ProjectDir = C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\
+build_property.ProjectDir = D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Common\

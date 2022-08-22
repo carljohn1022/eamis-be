@@ -19,7 +19,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string UnitOfMeasurement  { get; set; }
         public decimal SubTotal { get; set; }
         //public DateTime WarrantyExpiryDate  { get; set; }
-        public EamisPropertyItemsDTO PropertyItem { get; set; }
+        public Masterfiles.EamisPropertyItemsDTO PropertyItem { get; set; }
         public EamisDeliveryReceiptDTO DeliveryReceipt { get; set; }
 
     }

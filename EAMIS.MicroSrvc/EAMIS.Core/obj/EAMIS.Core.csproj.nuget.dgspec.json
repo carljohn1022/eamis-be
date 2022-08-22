@@ -1,23 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj": {}
+    "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj": {}
   },
   "projects": {
-    "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj": {
+    "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj",
+        "projectUniqueName": "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj",
         "projectName": "EAMIS.Common",
-        "projectPath": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj",
-        "packagesPath": "C:\\Users\\npala\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\obj\\",
+        "projectPath": "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj",
+        "packagesPath": "C:\\Users\\Gerald\\.nuget\\packages\\",
+        "outputPath": "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "D:\\DevExpress Latest version\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\npala\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Gerald\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 20.2.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -25,6 +29,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "D:\\DevExpress Latest version\\Components\\System\\Components\\Packages": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -46,6 +51,10 @@
             "EPPlus": {
               "target": "Package",
               "version": "[5.5.2, )"
+            },
+            "Microsoft.AspNetCore.Http.Features": {
+              "target": "Package",
+              "version": "[5.0.17, )"
             }
           },
           "imports": [
@@ -63,24 +72,28 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj": {
+    "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj",
+        "projectUniqueName": "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj",
         "projectName": "EAMIS.Core",
-        "projectPath": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj",
-        "packagesPath": "C:\\Users\\npala\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\obj\\",
+        "projectPath": "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj",
+        "packagesPath": "C:\\Users\\Gerald\\.nuget\\packages\\",
+        "outputPath": "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "D:\\DevExpress Latest version\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\npala\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Gerald\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 20.2.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -88,14 +101,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "D:\\DevExpress Latest version\\Components\\System\\Components\\Packages": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj": {
-                "projectPath": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj"
+              "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj": {
+                "projectPath": "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj"
               }
             }
           }
@@ -172,7 +186,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }
