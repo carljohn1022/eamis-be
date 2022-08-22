@@ -1459,3 +1459,7 @@ D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\ref\EAMIS.WebApi.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.pdb
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.genruntimeconfig.cache
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.AspNetCore.Http.Features.dll
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.Extensions.Primitives.dll
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\System.IO.Pipelines.dll
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.csproj.CopyComplete

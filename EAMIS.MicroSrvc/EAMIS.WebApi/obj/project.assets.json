@@ -9756,29 +9756,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Gerald\\.nuget\\packages\\": {},
-    "D:\\DevExpress Latest version\\Components\\Offline Packages": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Users\\npala\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.WebApi\\EAMIS.WebApi.csproj",
+      "projectUniqueName": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.WebApi\\EAMIS.WebApi.csproj",
       "projectName": "EAMIS.WebApi",
-      "projectPath": "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.WebApi\\EAMIS.WebApi.csproj",
-      "packagesPath": "C:\\Users\\Gerald\\.nuget\\packages\\",
-      "outputPath": "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.WebApi\\obj\\",
+      "projectPath": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.WebApi\\EAMIS.WebApi.csproj",
+      "packagesPath": "C:\\Users\\npala\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.WebApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "D:\\DevExpress Latest version\\Components\\Offline Packages",
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Gerald\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 20.2.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\npala\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -9786,15 +9780,14 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "D:\\DevExpress Latest version\\Components\\System\\Components\\Packages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj": {
-              "projectPath": "D:\\EAMIS WS\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj"
+            "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj": {
+              "projectPath": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj"
             }
           }
         }
@@ -9872,7 +9865,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
       }
     }
   }
