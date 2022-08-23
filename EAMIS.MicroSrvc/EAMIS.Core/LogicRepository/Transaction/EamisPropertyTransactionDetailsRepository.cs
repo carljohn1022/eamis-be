@@ -36,6 +36,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
         private string _subCategoryName = "";
         private string SubCategoryName { get => _subCategoryName; set => value = _subCategoryName; }
 
+        private int _estimatedLife;
+        private int EstimatedLife { get => _estimatedLife; set => value = _estimatedLife; }
+
         public EamisPropertyTransactionDetailsRepository(EAMISContext ctx,
             IEamisPropertyRevalutionRepository eamisPropertyRevalutionRepository,
             IFactorType factorType)
@@ -60,11 +63,18 @@ namespace EAMIS.Core.LogicRepository.Transaction
                         subCategory => subCategory.ID,
                         (itemSubCategory, subCategory) => new { itemSubCategory, subCategory })
                         .Where(p => p.itemSubCategory.item.PROPERTY_NO == itemCode)
-                        .Select(c => new { c.itemSubCategory.category.IS_ASSET, c.itemSubCategory.category.CATEGORY_NAME, c.subCategory.SUB_CATEGORY_NAME }).FirstOrDefault();
+                        .Select(c => new 
+                        { 
+                            c.itemSubCategory.category.IS_ASSET, 
+                            c.itemSubCategory.category.CATEGORY_NAME, 
+                            c.subCategory.SUB_CATEGORY_NAME,
+                            c.itemSubCategory.category.ESTIMATED_LIFE
+                        }).FirstOrDefault();
             if (result != null)
             {
                 _categoryName = result.CATEGORY_NAME;
                 _subCategoryName = result.SUB_CATEGORY_NAME;
+                _estimatedLife = result.ESTIMATED_LIFE;
                 return result.IS_ASSET;
             }
             return false;
@@ -131,7 +141,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             decimal salvageValue = _factorType.GetFactorTypeValue(FactorTypes.SalvageValue); //Get salvage value factor
             decimal bookValue = item.UnitCost - (item.UnitCost * salvageValue); //Unit Cost * Salvage value factor
-            decimal monthlyDepreciation = bookValue / item.EstLife;
+            decimal monthlyDepreciation = bookValue / EstimatedLife;
             return new EAMISPROPERTYREVALUATIONDETAILS
             {
                 ID = 0,
@@ -144,7 +154,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 NET_BOOK_VALUE = bookValue, //to be confirmed
                 NEW_DEP = item.AcquisitionDate, //to be confirmed, Default value same as Depreciation Date
                 PREV_REVALUATION = string.Empty, //to be confirmed
-                REMAINING_LIFE = item.EstLife, //to be confirmed, Default value is the same with item estimated life in months
+                REMAINING_LIFE = EstimatedLife, //Get estimated life from category. per conversation with Justin 08.22.2022
                 REVALUED_AMT = 0, //to be confirmed
                 SALVAGE_VALUE = item.SalvageValue,
                 PROPERTY_REVALUATION_ID = revaluationId
