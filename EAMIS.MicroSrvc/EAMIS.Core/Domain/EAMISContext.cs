@@ -15,7 +15,7 @@ namespace EAMIS.Core.Domain
         {
 
         }
-
+        public DbSet<EAMISATTACHEDFILES> EAMIS_ATTACHED_FILES { get; set; }
         public DbSet<EAMISREGION> EAMIS_REGION { get; set; }
         public DbSet<EAMISPROVINCE> EAMIS_PROVINCE { get; set; }
         public DbSet<EAMISMUNICIPALITY> EAMIS_MUNICIPALITY { get; set; }

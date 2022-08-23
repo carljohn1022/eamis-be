@@ -64,5 +64,19 @@ namespace EAMIS.WebApi.Controllers.Transaction
 
             return Ok(result);
         }
+
+        [HttpPost("calculateDepreciation")]
+        public async Task<ActionResult<EamisPropertyRevaluationDetailsDTO>> CalculateDepreciation([FromBody] EamisPropertyRevaluationDetailsDTO item, DateTime? newDepreciationDate)
+        {
+            if (item == null)
+                item = new EamisPropertyRevaluationDetailsDTO();
+
+            var result = await Task.Run(() => _eamisPropertyRevalutionDetailsRepository.CalculateRevaluationDetails(item, newDepreciationDate)).ConfigureAwait(false);
+
+            if (_eamisPropertyRevalutionDetailsRepository.HasError)
+                return BadRequest(_eamisPropertyRevalutionDetailsRepository.ErrorMessage);
+
+            return Ok(result);
+        }
     }
 }

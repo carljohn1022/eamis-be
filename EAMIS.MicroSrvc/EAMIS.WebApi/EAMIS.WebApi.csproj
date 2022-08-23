@@ -29,6 +29,10 @@
 
   <ItemGroup>
     <Folder Include="StaticFiles\Uploaded\Excel\" />
+    <Folder Include="StaticFiles\Uploaded\PropertyImages\" />
+    <Folder Include="wwwroot\StaticFiles\EAMIS_Attached_Files\Delivery_Receipt\08232022\" />
+    <Folder Include="wwwroot\StaticFiles\Uploaded\Excel\" />
+    <Folder Include="wwwroot\StaticFiles\Uploaded\PropertyImages\" />
   </ItemGroup>
 
 </Project>
