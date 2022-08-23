@@ -73,7 +73,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             string fileName = "";
             if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == ".jpg") //Change the file type according to the business rule
             {
-                string targetPath = Path.Combine(_hostingEnvironment.ContentRootPath, @"StaticFiles\Uploaded\PropertyImages\");
+                string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, @"StaticFiles\Uploaded\PropertyImages\");
                 fileName = Guid.NewGuid().ToString() + "_" + Path.GetExtension(formFile.FileName);
                 string filePath = Path.Combine(targetPath, fileName);
 
@@ -99,7 +99,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             {
                 return new UnsupportedMediaTypeResult();
             }
-            string targetPath = Path.Combine(_hostingEnvironment.ContentRootPath, @"StaticFiles\Uploaded\PropertyImages\");
+            string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, @"StaticFiles\Uploaded\PropertyImages\");
             //if propertyItemId is not empty, get the image file name from DB
             //check the file if it exist in the image repository,
             //if file found/exist then delete it
