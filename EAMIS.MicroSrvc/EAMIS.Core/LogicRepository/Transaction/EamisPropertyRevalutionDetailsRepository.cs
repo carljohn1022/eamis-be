@@ -28,6 +28,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         private bool bolerror = false;
         public bool HasError { get => bolerror; set => value = bolerror; }
+        private string _categoryName = "";
+        private string CategoryName { get => _categoryName; set => value = _categoryName; }
+
+        private string _subCategoryName = "";
+        private string SubCategoryName { get => _subCategoryName; set => value = _subCategoryName; }
+
+        private int _estimatedLife;
+        private int EstimatedLife { get => _estimatedLife; set => value = _estimatedLife; }
         public EamisPropertyRevalutionDetailsRepository(EAMISContext ctx, IFactorType factorType)
         {
             _ctx = ctx;
@@ -52,29 +60,51 @@ namespace EAMIS.Core.LogicRepository.Transaction
             return item;
         }
 
+        private void GetPropertyItemDetails(string itemCode)
+        {
+            var result = _ctx.EAMIS_PROPERTYITEMS
+                        .Join(_ctx.EAMIS_ITEM_CATEGORY,
+                        item => item.CATEGORY_ID,
+                        category => category.ID,
+                        (item, category) => new { item, category })
+                        .Join(_ctx.EAMIS_ITEMS_SUB_CATEGORY,
+                        itemSubCategory => itemSubCategory.item.SUBCATEGORY_ID,
+                        subCategory => subCategory.ID,
+                        (itemSubCategory, subCategory) => new { itemSubCategory, subCategory })
+                        .Where(p => p.itemSubCategory.item.PROPERTY_NO == itemCode)
+                        .Select(c => new
+                        {
+                            c.itemSubCategory.category.IS_ASSET,
+                            c.itemSubCategory.category.CATEGORY_NAME,
+                            c.subCategory.SUB_CATEGORY_NAME,
+                            c.itemSubCategory.category.ESTIMATED_LIFE
+                        }).FirstOrDefault();
+            if (result != null)
+            {
+                _categoryName = result.CATEGORY_NAME;
+                _subCategoryName = result.SUB_CATEGORY_NAME;
+                _estimatedLife = result.ESTIMATED_LIFE;
+            }
+        }
+
         public EamisPropertyRevaluationDetailsDTO CalculateRevaluationDetails(EamisPropertyRevaluationDetailsDTO item, DateTime? newDepreciationDate)
         {
-            decimal salvageValue = _factorType.GetFactorTypeValue(FactorTypes.SalvageValue); //Get salvage value factor
-            decimal bookValue = item.AcquisitionCost - (item.AcquisitionCost * salvageValue); //Unit Cost * Salvage value factor
-            decimal monthlyDepreciation = bookValue / item.RemainingLife;
 
-            int acquisitionMonth = item.Depreciation.Month * -1;
-            int acquisitionYear = item.Depreciation.Year * -1;
+            newDepreciationDate = newDepreciationDate == null ? DateTime.Now : newDepreciationDate;
+            int runningLife = ((newDepreciationDate.Value.Year - item.Depreciation.Year) * 12) + (newDepreciationDate.Value.Month - item.Depreciation.Month);
 
-            DateTime yearDiff = DateTime.Now.AddYears(acquisitionYear);
+            if (runningLife > 0) // if at least a month then calculate depreciation based on item's age
+            {
+                decimal salvageValue = _factorType.GetFactorTypeValue(FactorTypes.SalvageValue); //Get salvage value factor
+                decimal bookValue = item.AcquisitionCost - (item.AcquisitionCost * salvageValue); //Unit Cost * Salvage value factor
+                decimal monthlyDepreciation = bookValue / EstimatedLife;
 
-            DateTime monthDiff = DateTime.Now.AddMonths(acquisitionMonth);
-            
-
-            int runningLife = 0;
-
-            if (yearDiff.Year > 0)
-                runningLife = yearDiff.Year - item.Depreciation.Year;
-
-            
-
-            item.AccumulativeDepreciation = monthlyDepreciation; //Monthly Depreciation * Estimated Life, to confirmed
-            item.NetBookValue = bookValue;
+                item.AccumulativeDepreciation = monthlyDepreciation * runningLife; //Monthly Depreciation, to confirmed
+                item.NetBookValue = bookValue - (monthlyDepreciation * runningLife);
+                item.SalvageValue = item.AcquisitionCost * salvageValue;
+                item.RemainingLife = item.RemainingLife - runningLife;
+                item.FairValue = bookValue;
+            }
             return item;
         }
 
@@ -150,7 +180,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     IsActive = x.IS_ACTIVE,
                 }
                 ).Where(dt => dt.Id == d.PROPERTY_REVALUATION_ID).FirstOrDefault()
-            }) ;
+            });
         }
 
         private IQueryable<EAMISPROPERTYREVALUATIONDETAILS> PagedQuery(IQueryable<EAMISPROPERTYREVALUATIONDETAILS> query, int resolved_size, int resolved_index)
@@ -160,7 +190,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         public async Task<EamisPropertyRevaluationDetailsDTO> Update(EamisPropertyRevaluationDetailsDTO item)
         {
-            if(item.Id == 0)
+            if (item.Id == 0)
             {
                 _errorMessage = "Record does not exist.";
                 bolerror = true;

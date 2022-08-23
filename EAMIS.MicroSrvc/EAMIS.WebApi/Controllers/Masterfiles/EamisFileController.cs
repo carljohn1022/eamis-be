@@ -539,7 +539,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             string fileName = "";
             if (file != null && System.IO.Path.GetExtension(file.FileName).ToLower() == ".xlsx")
             {
-                string targetPath = Path.Combine(_hostingEnvironment.ContentRootPath, @"StaticFiles\Uploaded\Excel\");
+                string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, @"StaticFiles\Uploaded\Excel\");
                 fileName = Guid.NewGuid().ToString() + "_" + Path.GetExtension(file.FileName);
                 string filePath = Path.Combine(targetPath, fileName);
 

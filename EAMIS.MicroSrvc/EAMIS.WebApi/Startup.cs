@@ -112,6 +112,7 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisPropertyTransferRepository, EamisPropertyTransferRepository>();
             services.AddScoped<IEamisServiceLogRepository, EamisServiceLogRepository>();
             services.AddScoped<IEamisServiceLogDetailsRepository, EamisServiceLogDetailsRepository>();
+            services.AddScoped<IEamisAttachedFilesRepository, EamisAttachedFilesRepository>();
 
             services.AddScoped<IEamisPropertyRevalutionRepository, EamisPropertyRevalutionRepository>();
             services.AddScoped<IEamisPropertyRevalutionDetailsRepository, EamisPropertyRevalutionDetailsRepository>();
@@ -183,6 +184,10 @@ namespace EAMIS.WebApi
             }
 
             app.UseHttpsRedirection();
+
+            //add it here
+            app.UseStaticFiles();
+
             app.UseCors(x=>x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200", "http://eamiswebapp.s3-website-ap-southeast-1.amazonaws.com"));
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().WithExposedHeaders("content-disposition"));
             app.UseRouting();

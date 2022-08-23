@@ -29,6 +29,8 @@
 
   <ItemGroup>
     <Folder Include="StaticFiles\Uploaded\Excel\" />
+    <Folder Include="StaticFiles\Uploaded\PropertyImages\" />
+    <Folder Include="wwwroot\StaticFiles\Uploaded\Excel\" />
   </ItemGroup>
 
 </Project>

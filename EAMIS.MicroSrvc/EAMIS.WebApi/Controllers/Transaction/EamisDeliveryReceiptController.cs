@@ -1,10 +1,16 @@
-﻿using EAMIS.Common.DTO.Transaction;
+﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Transaction;
+using EAMIS.Core.CommonSvc.Constant;
 using EAMIS.Core.ContractRepository.Masterfiles;
 using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace EAMIS.WebApi.Controllers.Transaction
@@ -16,11 +22,19 @@ namespace EAMIS.WebApi.Controllers.Transaction
         IEamisDeliveryReceiptRepository _eamisDeliveryReceiptRepository;
         private readonly IEamisSupplierRepository _eamisSupplierRepository;
         private readonly IEamisDeliveryReceiptDetailsRepository _eamisDeliveryReceiptDetailsRepository;
-        public EamisDeliveryReceiptController(IEamisDeliveryReceiptRepository eamisDeliveryReceiptRepository, IEamisSupplierRepository eamisSupplierRepository, IEamisDeliveryReceiptDetailsRepository eamisDeliveryReceiptDetails)
+        IEamisAttachedFilesRepository _eamisAttachedFilesRepository;
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        public EamisDeliveryReceiptController(IEamisDeliveryReceiptRepository eamisDeliveryReceiptRepository, 
+            IEamisSupplierRepository eamisSupplierRepository, 
+            IEamisDeliveryReceiptDetailsRepository eamisDeliveryReceiptDetails,
+            IEamisAttachedFilesRepository eamisAttachedFilesRepository,
+            IWebHostEnvironment hostingEnvironment)
         {
             _eamisDeliveryReceiptRepository = eamisDeliveryReceiptRepository;
             _eamisSupplierRepository = eamisSupplierRepository;
             _eamisDeliveryReceiptDetailsRepository = eamisDeliveryReceiptDetails;
+            _eamisAttachedFilesRepository = eamisAttachedFilesRepository;
+            _hostingEnvironment = hostingEnvironment;
         }
         [HttpGet("getSupplier")]
         public async Task<string> GetSupplier(int supplierId)
@@ -78,6 +92,77 @@ namespace EAMIS.WebApi.Controllers.Transaction
         {
             var response = await _eamisDeliveryReceiptDetailsRepository.GetItemById(itemId);
             return response;
+        }
+
+        /// <summary>
+        /// Call the UploadImages method only after calling the Add/Edit method, to ensure that images/attachments will only be saved 
+        /// when creation/updating of delivery transaction is successful.
+        /// if there is no file attached/uploaded for the delivery, no need to call this method
+        /// </summary>
+        /// <param name="imgFiles"></param>
+        /// <param name="TransactionNumber"></param>
+        /// <returns></returns>
+        [HttpPost("UploadImages")]
+        public async Task<ActionResult> UploadImages(List<IFormFile> imgFiles, string TransactionNumber)
+        {
+
+            if (imgFiles == null || imgFiles.Count == 0)
+                return BadRequest("No file is uploaded.");
+
+            if (imgFiles.Count > 5)
+                return BadRequest("You can only upload up to five files.");
+
+
+            var targetPath = Path.Combine(_hostingEnvironment.WebRootPath,
+                                          FolderName.StaticFolderLocation + @"\" +
+                                          FolderName.EAMISAttachmentLocation + @"\" +
+                                          ModuleName.DeliveryReceiptName + @"\" +
+                                          DateTime.Now.Date.ToString("MMddyyyy") + @"\");  // determine the destination for file storage
+
+            if (!Directory.Exists(targetPath))
+                Directory.CreateDirectory(targetPath); //create the target path if not yet exist
+
+            List<EamisAttachedFilesDTO> lstattachedFiles = new List<EamisAttachedFilesDTO>();
+
+            foreach (var img in imgFiles)
+            {
+                //get current file name
+                string curFileName = img.FileName;
+                //check if file is already exist on the repository
+
+                var fileExist = Directory.Exists(targetPath + curFileName);
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(img.FileName); // if we want to use the uploaded file name, replace this line with >> string fileName = img.FileName; 
+
+                string filePath = Path.Combine(targetPath, fileName);
+                try
+                {
+                    await using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        img.CopyTo(stream);
+                    }
+                    EamisAttachedFilesDTO objeamisAttachedFilesDTO = new EamisAttachedFilesDTO();
+                    objeamisAttachedFilesDTO.Id = 0;
+                    objeamisAttachedFilesDTO.FileName = fileName;
+                    objeamisAttachedFilesDTO.ModuleName = ModuleName.DeliveryReceiptName;
+                    objeamisAttachedFilesDTO.TransactionNumber = TransactionNumber;
+                    objeamisAttachedFilesDTO.UserStamp = "user"; //please change this to the actual/global variable used (where we store the user name?)
+                    objeamisAttachedFilesDTO.TimeStamp = DateTime.Now;
+                    lstattachedFiles.Add(objeamisAttachedFilesDTO);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+
+            if (lstattachedFiles.Count > 0) //at least a file is successfully copied/uploaded to the server before we insert it to the database
+            {
+                //save to DB
+                var result = await _eamisAttachedFilesRepository.Insert(lstattachedFiles);
+            }
+
+            return Ok();
         }
     }
 }
