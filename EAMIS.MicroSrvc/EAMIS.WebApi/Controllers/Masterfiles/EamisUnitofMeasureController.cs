@@ -47,21 +47,27 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         public async Task<ActionResult<EamisUnitofMeasureDTO>> Edit([FromBody] EamisUnitofMeasureDTO item)
         {
             var data = new EamisUnitofMeasureDTO();
-            if (await _eamisUnitofMeasureRepository.ValidateExistDesc(item.Short_Description, item.Uom_Description))
+            if (await _eamisUnitofMeasureRepository.UpdateUOM(item.Id, item.Short_Description, item.Uom_Description))
+            {
+                if (item == null)
+                    item = new EamisUnitofMeasureDTO();
+                return Ok(await _eamisUnitofMeasureRepository.Update(item));
+            }
+            else if (await _eamisUnitofMeasureRepository.ValidateExistDesc(item.Short_Description, item.Uom_Description))
             {
                 return Unauthorized();
             }
-            else if (await _eamisUnitofMeasureRepository.ValidationForUomExistShortDescNotExist(item.Short_Description, item.Uom_Description))
-            {
-                return Unauthorized();
-            }
-            else if (await _eamisUnitofMeasureRepository.ValidationForShortDescExistUomNotExist(item.Short_Description, item.Uom_Description))
-            {
-                return Unauthorized();
-            }
-            if (item == null)
-                item = new EamisUnitofMeasureDTO();
+            //else if (await _eamisUnitofMeasureRepository.ValidationForUomExistShortDescNotExist(item.Short_Description, item.Uom_Description))
+            //{
+            //    return Unauthorized();
+            //}
+            //else if (await _eamisUnitofMeasureRepository.ValidationForShortDescExistUomNotExist(item.Short_Description, item.Uom_Description))
+            //{
+            //    return Unauthorized();
+            //}
+            else { 
             return Ok(await _eamisUnitofMeasureRepository.Update(item));
+            }
         }
         [HttpGet("Search")]
         public async Task<ActionResult<EAMISUNITOFMEASURE>> Search(string type, string searchValue)

@@ -65,10 +65,10 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                 item = new EamisPropertyItemsDTO();
 
             // Check if the request contains multipart/form-data.
-            if (item.Photo == null)
-            {
-                return new UnsupportedMediaTypeResult();
-            }
+            //if (item.Photo == null)
+            //{
+            //    return new UnsupportedMediaTypeResult();
+            //}
             IFormFile formFile = item.Photo;
             string fileName = "";
             if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == ".jpg") //Change the file type according to the business rule

@@ -37,7 +37,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         [HttpPost("Add")]
         public async Task<ActionResult<EamisResponsibilityCenterDTO>> Add([FromBody] EamisResponsibilityCenterDTO item)
         {
-            item.responsibilityCenter = item.mainGroupCode + item.subGroupCode + item.officeCode + item.unitCode;
+            item.responsibilityCenter = item.mainGroupCode +"-"+ item.subGroupCode + "-" + item.officeCode + "-" + item.unitCode;
             if (await _eamisResponsibilityCenterRepository.ValidateExistingCode(item.responsibilityCenter))
             {
                 return Unauthorized();

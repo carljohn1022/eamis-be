@@ -1,6 +1,7 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
 using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.Response.DTO;
+using System;
 using System.Threading.Tasks;
 
 namespace EAMIS.Core.ContractRepository.Transaction
@@ -18,6 +19,8 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<EamisPropertyTransactionDTO> getPropertyItemById(int itemID);
         Task<string> GetNextSequenceNumber();
         Task<DataList<EamisPropertyTransactionDetailsDTO>> SearchReceiving(string type, string searchValue);
+        Task<string> GetResponsibilityCenterByID(string responsibilityCode);
+        Task<string> GetPropertyNumber(DateTime acquisitionDate, string responsibilityCode);
         //Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item);
     }
 }

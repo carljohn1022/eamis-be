@@ -1,5 +1,7 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
 using EAMIS.Common.DTO.Transaction;
+using EAMIS.Core.CommonSvc.Constant;
+using EAMIS.Core.ContractRepository.Masterfiles;
 using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 namespace EAMIS.WebApi.Controllers.Transaction
@@ -18,10 +21,16 @@ namespace EAMIS.WebApi.Controllers.Transaction
     {
         IEamisPropertyIssuanceRepository _eamisPropertyIssuanceRepository;
         IEamisPropertyTransactionRepository _eamisPropertyTransactionRepository;
-        public EamisPropertyIssuanceController(IEamisPropertyIssuanceRepository eamisPropertyIssuanceRepository, IEamisPropertyTransactionRepository eamisPropertyTransactionRepository)
+        IEamisAttachedFilesRepository _eamisAttachedFilesRepository;
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        public EamisPropertyIssuanceController(IEamisPropertyIssuanceRepository eamisPropertyIssuanceRepository, IEamisPropertyTransactionRepository eamisPropertyTransactionRepository
+            , IEamisAttachedFilesRepository eamisAttachedFilesRepository,
+            IWebHostEnvironment hostingEnvironment)
         {
             _eamisPropertyIssuanceRepository = eamisPropertyIssuanceRepository;
             _eamisPropertyTransactionRepository = eamisPropertyTransactionRepository;
+            _eamisAttachedFilesRepository = eamisAttachedFilesRepository;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet("getNextSequence")]
@@ -141,5 +150,79 @@ namespace EAMIS.WebApi.Controllers.Transaction
         //        item = new EamisPropertyTransactionDetailsDTO();
         //    return Ok(await _eamisPropertyIssuanceRepository.Delete(item));
         //}
+        [HttpPost("UploadImages")]
+        public async Task<ActionResult> UploadImages(List<IFormFile> imgFiles, string TransactionNumber)
+        {
+
+            if (imgFiles == null || imgFiles.Count == 0)
+                return BadRequest("No file is uploaded.");
+
+            if (imgFiles.Count > 5)
+                return BadRequest("You can only upload up to five files.");
+
+
+            var targetPath = Path.Combine(_hostingEnvironment.WebRootPath,
+                                          FolderName.StaticFolderLocation + @"\" +
+                                          FolderName.EAMISAttachmentLocation + @"\" +
+                                          ModuleName.PropertyIssuanceName + @"\" +
+                                          DateTime.Now.Date.ToString("MMddyyyy") + @"\");  // determine the destination for file storage
+
+            if (!Directory.Exists(targetPath))
+                Directory.CreateDirectory(targetPath); //create the target path if not yet exist
+
+            List<EamisAttachedFilesDTO> lstattachedFiles = new List<EamisAttachedFilesDTO>();
+
+            foreach (var img in imgFiles)
+            {
+                //get current file name
+                string curFileName = img.FileName;
+                //check if file is already exist on the repository
+
+                var fileExist = Directory.Exists(targetPath + curFileName);
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(img.FileName); // if we want to use the uploaded file name, replace this line with >> string fileName = img.FileName; 
+
+                string filePath = Path.Combine(targetPath, fileName);
+                try
+                {
+                    await using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        img.CopyTo(stream);
+                    }
+                    EamisAttachedFilesDTO objeamisAttachedFilesDTO = new EamisAttachedFilesDTO();
+                    objeamisAttachedFilesDTO.Id = 0;
+                    objeamisAttachedFilesDTO.FileName = fileName;
+                    objeamisAttachedFilesDTO.ModuleName = ModuleName.PropertyIssuanceName;
+                    objeamisAttachedFilesDTO.TransactionNumber = TransactionNumber;
+                    objeamisAttachedFilesDTO.UserStamp = "user"; //please change this to the actual/global variable used (where we store the user name?)
+                    objeamisAttachedFilesDTO.TimeStamp = DateTime.Now;
+                    lstattachedFiles.Add(objeamisAttachedFilesDTO);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+
+            if (lstattachedFiles.Count > 0) //at least a file is successfully copied/uploaded to the server before we insert it to the database
+            {
+                //save to DB
+                var result = await _eamisAttachedFilesRepository.Insert(lstattachedFiles);
+            }
+
+            return Ok();
+        }
+        [HttpGet("getResponsibilityCenter")]
+        public async Task<string> GetResponsibilityCenterByID(string responsibilityCode)
+        {
+            var response = await _eamisPropertyIssuanceRepository.GetResponsibilityCenterByID(responsibilityCode);
+            return response;
+        }
+        [HttpGet("GetPropertyNumber")]
+        public async Task<string> GetPropertyNo(DateTime acquisitionDate, string responsibilityCode)
+        {
+            var response = await _eamisPropertyIssuanceRepository.GetPropertyNumber(acquisitionDate, responsibilityCode);
+            return response;
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             }
             private EAMISRESPONSIBILITYCENTER MapToEntity(EamisResponsibilityCenterDTO item)
             {
-                item.responsibilityCenter = item.mainGroupCode + item.subGroupCode + item.officeCode + item.unitCode;
+                item.responsibilityCenter = item.mainGroupCode +"-"+ item.subGroupCode +"-"+ item.officeCode +"-"+ item.unitCode;
                 if (item == null) return new EAMISRESPONSIBILITYCENTER();
                 return new EAMISRESPONSIBILITYCENTER
                 {

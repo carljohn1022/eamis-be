@@ -447,7 +447,30 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
-
+        public async Task<string> GetResponsibilityCenterByID(string responsibilityCode)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.Where(s => s.RESPONSIBILITY_CENTER == responsibilityCode).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                retValue = result[0].OFFICE_DESC.ToString() + ":" +
+                           result[0].UNIT_DESC.ToString() + ":" + 
+                           result[0].RESPONSIBILITY_CENTER.ToString();
+            }
+            return retValue;
+        }
+        public async Task<string> GetPropertyNumber(DateTime acquisitionDate, string responsibilityCode)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.Where(s => s.RESPONSIBILITY_CENTER == responsibilityCode).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            { 
+                retValue = acquisitionDate.Year.ToString() +"-"+
+                    result[0].SUB_GROUP_CODE.ToString() +"-"+
+                    result[0].OFFICE_DESC;
+            }
+            return retValue;
+        }
         //public async Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item)
         //{
         //    EAMISPROPERTYTRANSACTIONDETAILS data = MapToEntity(item);

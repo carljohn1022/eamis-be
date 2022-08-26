@@ -195,5 +195,9 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         {
             return _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.SHORT_DESCRIPTION == ShortDesc && x.UOM_DESCRIPTION == UomDesc);
         }
+        public async Task<bool> UpdateUOM(int id, string ShortDesc, string UomDesc)
+        {
+            return await _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.ID == id && x.SHORT_DESCRIPTION == ShortDesc && x.UOM_DESCRIPTION == UomDesc);
+        }
     }
 }
