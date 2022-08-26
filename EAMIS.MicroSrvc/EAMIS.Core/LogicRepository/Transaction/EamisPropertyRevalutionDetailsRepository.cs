@@ -90,20 +90,23 @@ namespace EAMIS.Core.LogicRepository.Transaction
         public EamisPropertyRevaluationDetailsDTO CalculateRevaluationDetails(EamisPropertyRevaluationDetailsDTO item, DateTime? newDepreciationDate)
         {
 
-            newDepreciationDate = newDepreciationDate == null ? DateTime.Now : newDepreciationDate;
+            newDepreciationDate =  newDepreciationDate == null ? DateTime.Now : newDepreciationDate;
             int runningLife = ((newDepreciationDate.Value.Year - item.Depreciation.Year) * 12) + (newDepreciationDate.Value.Month - item.Depreciation.Month);
 
             if (runningLife > 0) // if at least a month then calculate depreciation based on item's age
             {
                 decimal salvageValue = _factorType.GetFactorTypeValue(FactorTypes.SalvageValue); //Get salvage value factor
                 decimal bookValue = item.AcquisitionCost - (item.AcquisitionCost * salvageValue); //Unit Cost * Salvage value factor
-                decimal monthlyDepreciation = bookValue / EstimatedLife;
+                decimal monthlyDepreciation = bookValue / EstimatedLife; //Estimated life source is Item_Category
 
                 item.AccumulativeDepreciation = monthlyDepreciation * runningLife; //Monthly Depreciation, to confirmed
                 item.NetBookValue = bookValue - (monthlyDepreciation * runningLife);
                 item.SalvageValue = item.AcquisitionCost * salvageValue;
                 item.RemainingLife = item.RemainingLife - runningLife;
+                item.RevaluedAmount = 0; //to do: update once value to be assigned is final/confirmed
                 item.FairValue = bookValue;
+                item.PrevRevaluation = string.Empty; //to do: update once value to be assigned is final/confirmed.
+                item.NewDep = newDepreciationDate.Value; //to do: update once value to be assigned is final/confirmed
             }
             return item;
         }
@@ -129,6 +132,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 SALVAGE_VALUE = item.SalvageValue
             };
         }
+
+
         public async Task<DataList<EamisPropertyRevaluationDetailsDTO>> List(EamisPropertyRevaluationDetailsDTO filter, PageConfig config)
         {
             IQueryable<EAMISPROPERTYREVALUATIONDETAILS> query = FilteredEntites(filter);
@@ -151,7 +156,12 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYREVALUATIONDETAILS>(true);
 
-            var query = custom_query ?? _ctx.EAMIS_PROPERTY_REVALUATION_DETAILS;
+            var arrDistinctDetailID = _ctx.EAMIS_PROPERTY_REVALUATION_DETAILS
+                                          .GroupBy(x => x.PROPERTY_REVALUATION_ID)
+                                          .Select(i => i.Max(x => x.ID))
+                                          .ToList();
+            var query = custom_query ?? _ctx.EAMIS_PROPERTY_REVALUATION_DETAILS.Where(x => arrDistinctDetailID.Contains(x.ID));
+                                        
             return query.Where(predicate);
         }
         private IQueryable<EamisPropertyRevaluationDetailsDTO> QueryToDTO(IQueryable<EAMISPROPERTYREVALUATIONDETAILS> query)
@@ -209,5 +219,85 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return item;
         }
+
+        #region Creation of Property Item for Revaluation
+        public async Task<DataList<EamisPropertyScheduleDTO>> ListItemsForRevaluationCreation(EamisPropertyScheduleDTO filter, PageConfig config)
+        {
+            IQueryable<EAMISPROPERTYSCHEDULE> query = FilteredEntitesForRevaluationCreation(filter);
+            string resolved_sort = config.SortBy ?? "Id";
+            bool resolve_isAscending = (config.IsAscending) ? config.IsAscending : false;
+            int resolved_size = config.Size ?? _maxPageSize;
+            if (resolved_size > _maxPageSize) resolved_size = _maxPageSize;
+            int resolved_index = config.Index ?? 1;
+
+
+            var paged = PagedQueryForRevaluationCreation(query, resolved_size, resolved_index);
+            return new DataList<EamisPropertyScheduleDTO>
+            {
+                Count = await query.CountAsync(),
+                Items = await QueryToDTOForRevaluationCreation(paged).ToListAsync()
+            };
+        }
+
+        private IQueryable<EAMISPROPERTYSCHEDULE> FilteredEntitesForRevaluationCreation(EamisPropertyScheduleDTO filter, IQueryable<EAMISPROPERTYSCHEDULE> custom_query = null, bool strict = false)
+        {
+            var predicate = PredicateBuilder.New<EAMISPROPERTYSCHEDULE>(true);
+
+            var query = custom_query ?? _ctx.EAMIS_PROPERTY_SCHEDULE;
+            return query.Where(predicate);
+        }
+
+        private IQueryable<EAMISPROPERTYSCHEDULE> PagedQueryForRevaluationCreation(IQueryable<EAMISPROPERTYSCHEDULE> query, int resolved_size, int resolved_index)
+        {
+            return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+        }
+
+        private IQueryable<EamisPropertyScheduleDTO> QueryToDTOForRevaluationCreation(IQueryable<EAMISPROPERTYSCHEDULE> query)
+        {
+            return query.Select(d => new EamisPropertyScheduleDTO
+            {
+                Id = d.ID,
+                AcquisitionCost = d.ACQUISITION_COST,
+                AcquisitionDate = d.ACQUISITION_DATE,
+                Appraisalincrement = d.APPRAISAL_INCREMENT,
+                AppraisedValue = d.APPRAISED_VALUE,
+                AreaSQM = d.AREA_SQM,
+                AssessedValue = d.ASSESSED_VALUE,
+                AssetCondition = d.ASSET_CONDITION,
+                AssetTag = d.ASSET_TAG,
+                BookValue = d.BOOK_VALUE,
+                Category = d.CATEGORY,
+                CostCenter = d.COST_CENTER,
+                Department = d.DEPARTMENT,
+                DeprecAmount = d.DEPREC_AMOUNT,
+                Details = d.DETAILS,
+                DisposedAmount = d.DISPOSED_AMOUNT,
+                ESTLife = d.EST_LIFE,
+                ForDepreciation = d.FOR_DEPRECIATION,
+                InvoiceNo = d.INVOICE_NO,
+                ItemDescription = d.ITEM_DESCRIPTION,
+                LastDepartment = d.LAST_DEPARTMENT,
+                LastPostedDate = d.LAST_POSTED_DATE,
+                Location = d.LOCATION,
+                Names = d.NAMES,
+                PORef = d.POREF,
+                PropertyNumber = d.PROPERTY_NUMBER,
+                RealEstateTaxPayment = d.REAL_ESTATE_TAX_PAYMENT,
+                RevaluationCost = d.REVALUATION_COST,
+                RRDate = d.RRDATE,
+                RRRef = d.RRREF,
+                SalvageValue = d.SALVAGE_VALUE,
+                SerialNo = d.SERIAL_NO,
+                Status = d.STATUS,
+                SubCategory = d.SUB_CATEGORY,
+                SvcAgreementNo = d.SVC_AGREEMENT_NO,
+                VendorName = d.VENDORNAME,
+                Warranty = d.WARRANTY,
+                WarrantyDate = d.WARRANTY_DATE
+            });
+        }
+
+
+        #endregion Creation of Property Item for Revaluation
     }
 }

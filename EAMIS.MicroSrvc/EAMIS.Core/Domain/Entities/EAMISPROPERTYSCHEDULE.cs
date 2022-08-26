@@ -47,6 +47,6 @@ namespace EAMIS.Core.Domain.Entities
         public int APPRAISAL_INCREMENT { get; set; }
         public decimal REAL_ESTATE_TAX_PAYMENT { get; set; }
         public DateTime LAST_POSTED_DATE { get; set; }
-
+        public string ITEM_CODE { get; set; }
     }
 }

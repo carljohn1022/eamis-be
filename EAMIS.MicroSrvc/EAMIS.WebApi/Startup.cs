@@ -117,6 +117,9 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisPropertyRevalutionRepository, EamisPropertyRevalutionRepository>();
             services.AddScoped<IEamisPropertyRevalutionDetailsRepository, EamisPropertyRevalutionDetailsRepository>();
             services.AddScoped<IFactorType, FactorType>();
+            services.AddScoped<IEamisPropertyDepreciationRepository, EamisPropertyDepreciationRepository>();
+            services.AddScoped<IEamisPropertyScheduleRepository, EamisPropertyScheduleRepository>();
+
             //AIS
             services.AddScoped<IAisPersonnelRepository, AisPersonnelRepository>();
             services.AddScoped<IAisOfficeRepository, AisOfficeRepository>();

@@ -1294,6 +1294,11 @@ C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAM
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.RazorTargetAssemblyInfo.cache
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.genruntimeconfig.cache
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.csproj.AssemblyReference.cache
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.GeneratedMSBuildEditorConfig.editorconfig
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.AssemblyInfoInputs.cache
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.AssemblyInfo.cs
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.csproj.CoreCompileInputs.cache
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.MvcApplicationPartsAssemblyInfo.cache
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\appsettings.Development.json
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\appsettings.json
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\aws-beanstalk-tools-defaults.json
@@ -1320,6 +1325,7 @@ D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\ExcelNumberFormat.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Humanizer.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\LinqKit.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.AspNetCore.Http.Features.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.AspNetCore.Razor.Language.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.Bcl.AsyncInterfaces.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.CodeAnalysis.dll
@@ -1334,6 +1340,7 @@ D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.EntityFramew
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Relational.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.SqlServer.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.dll
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.Extensions.Primitives.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.Identity.Client.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.IdentityModel.JsonWebTokens.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.IdentityModel.Logging.dll
@@ -1365,6 +1372,7 @@ D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\System.Data.SqlClient.
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\System.IO.Packaging.dll
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\System.IO.Pipelines.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\System.Runtime.Caching.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\System.Security.Cryptography.ProtectedData.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\System.Xml.XPath.XmlDocument.dll
@@ -1444,12 +1452,6 @@ D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\EAMIS.Core.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\EAMIS.Core.pdb
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\EAMIS.Common.pdb
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.csproj.AssemblyReference.cache
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.GeneratedMSBuildEditorConfig.editorconfig
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.AssemblyInfoInputs.cache
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.AssemblyInfo.cs
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.csproj.CoreCompileInputs.cache
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.MvcApplicationPartsAssemblyInfo.cs
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.MvcApplicationPartsAssemblyInfo.cache
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\staticwebassets\EAMIS.WebApi.StaticWebAssets.Manifest.cache
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\staticwebassets\EAMIS.WebApi.StaticWebAssets.xml
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\scopedcss\bundle\EAMIS.WebApi.styles.css
@@ -1459,6 +1461,3 @@ D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\ref\EAMIS.WebApi.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.pdb
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.genruntimeconfig.cache
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.AspNetCore.Http.Features.dll
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\Microsoft.Extensions.Primitives.dll
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\System.IO.Pipelines.dll
