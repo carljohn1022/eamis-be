@@ -63,10 +63,10 @@ namespace EAMIS.Core.LogicRepository.Transaction
                         subCategory => subCategory.ID,
                         (itemSubCategory, subCategory) => new { itemSubCategory, subCategory })
                         .Where(p => p.itemSubCategory.item.PROPERTY_NO == itemCode)
-                        .Select(c => new 
-                        { 
-                            c.itemSubCategory.category.IS_ASSET, 
-                            c.itemSubCategory.category.CATEGORY_NAME, 
+                        .Select(c => new
+                        {
+                            c.itemSubCategory.category.IS_ASSET,
+                            c.itemSubCategory.category.CATEGORY_NAME,
                             c.subCategory.SUB_CATEGORY_NAME,
                             c.itemSubCategory.category.ESTIMATED_LIFE
                         }).FirstOrDefault();
@@ -122,7 +122,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 SVC_AGREEMENT_NO = 0,
                 VENDORNAME = string.Empty,
                 WARRANTY = string.Empty, //item.WarrantyExpiry?
-                WARRANTY_DATE = DateTime.Now  //item.WarrantyExpiry?
+                WARRANTY_DATE = DateTime.Now,  //item.WarrantyExpiry?
+                ITEM_CODE = item.ItemCode
             };
         }
 
@@ -215,24 +216,25 @@ namespace EAMIS.Core.LogicRepository.Transaction
             {
                 _ctx.Entry(data).State = EntityState.Added;
                 await _ctx.SaveChangesAsync();
+                if (item.isDepreciation)
+                    if (IsAssetPropertyItem(item.ItemCode)) //check if property item category is under asset
+                    {
+                        //insert new record to asset schedule
+                        EAMISPROPERTYSCHEDULE asset = MapAssetScheduleEntity(item);
+                        _ctx.Entry(asset).State = EntityState.Added;
+                        await _ctx.SaveChangesAsync();
 
-                if (IsAssetPropertyItem(item.ItemCode)) //check if property item category is under asset
-                {
-                    //insert new record to asset schedule
-                    EAMISPROPERTYSCHEDULE asset = MapAssetScheduleEntity(item);
-                    _ctx.Entry(asset).State = EntityState.Added;
-                    await _ctx.SaveChangesAsync();
+                        //removed 08.24.2022 per Justin, no need to create
+                        ////insert new record to property revaluation
+                        //EAMISPROPERTYREVALUATION revaluation = await MapPropertyRevaluation();
+                        //_ctx.Entry(revaluation).State = EntityState.Added;
+                        //await _ctx.SaveChangesAsync();
 
-                    //insert new record to property revaluation
-                    EAMISPROPERTYREVALUATION revaluation = await MapPropertyRevaluation();
-                    _ctx.Entry(revaluation).State = EntityState.Added;
-                    await _ctx.SaveChangesAsync();
-
-                    //insert new record to property revaluation details
-                    EAMISPROPERTYREVALUATIONDETAILS revaluationDetails = MapPropertyRevaluationDetails(revaluation.ID, item);
-                    _ctx.Entry(revaluationDetails).State = EntityState.Added;
-                    await _ctx.SaveChangesAsync();
-                }
+                        ////insert new record to property revaluation details
+                        //EAMISPROPERTYREVALUATIONDETAILS revaluationDetails = MapPropertyRevaluationDetails(revaluation.ID, item);
+                        //_ctx.Entry(revaluationDetails).State = EntityState.Added;
+                        //await _ctx.SaveChangesAsync();
+                    }
                 transaction.Commit();
                 item.Id = data.ID;
             }
@@ -244,7 +246,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return item;
         }
-         
+
         public async Task<DataList<EamisPropertyTransactionDetailsDTO>> List(EamisPropertyTransactionDetailsDTO filter, PageConfig config)
         {
             IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredEntities(filter);

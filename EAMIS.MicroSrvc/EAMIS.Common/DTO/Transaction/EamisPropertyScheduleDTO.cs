@@ -16,7 +16,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string SubCategory { get; set; }
         public string ForDepreciation { get; set; }
         public decimal AreaSQM { get; set; }
-        public int SerialNo { get; set; }
+        public string SerialNo { get; set; }
         public string Location { get; set; }
         public string Department { get; set; }
         public string LastDepartment { get; set; }
@@ -30,7 +30,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string Details { get; set; }
         public DateTime WarrantyDate { get; set; }
         public DateTime RRDate { get; set; }
-        public string AssetnCondition { get; set; }
+        public string AssetCondition { get; set; }
         public decimal RevaluationCost { get; set; }
         public decimal DisposedAmount { get; set; }
         public DateTime AcquisitionDate { get; set; }
@@ -39,7 +39,7 @@ namespace EAMIS.Common.DTO.Transaction
         public int RRRef { get; set; }
         public decimal AcquisitionCost { get; set; }
         public decimal SalvageValue { get; set; }
-        public DateTime ESTLife { get; set; }
+        public int ESTLife { get; set; }
         public decimal DeprecAmount { get; set; }
         public decimal BookValue { get; set; }
         public decimal AssessedValue { get; set; }
@@ -47,5 +47,6 @@ namespace EAMIS.Common.DTO.Transaction
         public int Appraisalincrement { get; set; }
         public decimal RealEstateTaxPayment { get; set; }
         public DateTime LastPostedDate { get; set; }
+        public string ItemCode { get; set; }
     }
 }
