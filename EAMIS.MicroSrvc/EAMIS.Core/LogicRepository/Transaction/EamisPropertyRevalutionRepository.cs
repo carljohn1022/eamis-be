@@ -97,7 +97,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 PARTICULARS = item.Particulars
             };
         }
-
+        
         public async Task<DataList<EamisPropertyRevaluationDTO>> List(EamisPropertyRevaluationDTO filter, PageConfig config)
         {
             IQueryable<EAMISPROPERTYREVALUATION> query = FilteredEntites(filter);

@@ -1,3 +1,8 @@
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.AssemblyReference.cache
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfoInputs.cache
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfo.cs
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CoreCompileInputs.cache
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.deps.json
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.runtimeconfig.json
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.runtimeconfig.dev.json
@@ -6,11 +11,6 @@ D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\ref\EAMIS.Core.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Core.pdb
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Common.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\bin\Debug\net5.0\EAMIS.Common.pdb
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.AssemblyReference.cache
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.GeneratedMSBuildEditorConfig.editorconfig
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfoInputs.cache
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfo.cs
-D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CoreCompileInputs.cache
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CopyComplete
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\ref\EAMIS.Core.dll
