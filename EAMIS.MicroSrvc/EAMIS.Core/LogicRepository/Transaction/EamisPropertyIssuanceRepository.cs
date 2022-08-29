@@ -9,6 +9,7 @@ using EAMIS.Core.Response.DTO;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -156,7 +157,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             await _ctx.SaveChangesAsync();
             return item;
         }
-     
+
         public async Task<EamisPropertyTransactionDTO> getPropertyItemById(int itemID)
         {
             var result = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().FirstOrDefaultAsync(x => x.ID == itemID)).ConfigureAwait(false);
@@ -208,7 +209,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 }).Where(i => i.PropertyTransactionID == result.ID).ToList()
             };
         }
-        
+
 
         public async Task<EamisPropertyTransactionDTO> InsertProperty(EamisPropertyTransactionDTO item)
         {
@@ -316,9 +317,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             else
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == "Property Receiving" &&  x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == "Property Receiving" && x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
             }
-            
+
             var paged = PagedQueryForSearch(query);
             return new DataList<EamisPropertyTransactionDetailsDTO>
             {
@@ -403,6 +404,79 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                 .Where(pn => !(pn.PROPERTY_NUMBER == null || pn.PROPERTY_NUMBER.Trim() == string.Empty))
                                 .Select(x => x.PROPERTY_NUMBER)
                                 .ToList();
+
+            List<int> itemsIssued = new List<int>();
+
+            var lstForReceivingItems = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                        .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                               d => d.PROPERTY_TRANS_ID,
+                                               h => h.ID,
+                                               (d, h) => new { d, h })
+                                        .Where(x => x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving)
+                                        .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
+                                        {
+                                            ID = x.d.ID,
+                                            PROPERTY_TRANS_ID = x.d.PROPERTY_TRANS_ID,
+                                            IS_DEPRECIATION = x.d.IS_DEPRECIATION,
+                                            DR = x.d.DR,
+                                            PROPERTY_NUMBER = x.d.PROPERTY_NUMBER,
+                                            ITEM_CODE = x.d.ITEM_CODE,
+                                            ITEM_DESCRIPTION = x.d.ITEM_DESCRIPTION,
+                                            SERIAL_NUMBER = x.d.SERIAL_NUMBER,
+                                            PO = x.d.PO,
+                                            PR = x.d.PR,
+                                            ACQUISITION_DATE = x.d.ACQUISITION_DATE,
+                                            ASSIGNEE_CUSTODIAN = x.d.ASSIGNEE_CUSTODIAN,
+                                            REQUESTED_BY = x.d.REQUESTED_BY,
+                                            OFFICE = x.d.OFFICE,
+                                            DEPARTMENT = x.d.DEPARTMENT,
+                                            RESPONSIBILITY_CODE = x.d.RESPONSIBILITY_CODE,
+                                            UNIT_COST = x.d.UNIT_COST,
+                                            QTY = x.d.QTY,
+                                            SALVAGE_VALUE = x.d.SALVAGE_VALUE,
+                                            BOOK_VALUE = x.d.BOOK_VALUE,
+                                            ESTIMATED_LIFE = x.d.ESTIMATED_LIFE,
+                                            AREA = x.d.AREA,
+                                            SEMI_EXPANDABLE_AMOUNT = x.d.SEMI_EXPANDABLE_AMOUNT,
+                                            USER_STAMP = x.d.USER_STAMP,
+                                            TIME_STAMP = x.d.TIME_STAMP,
+                                            WARRANTY_EXPIRY = x.d.WARRANTY_EXPIRY,
+                                            INVOICE = x.d.INVOICE,
+                                            PROPERTY_CONDITION = x.d.PROPERTY_CONDITION
+                                        }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER)).ToList();
+
+            //Check if item have been issued
+            foreach (var item in lstForReceivingItems)
+            {
+                string drNo = item.DR;
+                string itemCode = item.ITEM_CODE;
+                var itemTransactions = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
+                                           .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                           d => d.PROPERTY_TRANS_ID,
+                                           h => h.ID,
+                                           (d, h) => new { d, h })
+                                           .Where(x => x.d.ITEM_CODE == itemCode &&
+                                                       x.d.DR == drNo)
+                                           .Select(i => new
+                                           {
+                                               i.d.ID,
+                                               i.d.PROPERTY_TRANS_ID,
+                                               i.d.DR,
+                                               i.d.ITEM_CODE,
+                                               i.h.TRANSACTION_TYPE,
+                                               i.d.IS_DEPRECIATION
+                                           })
+                                           .ToList();
+                bool bolValid = true;
+                foreach (var trn in itemTransactions)
+                {
+                    if (trn.TRANSACTION_TYPE == TransactionTypeSettings.Issuance)
+                        bolValid = false;
+                }
+                if (!bolValid)
+                    itemsIssued.Add(item.ID);
+            }
+
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
                                         .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
                                                d => d.PROPERTY_TRANS_ID,
@@ -439,7 +513,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             WARRANTY_EXPIRY = x.d.WARRANTY_EXPIRY,
                                             INVOICE = x.d.INVOICE,
                                             PROPERTY_CONDITION = x.d.PROPERTY_CONDITION
-                                        }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER));
+                                        }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER) &&
+                                                      !itemsIssued.Contains(s.ID)
+                                                );
             return query.Where(predicate);
         }
 
@@ -454,8 +530,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (result != null)
             {
                 retValue = result[0].OFFICE_DESC.ToString() + ":" +
-                           result[0].UNIT_DESC.ToString() + ":" + 
-                           result[0].RESPONSIBILITY_CENTER.ToString();
+                           result[0].UNIT_DESC.ToString();
             }
             return retValue;
         }
@@ -464,13 +539,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
             string retValue = "";
             var result = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.Where(s => s.RESPONSIBILITY_CENTER == responsibilityCode).AsNoTracking().ToList()).ConfigureAwait(false);
             if (result != null)
-            { 
-                retValue = acquisitionDate.Year.ToString() +"-"+
-                    result[0].SUB_GROUP_CODE.ToString() +"-"+
-                    result[0].OFFICE_DESC;
+            {
+                retValue = acquisitionDate.Year.ToString() + "-" +
+                    result[0].SUB_GROUP_CODE.ToString() + "-" +
+                    result[0].OFFICE_CODE.ToString();
             }
             return retValue;
         }
+
         //public async Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item)
         //{
         //    EAMISPROPERTYTRANSACTIONDETAILS data = MapToEntity(item);
