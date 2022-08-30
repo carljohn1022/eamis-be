@@ -32,15 +32,15 @@ namespace EAMIS.Core.LogicRepository.Transaction
             IQueryable<EAMISPROPERTYTRANSACTION> query = null;
             if (type == "Transaction #")
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == "Issuance/Releasing" && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == TransactionTypeSettings.Issuance && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
             }
             else if (type == "Received by")
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == "Issuance/Releasing" && x.RECEIVED_BY.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == TransactionTypeSettings.Issuance && x.RECEIVED_BY.Contains(searchValue)).AsQueryable();
             }
             else
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == "Issuance/Releasing" && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == TransactionTypeSettings.Issuance && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
             }
             var paged = PagedQueryForSearch(query);
             return new DataList<EamisPropertyTransactionDTO>
