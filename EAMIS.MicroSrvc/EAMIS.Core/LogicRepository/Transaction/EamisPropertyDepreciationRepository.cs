@@ -306,7 +306,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                         tempScheduleDTO.AcquisitionCost = item.ACQUISITION_COST;
                         tempScheduleDTO.EstimatedLife = EstimatedLife; //get from category
                         tempScheduleDTO.RunningLife = runningLife;
-                        tempScheduleDTO.DepreciationAmount = Convert.ToDecimal((monthlyDepreciation * runningLife).ToString("#0.00"));
+                        tempScheduleDTO.DepreciationAmount = Convert.ToDecimal(monthlyDepreciation.ToString("#0.00")) * runningLife;
                         lsttempScheduleDTO.Add(tempScheduleDTO);
 
                     }
