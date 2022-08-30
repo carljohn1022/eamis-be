@@ -15,6 +15,7 @@ namespace EAMIS.Common.DTO.Transaction
         //public int DeliveryRecieptID { get; set; }
         public string Dr { get; set; }
         public string PropertyNumber { get; set; }
+        public string ItemCode { get; set; }
         public string ItemDescription { get; set; }
         public string SerialNumber { get; set; }
         public string Po { get; set; }

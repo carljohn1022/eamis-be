@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EAMIS.Core.Domain.Entities.AIS;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -35,6 +36,7 @@ namespace EAMIS.Core.Domain.Entities
         public string INVOICE { get; set;}
         public string PROPERTY_CONDITION { get; set; }
         public EAMISPROPERTYTRANSACTION PROPERTY_TRANSACTION_GROUP { get; set; }
+
 
     }
 }

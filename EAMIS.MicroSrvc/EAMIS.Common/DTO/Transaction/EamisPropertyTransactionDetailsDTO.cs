@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EAMIS.Common.DTO.Ais;
+using System;
 using System.Collections.Generic;
 
 namespace EAMIS.Common.DTO.Transaction

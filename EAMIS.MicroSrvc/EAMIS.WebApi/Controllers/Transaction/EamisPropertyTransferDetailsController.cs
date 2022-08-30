@@ -1,5 +1,6 @@
 ﻿using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.ContractRepository.Transaction;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +41,19 @@ namespace EAMIS.WebApi.Controllers.Transaction
             if (item == null)
                 item = new EamisPropertyTransferDetailsDTO();
             return Ok(await _eamisPropertyTransferDetailsRepository.Insert(item));
+        }
+        [HttpGet("listitemsforissuance")]
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> ListItemsForIssuance([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config)
+        {
+            if (filter == null)
+                filter = new EamisPropertyTransactionDetailsDTO();
+            return Ok(await _eamisPropertyTransferDetailsRepository.ListItemsForIssuance(filter, config));
+        }
+        [HttpGet("getResponsibilityCenter")]
+        public async Task<string> GetResponsibilityCenterByID(string responsibilityCode)
+        {
+            var response = await _eamisPropertyTransferDetailsRepository.GetResponsibilityCenterByID(responsibilityCode);
+            return response;
         }
     }
 }
