@@ -49,6 +49,28 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Items = await QueryToDTO(paged).ToListAsync()
             };
         }
+        public async Task<DataList<EamisPropertyTransactionDTO>> SearchReceivingforTransfer(string type, string searchValue)
+        {
+            IQueryable<EAMISPROPERTYTRANSACTION> query = null;
+            if (type == "Transaction #")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Received by")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer && x.RECEIVED_BY.Contains(searchValue)).AsQueryable();
+            }
+            else
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+            }
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisPropertyTransactionDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync()
+            };
+        }
         public async Task<DataList<EamisPropertyTransactionDTO>> SearchReceivingforList(string type, string searchValue)
         {
             IQueryable<EAMISPROPERTYTRANSACTION> query = null;

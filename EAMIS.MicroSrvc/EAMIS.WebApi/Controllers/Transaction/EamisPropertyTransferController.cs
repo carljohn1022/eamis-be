@@ -16,9 +16,11 @@ namespace EAMIS.WebApi.Controllers.Transaction
     public class EamisPropertyTransferController : ControllerBase
     {
         IEamisPropertyTransferRepository _eamisPropertyTransferRepository;
-        public EamisPropertyTransferController(IEamisPropertyTransferRepository eamisPropertyTransferRepository)
+        IEamisPropertyTransactionRepository _eamisPropertyTransactionRepository;
+        public EamisPropertyTransferController(IEamisPropertyTransferRepository eamisPropertyTransferRepository, IEamisPropertyTransactionRepository eamisPropertyTransactionRepository)
         {
             _eamisPropertyTransferRepository = eamisPropertyTransferRepository;
+            _eamisPropertyTransactionRepository = eamisPropertyTransactionRepository;
         }
 
         [HttpGet("getNextSequence")]
@@ -49,6 +51,22 @@ namespace EAMIS.WebApi.Controllers.Transaction
                 item = new EamisPropertyTransactionDTO();
             return Ok(await _eamisPropertyTransferRepository.Insert(item));
         }
-
+        [HttpGet("Search")]
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTION>> Search(string type, string searchValue)
+        {
+            return Ok(await _eamisPropertyTransactionRepository.SearchReceivingforTransfer(type, searchValue));
+        }
+        [HttpGet("editbyid")]
+        public async Task<ActionResult<EamisPropertyTransactionDTO>> getPropertyItemById(int itemID)
+        {
+            return Ok(await _eamisPropertyTransferRepository.getPropertyItemById(itemID));
+        }
+        [HttpPut("Edit")]
+        public async Task<ActionResult<EamisPropertyTransactionDTO>> Edit([FromBody] EamisPropertyTransactionDTO item)
+        {
+            if (item == null)
+                item = new EamisPropertyTransactionDTO();
+            return Ok(await _eamisPropertyTransferRepository.Update(item));
+        }
     }
 }

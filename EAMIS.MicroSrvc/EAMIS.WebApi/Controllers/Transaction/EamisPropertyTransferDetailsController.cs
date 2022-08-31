@@ -50,10 +50,17 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return Ok(await _eamisPropertyTransferDetailsRepository.ListItemsForIssuance(filter, config));
         }
         [HttpGet("getResponsibilityCenter")]
-        public async Task<string> GetResponsibilityCenterByID(string responsibilityCode)
+        public async Task<string> GetResponsibilityCenterByID(string newResponsibilityCode)
         {
-            var response = await _eamisPropertyTransferDetailsRepository.GetResponsibilityCenterByID(responsibilityCode);
+            var response = await _eamisPropertyTransferDetailsRepository.GetResponsibilityCenterByID(newResponsibilityCode);
             return response;
+        }
+        [HttpPut("Edit")]
+        public async Task<ActionResult<EamisPropertyTransferDetailsDTO>> Edit([FromBody] EamisPropertyTransferDetailsDTO item)
+        {
+            if (item == null)
+                item = new EamisPropertyTransferDetailsDTO();
+            return Ok(await _eamisPropertyTransferDetailsRepository.Update(item));
         }
     }
 }

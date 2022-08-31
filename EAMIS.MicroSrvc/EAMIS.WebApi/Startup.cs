@@ -114,7 +114,8 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisServiceLogRepository, EamisServiceLogRepository>();
             services.AddScoped<IEamisServiceLogDetailsRepository, EamisServiceLogDetailsRepository>();
             services.AddScoped<IEamisAttachedFilesRepository, EamisAttachedFilesRepository>();
-
+            services.AddScoped<IEamisPropertyDisposalRepository, EamisPropertyDisposalRepository>();
+            services.AddScoped<IEamisPropertyDisposalDetailsRepository, EamisPropertyDisposalDetailsRepository>();
             services.AddScoped<IEamisPropertyRevalutionRepository, EamisPropertyRevalutionRepository>();
             services.AddScoped<IEamisPropertyRevalutionDetailsRepository, EamisPropertyRevalutionDetailsRepository>();
             services.AddScoped<IFactorType, FactorType>();

@@ -13,6 +13,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<string> GetNextSequenceNumberPR();
         Task<EamisPropertyTransactionDTO> getPropertyItemById(int itemID);
         Task<DataList<EamisPropertyTransactionDTO>> SearchReceivingforIssuance(string type, string searchValue);
+        Task<DataList<EamisPropertyTransactionDTO>> SearchReceivingforTransfer(string type, string searchValue);
         Task<DataList<EamisPropertyTransactionDTO>> SearchReceivingforList(string type, string searchvalue);
     }
 }

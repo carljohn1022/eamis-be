@@ -13,6 +13,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<DataList<EamisPropertyTransferDetailsDTO>> List(EamisPropertyTransferDetailsDTO filter, PageConfig config);
         Task<EamisPropertyTransferDetailsDTO> Insert(EamisPropertyTransferDetailsDTO item);
         Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForIssuance(EamisPropertyTransactionDetailsDTO filter, PageConfig config);
-        Task<string> GetResponsibilityCenterByID(string responsibilityCode);
+        Task<string> GetResponsibilityCenterByID(string newResponsibilityCode);
+        Task<EamisPropertyTransferDetailsDTO> Update(EamisPropertyTransferDetailsDTO item);
     }
 }

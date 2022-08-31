@@ -415,7 +415,7 @@ namespace EAMIS.Core.CommonSvc.Utility
                                 eamisSupplierDTO.Street = row.Cell(9).Value.ToString();
                                 eamisSupplierDTO.Bank = row.Cell(10).Value.ToString();
                                 eamisSupplierDTO.AccountName = row.Cell(11).Value.ToString();
-                                eamisSupplierDTO.AccountNumber = Convert.ToInt32(row.Cell(12).Value);
+                                eamisSupplierDTO.AccountNumber = row.Cell(12).Value.ToString();
                                 eamisSupplierDTO.Branch = row.Cell(13).Value.ToString();
                                 eamisSupplierDTO.IsActive = Convert.ToBoolean(row.Cell(14).Value);
                                 rowCtr += 1;

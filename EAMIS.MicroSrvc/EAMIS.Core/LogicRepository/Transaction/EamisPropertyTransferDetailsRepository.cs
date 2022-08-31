@@ -143,6 +143,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
             };
         }
+        public async Task<EamisPropertyTransferDetailsDTO> Update(EamisPropertyTransferDetailsDTO item)
+        {
+            EAMISPROPERTYTRANSACTIONDETAILS data = MapToEntity(item);
+
+            _ctx.Entry(data).State = data.ID == 0 ? EntityState.Added : EntityState.Modified; 
+            await _ctx.SaveChangesAsync();
+            return item;
+        }
         #endregion Property transaction details
         public async Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForIssuance(EamisPropertyTransactionDetailsDTO filter, PageConfig config)
         {
