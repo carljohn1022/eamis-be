@@ -16,11 +16,15 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisSupplierDTO> Insert(EamisSupplierDTO item);
         Task<List<EAMISSUPPLIER>> GetAllSuppliers();
         Task<EamisSupplierDTO> InsertFromExcel(EamisSupplierDTO item);
-        Task<EamisSupplierDTO> Update(EamisSupplierDTO item ,int id);
+        Task<bool> InsertFromExcel(List<EamisSupplierDTO> Items);
+        Task<EamisSupplierDTO> Update(EamisSupplierDTO item, int id);
         Task<EamisSupplierDTO> Delete(EamisSupplierDTO item);
         Task<bool> ValidateExistingCode(string companynanme);
         Task<bool> UpdateValidationCode(int id, string companyname);
         Task<List<EAMISSUPPLIER>> ListAllSuppliers();
         Task<string> GetSupplieryById(int supplierId);
+        string ErrorMessage { get; set; }
+
+        bool HasError { get; set; }
     }
 }

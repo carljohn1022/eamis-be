@@ -21,6 +21,10 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisProcurementCategoryDTO> InsertFromExcel(EamisProcurementCategoryDTO item);
         Task<List<EAMISPROCUREMENTCATEGORY>> ListAllProcurements();
 
+        Task<bool> InsertFromExcel(List<EamisProcurementCategoryDTO> item);
+        string ErrorMessage { get; set; }
+
+        bool HasError { get ; set; }
 
     }
 }

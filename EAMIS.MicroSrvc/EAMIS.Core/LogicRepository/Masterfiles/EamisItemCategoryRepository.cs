@@ -20,6 +20,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         private readonly EAMISContext _ctx;
         private readonly AISContext _aisctx;
         private readonly int _maxPageSize;
+        private string _errorMessage = "";
+        public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
+
+        private bool bolerror = false;
+        public bool HasError { get => bolerror; set => value = bolerror; }
         public EamisItemCategoryRepository(EAMISContext ctx, AISContext aisctx)
         {
             _ctx = ctx;
@@ -49,6 +54,30 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             var result = await Task.Run(() => _ctx.EAMIS_ITEM_CATEGORY.ToList()).ConfigureAwait(false);
             return result;
         }
+
+        public async Task<bool> InsertFromExcel(List<EamisItemCategoryDTO> Items)
+        {
+            List<EAMISITEMCATEGORY> lstCategory = new List<EAMISITEMCATEGORY>();
+            try
+            {
+                for (int intItems = 0; intItems < Items.Count(); intItems++)
+                {
+                    EAMISITEMCATEGORY objCategory = MapToEntity(Items[intItems]);
+
+                    lstCategory.Add(objCategory);
+                }
+                _ctx.EAMIS_ITEM_CATEGORY.AddRange(lstCategory);
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+                bolerror = false;
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
+            }
+            return HasError;
+        }
+
         public async Task<EamisItemCategoryDTO> InsertFromExcel(EamisItemCategoryDTO item)
         {
             try
@@ -59,7 +88,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             }
             catch (Exception ex)
             {
-                throw ex;
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
             }
             return item;
         }

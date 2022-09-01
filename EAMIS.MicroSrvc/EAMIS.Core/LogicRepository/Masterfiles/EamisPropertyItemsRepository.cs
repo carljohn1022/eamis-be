@@ -18,6 +18,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
     {
         private readonly EAMISContext _ctx;
         private readonly int _maxPageSize;
+        private string _errorMessage = "";
+        public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
+
+        private bool bolerror = false;
+        public bool HasError { get => bolerror; set => value = bolerror; }
         private List<EamisPropertyTypeDTO> dto = new List<EamisPropertyTypeDTO>()
         {
             new EamisPropertyTypeDTO{ Id = 1, Amount = 500,DescriptionRules ="Sample",Name = "PPE" },
@@ -38,7 +43,31 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                 : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
- 
+
+        public async Task<bool> InsertFromExcel(List<EamisPropertyItemsDTO> Items)
+        {
+            List<EAMISPROPERTYITEMS> lstItem = new List<EAMISPROPERTYITEMS>();
+            try
+            {
+                for (int intItems = 0; intItems < Items.Count(); intItems++)
+                {
+                    EAMISPROPERTYITEMS objPropertyItem = MapToEntity(Items[intItems]);
+
+                    lstItem.Add(objPropertyItem);
+                }
+
+                _ctx.EAMIS_PROPERTYITEMS.AddRange(lstItem);
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+                bolerror = false;
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
+            }
+            return HasError;
+        }
+
         public async Task<EamisPropertyItemsDTO> InsertFromExcel(EamisPropertyItemsDTO item)
         {
             try
@@ -46,15 +75,14 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 EAMISPROPERTYITEMS data = MapToEntity(item);
                 _ctx.Entry(data).State = EntityState.Added;
 
+                item.Id = data.ID;
                 _ctx.SaveChangesAsync().GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
             }
-
-
             return item;
         }
         public async Task<EamisPropertyItemsDTO> Delete(EamisPropertyItemsDTO item)
