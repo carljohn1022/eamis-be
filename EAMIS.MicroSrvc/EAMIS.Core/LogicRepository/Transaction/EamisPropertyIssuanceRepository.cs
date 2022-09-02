@@ -305,19 +305,19 @@ namespace EAMIS.Core.LogicRepository.Transaction
             IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = null;
             if (type == "Item Code")
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == "Property Receiving" && x.ITEM_CODE.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving && x.ITEM_CODE.Contains(searchValue)).AsQueryable();
             }
             else if (type == "Item Description")
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == "Property Receiving" && x.ITEM_DESCRIPTION.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving && x.ITEM_DESCRIPTION.Contains(searchValue)).AsQueryable();
             }
             else if (type == "Transaction Number")
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == "Property Receiving" && x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving && x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
             }
             else
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == "Property Receiving" && x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving && x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
             }
 
             var paged = PagedQueryForSearch(query);

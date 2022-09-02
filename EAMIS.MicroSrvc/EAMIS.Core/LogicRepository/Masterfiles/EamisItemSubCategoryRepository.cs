@@ -18,6 +18,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
     {
         private readonly EAMISContext _ctx;
         private readonly int _maxPageSize;
+        private string _errorMessage = "";
+        public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
+
+        private bool bolerror = false;
+        public bool HasError { get => bolerror; set => value = bolerror; }
         public EamisItemSubCategoryRepository(EAMISContext ctx)
         {
             _ctx = ctx;
@@ -31,6 +36,31 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             var result = _ctx.EAMIS_ITEMS_SUB_CATEGORY.AsNoTracking().ToList();
             return result;
         }
+
+
+        public async Task<bool> InsertFromExcel(List<EamisItemSubCategoryDTO> Items)
+        {
+            List<EAMISITEMSUBCATEGORY> lstSubCategory = new List<EAMISITEMSUBCATEGORY>();
+            try
+            {
+                for (int intItems = 0; intItems < Items.Count(); intItems++)
+                {
+                    EAMISITEMSUBCATEGORY objSubCategory = MapToEntity(Items[intItems]);
+
+                    lstSubCategory.Add(objSubCategory);
+                }
+                _ctx.EAMIS_ITEMS_SUB_CATEGORY.AddRange(lstSubCategory);
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+                bolerror = false;
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
+            }
+            return HasError;
+        }
+
         public async Task<EamisItemSubCategoryDTO> InsertFromExcel(EamisItemSubCategoryDTO item)
         {
             try

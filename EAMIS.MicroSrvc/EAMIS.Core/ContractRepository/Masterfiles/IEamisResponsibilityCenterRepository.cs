@@ -20,5 +20,9 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisResponsibilityCenterDTO> InsertFromExcel(EamisResponsibilityCenterDTO item);
         Task<List<EAMISRESPONSIBILITYCENTER>> GetAllResponsibilityCenters();
 
+        Task<bool> InsertFromExcel(List<EamisResponsibilityCenterDTO> Items);
+        string ErrorMessage { get; set; }
+
+        bool HasError { get; set; }
     }
 }

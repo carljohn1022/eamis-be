@@ -533,24 +533,43 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         }
         #endregion
 
-        [HttpPost("UploadExcelFile")]
-        public ActionResult UploadExcel(IFormFile file, string TemplateName = "Items")
+        [HttpPost("UploadFile")]
+        public ActionResult UploadExcel(IFormFile file, string TemplateName = WorkSheetTemplateNames.Items)
         {
-            string fileName = "";
-            if (file != null && System.IO.Path.GetExtension(file.FileName).ToLower() == ".xlsx")
+            if(file == null)
+                return BadRequest("File not found.");
+
+            string fileName = string.Empty;
+            string extensionName = System.IO.Path.GetExtension(file.FileName).ToLower();
+            string fileFormat = string.Empty;
+            if (file != null &&
+                (extensionName == FileFormat.ExcelFile || extensionName == FileFormat.CSVFile))
             {
-                string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, @"StaticFiles\Uploaded\Excel\");
-                fileName = Guid.NewGuid().ToString() + "_" + Path.GetExtension(file.FileName);
+                string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, FolderName.StaticFolderLocation + @"\" +
+                                                 extensionName == FileFormat.ExcelFile ?
+                                                 FolderName.PropertyItemExcelFileLocation : FolderName.PropertyItemCSVFileLocation);
+                fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 string filePath = Path.Combine(targetPath, fileName);
+
+                if (!Directory.Exists(targetPath))
+                    Directory.CreateDirectory(targetPath); //create the target path if not yet exist
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     file.CopyTo(stream);
                 }
-                _eamisFileHelper.UploadExcelToDB(filePath, TemplateName);
-                if (_eamisFileHelper.bolError)
-                    return BadRequest(_eamisFileHelper.ErrorMessage);
+                fileFormat = extensionName == FileFormat.ExcelFile ? FileFormat.ExcelFile : FileFormat.CSVFile;
+                _eamisFileHelper.UploadFileToDB(fileFormat, filePath, TemplateName);
 
+                if (_eamisFileHelper.HasError)
+                    return BadRequest(_eamisFileHelper.ErrorMessage);
+                else
+                {
+                    //Delete file when uploaded successfully
+                    FileInfo fileinfo = new FileInfo(filePath);
+                    if (fileinfo.Exists) //check the file if it exist in the repository
+                        fileinfo.Delete(); //if file found/exist then delete it
+                }
             }
             return Ok();
         }

@@ -9,3 +9,4 @@ D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.csproj.Co
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\ref\EAMIS.Common.dll
 D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.pdb
+D:\EAMIS WS\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.csproj.AssemblyReference.cache
