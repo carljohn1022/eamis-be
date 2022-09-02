@@ -95,14 +95,25 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             EAMISPROPERTYITEMS data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
-            item.Id = data.ID;
-            string _PropertyNo = item.PropertyNo.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0');
-            if(item.PropertyNo != _PropertyNo)
-            {
-                item.PropertyNo = _PropertyNo;
-                _ctx.Entry(data).State = EntityState.Detached;
-                await this.Update(item);
-            }
+            //ensure that recently added record has the correct transaction type number
+            //item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
+
+            //string _propertyNo = item.PropertyNo.Substring(0,6) + Convert.ToString(data.ID).PadLeft(6, '0');
+
+            ////check if the forecasted transaction type matches with the actual transaction type (saved/created in DB)
+            ////forecasted transaction type = item.TransactionType
+            ////actual transaction type = item.TransactionType.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0')
+            //if (item.PropertyNo != _propertyNo)
+            //{
+            //    item.PropertyNo = _propertyNo; //if not matched, replace value of FTT with  ATT
+
+            //    //reset context state to avoid error
+            //    _ctx.Entry(data).State = EntityState.Detached;
+
+            //    //call the update method, force to update the transaction type in the DB
+            //    await this.Update(item);
+            //}
+
             return item;
         }
         

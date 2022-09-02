@@ -77,7 +77,18 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 Count = await paged.CountAsync(),
                 Items = await QueryToDTO(paged).ToListAsync()
             };
-            
+        }
+        public async Task<DataList<EamisFundSourceDTO>> searchFundForIssuance (string searchValue)
+        {
+            IQueryable<EAMISFUNDSOURCE> query = null;
+            query = _ctx.EAMIS_FUND_SOURCE.AsNoTracking().Where(x => x.FUND_CATEGORY.Contains(searchValue)).AsQueryable();
+
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisFundSourceDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync()
+            };
         }
 
         private IQueryable<EAMISFUNDSOURCE> PagedQueryForSearch(IQueryable<EAMISFUNDSOURCE> query)

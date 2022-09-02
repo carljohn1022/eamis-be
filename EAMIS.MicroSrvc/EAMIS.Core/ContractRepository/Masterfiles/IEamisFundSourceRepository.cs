@@ -12,6 +12,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
     public interface IEamisFundSourceRepository
     {
         Task<DataList<EamisFundSourceDTO>> SearchFunds(string type, string searchValue);
+        Task<DataList<EamisFundSourceDTO>> searchFundForIssuance(string searchValue);
         Task<DataList<EamisFundSourceDTO>> List(EamisFundSourceDTO filter, PageConfig config);
         Task<EamisFundSourceDTO> Insert(EamisFundSourceDTO item);
         Task<EamisFundSourceDTO> Update(EamisFundSourceDTO item,int Id);

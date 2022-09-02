@@ -136,7 +136,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             //ensure that recently added record has the correct transaction type number
             item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
 
-            string _prType = item.TransactionNumber.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0');
+            string _prType = PrefixSettings.PRPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
 
             //check if the forecasted transaction type matches with the actual transaction type (saved/created in DB)
             //forecasted transaction type = item.TransactionType

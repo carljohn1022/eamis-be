@@ -225,7 +225,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                 .Select(x => x.PROPERTY_NUMBER)
                                 .ToList();
 
-            List<int> itemsIssued = new List<int>();
+            List<int> itemsIssued = new List<int>(); 
 
             var lstForIssuanceItems = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
                                         .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,

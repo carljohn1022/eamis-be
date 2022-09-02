@@ -94,7 +94,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
         }
         private IQueryable<EAMISPROPERTYTRANSACTION> PagedQuery(IQueryable<EAMISPROPERTYTRANSACTION> query, int resolved_size, int resolved_index)
         {
-            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
         private IQueryable<EamisPropertyTransactionDTO> QueryToDTO(IQueryable<EAMISPROPERTYTRANSACTION> query)
         {

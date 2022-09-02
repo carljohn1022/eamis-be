@@ -26,6 +26,11 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         {
             return Ok(await _eamisFundSourceRepository.SearchFunds(type, searchValue));
         }
+        [HttpGet("SearchFundForIssuance")]
+        public async Task<ActionResult<EAMISFUNDSOURCE>> SearchFund(string searchValue)
+        {
+            return Ok(await _eamisFundSourceRepository.searchFundForIssuance(searchValue));
+        }
 
         [HttpGet("list")]
         public async Task<ActionResult<EAMISFUNDSOURCE>> List([FromQuery] EamisFundSourceDTO filter, [FromQuery] PageConfig config)
