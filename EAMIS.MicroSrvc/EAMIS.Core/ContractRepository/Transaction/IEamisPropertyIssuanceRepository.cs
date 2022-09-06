@@ -19,5 +19,8 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<string> GetNextSequenceNumber();
         Task<DataList<EamisPropertyTransactionDetailsDTO>> SearchReceiving(string type, string searchValue);
         //Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item);
+        string ErrorMessage { get; set; }
+        bool HasError { get; set; }
+        Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode);
     }
 }

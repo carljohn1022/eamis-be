@@ -110,6 +110,7 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisFileHelper, EamisFileHelper>();
             services.AddScoped<IEamisPropertyIssuanceRepository, EamisPropertyIssuanceRepository>();
             services.AddScoped<IEamisPropertyTransferRepository, EamisPropertyTransferRepository>();
+            services.AddScoped<IEamisPropertyTransferDetailsRepository, EamisPropertyTransferDetailsRepository>();
             services.AddScoped<IEamisServiceLogRepository, EamisServiceLogRepository>();
             services.AddScoped<IEamisServiceLogDetailsRepository, EamisServiceLogDetailsRepository>();
             services.AddScoped<IEamisAttachedFilesRepository, EamisAttachedFilesRepository>();

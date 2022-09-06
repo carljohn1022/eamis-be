@@ -14,6 +14,7 @@ namespace EAMIS.Core.Domain.Entities
         public string ACCOUNT_CODE { get; set; }
         public bool IS_PART_OF_INVENTORY { get; set; }
         public bool IS_ACTIVE { get; set; }
+        public string GENERAL_LEDGER_ACCOUNT { get; set; }
         public EAMISGROUPCLASSIFICATION GROUPCLASSIFICATION { get; set; }
         public EAMISSUBCLASSIFICATION SUBCLASSIFICATION { get; set; }
         public EAMISCLASSIFICATION CLASSIFICATION { get; set; }

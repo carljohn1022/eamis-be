@@ -24,6 +24,12 @@ namespace EAMIS.Core.LogicRepository.Transaction
         private readonly int _maxPageSize;
         private readonly IEAMISIDProvider _EAMISIDProvider;
         private readonly IEamisPropertyTransactionDetailsRepository _eamisPropertyTransactionDetailsRepository;
+
+        private string _errorMessage = "";
+        public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
+
+        private bool bolerror = false;
+        public bool HasError { get => bolerror; set => value = bolerror; }
         public EamisPropertyIssuanceRepository(EAMISContext ctx,
                                                IEAMISIDProvider EAMISIDProvider,
                                                IEamisPropertyTransactionDetailsRepository eamisPropertyTransactionDetailsRepository)
@@ -330,6 +336,12 @@ namespace EAMIS.Core.LogicRepository.Transaction
         private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> PagedQueryForSearch(IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query)
         {
             return query;
+        }
+
+        public async Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode)
+        {
+            
+            return string.Empty;
         }
 
         public async Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config)
