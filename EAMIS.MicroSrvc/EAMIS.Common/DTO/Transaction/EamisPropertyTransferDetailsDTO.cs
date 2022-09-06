@@ -8,7 +8,6 @@ namespace EAMIS.Common.DTO.Transaction
 {
     public class EamisPropertyTransferDetailsDTO
     {
-
         public int Id { get; set; }
         public int PropertyTransactionID { get; set; }
         public bool isDepreciation { get; set; }
@@ -22,6 +21,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string Pr { get; set; }
         public DateTime AcquisitionDate { get; set; }
         public int AssigneeCustodian { get; set; }
+
         public string RequestedBy { get; set; }
         public string Office { get; set; }
         public string Department { get; set; }
@@ -40,5 +40,11 @@ namespace EAMIS.Common.DTO.Transaction
         public string PropertyCondition { get; set; }
         public int NewAssigneeCustodian { get; set; }
         public string NewResponsibilityCode { get; set; }
+
+        //public string TransactionNumber { get; set; }
+        //public string TransactionType { get; set; }
+
+        public string AssigneeCustodianName { get; set; }
+        public EamisPropertyTransactionDTO PropertyTransactionGroup { get; set; }
     }
 }

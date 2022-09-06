@@ -219,9 +219,9 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return response;
         }
         [HttpGet("GetPropertyNumber")]
-        public async Task<string> GetPropertyNo(DateTime acquisitionDate, string responsibilityCode)
+        public async Task<string> GetPropertyNo(DateTime acquisitionDate, string responsibilityCode, string serialNumber)
         {
-            var response = await _eamisPropertyIssuanceRepository.GetPropertyNumber(acquisitionDate, responsibilityCode);
+            var response = await _eamisPropertyIssuanceRepository.GetPropertyNumber(acquisitionDate, responsibilityCode, serialNumber);
             return response;
         }
     }

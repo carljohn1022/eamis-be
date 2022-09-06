@@ -42,13 +42,21 @@ namespace EAMIS.WebApi.Controllers.Transaction
                 item = new EamisPropertyTransferDetailsDTO();
             return Ok(await _eamisPropertyTransferDetailsRepository.Insert(item));
         }
-        [HttpGet("listitemsforissuance")]
-        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> ListItemsForIssuance([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config)
+        //[HttpGet("listitemsfortransfer")]
+        //public async Task<ActionResult<EamisPropertyTransferDetailsDTO>> List([FromBody] EamisPropertyTransferDetailsDTO item, [FromQuery] PageConfig config)
+        //{
+        //    if (item == null)
+        //        item = new EamisPropertyTransferDetailsDTO();
+        //    return Ok(await _eamisPropertyTransferDetailsRepository.ListItemsForTranser(item, config));
+        //}
+        [HttpGet("listitemsfortransfer")]
+        public async Task<ActionResult<EamisPropertyTransferDetailsDTO>> List([FromQuery] EamisPropertyTransferDetailsDTO filter, [FromQuery] PageConfig config)
         {
             if (filter == null)
-                filter = new EamisPropertyTransactionDetailsDTO();
-            return Ok(await _eamisPropertyTransferDetailsRepository.ListItemsForIssuance(filter, config));
+                filter = new EamisPropertyTransferDetailsDTO();
+            return Ok(await _eamisPropertyTransferDetailsRepository.ListItemsForTranser(filter, config));
         }
+
         [HttpGet("getResponsibilityCenter")]
         public async Task<string> GetResponsibilityCenterByID(string newResponsibilityCode)
         {
@@ -62,5 +70,6 @@ namespace EAMIS.WebApi.Controllers.Transaction
                 item = new EamisPropertyTransferDetailsDTO();
             return Ok(await _eamisPropertyTransferDetailsRepository.Update(item));
         }
+
     }
 }

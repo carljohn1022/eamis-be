@@ -534,14 +534,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return retValue;
         }
-        public async Task<string> GetPropertyNumber(DateTime acquisitionDate, string responsibilityCode)
+        public async Task<string> GetPropertyNumber(DateTime acquisitionDate, string responsibilityCode, string serialNumber)
         {
             string retValue = "";
             var result = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.Where(s => s.RESPONSIBILITY_CENTER == responsibilityCode).AsNoTracking().ToList()).ConfigureAwait(false);
             if (result != null)
             {
                 retValue = acquisitionDate.Year.ToString() + "-" +
-                    result[0].SUB_GROUP_CODE.ToString() + "-" +
+                    serialNumber.ToString() + "-" +
                     result[0].OFFICE_CODE.ToString();
             }
             return retValue;
@@ -554,5 +554,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
         //    await _ctx.SaveChangesAsync();
         //    return item;
         //}
+
+       
+
     }
 }

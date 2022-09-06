@@ -20,7 +20,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<string> GetNextSequenceNumber();
         Task<DataList<EamisPropertyTransactionDetailsDTO>> SearchReceiving(string type, string searchValue);
         Task<string> GetResponsibilityCenterByID(string responsibilityCode);
-        Task<string> GetPropertyNumber(DateTime acquisitionDate, string responsibilityCode);
+        Task<string> GetPropertyNumber(DateTime acquisitionDate, string responsibilityCode, string serialNumber);
         //Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item);
     }
 }
