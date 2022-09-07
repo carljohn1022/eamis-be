@@ -22,5 +22,9 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> ValidateExistingSubUpdate(string SubCategoryName, int categoryId);
         Task<bool> Validation(int categoryId, string subCategoryName);
         Task<List<EAMISITEMSUBCATEGORY>> ListAllItemSubCategories();
+        string ErrorMessage { get; set; }
+
+        bool HasError { get; set; }
+        Task<bool> InsertFromExcel(List<EamisItemSubCategoryDTO> Items);
     }
 }

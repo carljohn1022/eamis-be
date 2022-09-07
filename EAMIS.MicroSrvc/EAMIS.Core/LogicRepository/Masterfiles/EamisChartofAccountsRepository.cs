@@ -18,6 +18,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
     {
         private readonly EAMISContext _ctx;
         private readonly int _maxPageSize;
+        private string _errorMessage = "";
+        public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
+
+        private bool bolerror = false;
+        public bool HasError { get => bolerror; set => value = bolerror; }
         public EamisChartofAccountsRepository(EAMISContext ctx)
         {
             _ctx = ctx;
@@ -40,6 +45,30 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             return result;
         }
 
+
+        public async Task<bool> InsertFromExcel(List<EamisChartofAccountsDTO> Items)
+        {
+            List<EAMISCHARTOFACCOUNTS> lstCategory = new List<EAMISCHARTOFACCOUNTS>();
+            try
+            {
+                for (int intItems = 0; intItems < Items.Count(); intItems++)
+                {
+                    EAMISCHARTOFACCOUNTS objCOA = MapToEntity(Items[intItems]);
+
+                    lstCategory.Add(objCOA);
+                }
+                _ctx.EAMIS_CHART_OF_ACCOUNTS.AddRange(lstCategory);
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+                bolerror = false;
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
+            }
+            return HasError;
+        }
+
         public async Task<EamisChartofAccountsDTO> InsertFromExcel(EamisChartofAccountsDTO item)
         {
             try
@@ -50,7 +79,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             }
             catch (Exception ex)
             {
-                throw ex;
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
             }
             return item;
         }

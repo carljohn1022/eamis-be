@@ -31,9 +31,9 @@ namespace EAMIS.Core.LogicRepository
             if (item == null) return new EAMISREGION();
             return new EAMISREGION
             {
-             PSGCODE = item.PsgCode,
-             REGION_CODE = item.RegionCode,
-             REGION_DESCRIPTION = item.RegionDescription
+                PSGCODE = item.PsgCode,
+                REGION_CODE = item.RegionCode,
+                REGION_DESCRIPTION = item.RegionDescription
             };
         }
         public async Task<List<EAMISREGION>> ListRegionById(int regionId)
@@ -43,10 +43,10 @@ namespace EAMIS.Core.LogicRepository
         }
         public async Task<List<EAMISREGION>> ListRegion(string searchValue)
         {
-            var result = _ctx.EAMIS_REGION.AsNoTracking().Where(x => x.REGION_DESCRIPTION == searchValue).ToList();
+            var result = await Task.Run(() => _ctx.EAMIS_REGION.AsNoTracking().Where(x => x.REGION_DESCRIPTION == searchValue).ToList()).ConfigureAwait(false);
             return result;
         }
-        public async Task<DataList<EamisRegionDTO>> List(EamisRegionDTO filter,PageConfig config)
+        public async Task<DataList<EamisRegionDTO>> List(EamisRegionDTO filter, PageConfig config)
         {
             IQueryable<EAMISREGION> query = FilteredEntities(filter);
             string resolved_sort = config.SortBy ?? "Id";
@@ -55,7 +55,7 @@ namespace EAMIS.Core.LogicRepository
             int resolved_size = config.Size ?? _maxPageSize;
             if (resolved_size > _maxPageSize) resolved_size = _maxPageSize;
             int resolved_index = config.Index ?? 1;
-            var paged = PagedQuery(query,resolved_size,resolved_index);
+            var paged = PagedQuery(query, resolved_size, resolved_index);
             return new DataList<EamisRegionDTO>
             {
                 Count = await query.CountAsync(),
@@ -66,7 +66,7 @@ namespace EAMIS.Core.LogicRepository
         private IQueryable<EAMISREGION> FilteredEntities(EamisRegionDTO filter, IQueryable<EAMISREGION> custom_query = null, bool strict = false)
         {
             var predicate = PredicateBuilder.New<EAMISREGION>(true);
-           
+
             if (filter.PsgCode != null && !string.IsNullOrEmpty(filter.PsgCode))
                 predicate = predicate.And(x => x.PSGCODE == filter.PsgCode);
             if (filter.RegionCode != null && filter.RegionCode != 0)
@@ -77,7 +77,7 @@ namespace EAMIS.Core.LogicRepository
             return query.Where(predicate);
         }
 
-        public IQueryable<EAMISREGION> PagedQuery(IQueryable<EAMISREGION> query,int resolved_size,int resolved_index)
+        public IQueryable<EAMISREGION> PagedQuery(IQueryable<EAMISREGION> query, int resolved_size, int resolved_index)
         {
             return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
@@ -86,9 +86,9 @@ namespace EAMIS.Core.LogicRepository
         {
             return query.Select(x => new EamisRegionDTO
             {
-               PsgCode = x.PSGCODE,
-               RegionCode = x.REGION_CODE,
-               RegionDescription = x.REGION_DESCRIPTION,
+                PsgCode = x.PSGCODE,
+                RegionCode = x.REGION_CODE,
+                RegionDescription = x.REGION_DESCRIPTION,
             });
         }
     }

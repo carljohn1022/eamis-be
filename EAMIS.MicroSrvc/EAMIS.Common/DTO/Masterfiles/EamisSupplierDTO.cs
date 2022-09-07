@@ -20,7 +20,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public string ContactPersonNumber { get; set; }
         public string Bank {get; set;}
         public string AccountName { get; set; }
-        public int AccountNumber { get; set; }
+        public string AccountNumber { get; set; }
         public string Branch { get; set; }
         public bool IsActive { get; set; }
         public EamisBarangayDTO Barangay { get; set; }

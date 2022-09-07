@@ -20,5 +20,9 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> UpdateValidateExistingCode(string code, int id);
         Task<EamisFundSourceDTO> InsertFromExcel(EamisFundSourceDTO item);
         Task<List<EAMISFUNDSOURCE>> ListAllFundSources();
+        string ErrorMessage { get; set; }
+
+        bool HasError { get; set; }
+        Task<bool> InsertFromExcel(List<EamisFundSourceDTO> Items);
     }
 }
