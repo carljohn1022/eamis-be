@@ -434,12 +434,15 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                                pi => pi.p.CATEGORY_ID,
                                                                c => c.ID,
                                                                (pi, c) => new { pi, c })
-                                                               .Where(i => i.c.ID == itemCategory.CATEGORY_ID)
+                                                               .Where(i => i.c.ID == itemCategory.CATEGORY_ID &&
+                                                                           !(i.pi.d.PROPERTY_NUMBER == null || i.pi.d.PROPERTY_NUMBER == string.Empty))
                                                                .GroupBy(g => new { g.c.ID })
                                                                .Select(s => new { Count = s.Count() })
                                                                .FirstOrDefault();
+                                    int totalCount = 0;
                                     if (totalIssuedCount.Count > 0)
-                                    {
+                                        totalCount = totalIssuedCount.Count + 1;
+                                    
                                         //construct the property number
                                         //YEAR PURCHASED +
                                         //PPE SUB-MAJOR ACCOUNT GROUP +
@@ -453,23 +456,23 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
                                         string serialNumber = "";
                                         string propertyNumber = "";
-                                        int totalCount = totalIssuedCount.Count + 1;
+                                        
                                         int locStart = loc.LOCATION_CODE.Length - (loc.LOCATION_CODE.Length - 3);
                                         if (itemCategory.CATEGORY_ID.ToString().Length < 3)
                                             serialNumber = itemCategory.CATEGORY_ID.ToString().PadLeft(3, '0');
                                         else
                                             serialNumber = itemCategory.CATEGORY_ID.ToString().Substring(0, 3);
 
-                                        serialNumber += totalCount.ToString().PadLeft(4, '0') +
+                                        serialNumber += totalCount.ToString().PadLeft(4, '0') + "-" +
                                                            loc.LOCATION_CODE.Substring(locStart + 1);
 
-                                        propertyNumber = yearPurchased + 
-                                                         coa.PPE_SUB_MAJOR_ACCT_GRP.ToString() + 
-                                                         coa.GENERAL_LEDGER_ACCOUNT.ToString() + 
-                                                         serialNumber + 
+                                        propertyNumber = yearPurchased + "-" +
+                                                         coa.PPE_SUB_MAJOR_ACCT_GRP.ToString() + "-" +
+                                                         coa.GENERAL_LEDGER_ACCOUNT.ToString() + "-" +
+                                                         serialNumber + "-" +
                                                          loc.OFFICE_CODE.ToString();
                                         return propertyNumber;
-                                    }
+                                    
                                 }
                             }
                         }
