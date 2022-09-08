@@ -340,10 +340,164 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         public async Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode)
         {
-            
+            //check item's category
+            var itemDetails = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
+                                        .Where(x => x.ID == transactionDetailId &&
+                                                    x.ITEM_CODE == itemCode)
+                                        .Select(i => new { i.SERIAL_NUMBER, i.ACQUISITION_DATE, i.RESPONSIBILITY_CODE })
+                                        .FirstOrDefault()).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(itemDetails.SERIAL_NUMBER))
+            {
+                bolerror = true;
+                _errorMessage = "Could not generate property number for this item.";
+            }
+            else
+            {
+                string yearPurchased = itemDetails.ACQUISITION_DATE.Year.ToString();
+                //get property item's category
+                var itemCategory = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.AsNoTracking()
+                                                            .Where(i => i.PROPERTY_NO == itemCode)
+                                                            .Select(i => new { i.CATEGORY_ID })
+                                                            .FirstOrDefault()).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(itemCategory.CATEGORY_ID.ToString()))
+                {
+                    bolerror = true;
+                    _errorMessage = "Property item's is either empty or invalid.";
+                }
+                else
+                {
+                    var cat = await Task.Run(() => _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking()
+                                                       .Where(c => c.ID == itemCategory.CATEGORY_ID)
+                                                       .Select(c => new { c.CHART_OF_ACCOUNT_ID, c.CATEGORY_NAME })
+                                                       .FirstOrDefault()).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(cat.CHART_OF_ACCOUNT_ID.ToString()))
+                    {
+                        bolerror = true;
+                        _errorMessage = "Item's category could not be found.";
+                    }
+                    else
+                    {
+                        //get responsibility center office and location
+                        var loc = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.AsNoTracking()
+                                                           .Where(r => r.RESPONSIBILITY_CENTER == itemDetails.RESPONSIBILITY_CODE)
+                                                           .Select(s => new { s.OFFICE_CODE, s.LOCATION_CODE })
+                                                           .FirstOrDefault()).ConfigureAwait(false);
+
+                        if (string.IsNullOrEmpty(loc.OFFICE_CODE) || string.IsNullOrEmpty(loc.LOCATION_CODE))
+                        {
+                            bolerror = true;
+                            _errorMessage = "Responsibility center office/location code is either empty or invalid.";
+                        }
+                        else if (loc.LOCATION_CODE.Length < 3)
+                        {
+                            bolerror = true;
+                            _errorMessage = "Responsibility center location code is either empty or invalid.";
+                        }
+                        else
+                        {
+                            //obtain group id and general ledger
+                            var coa = await Task.Run(() => _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking()
+                                                               .Join(_ctx.EAMIS_GROUP_CLASSIFICATION,
+                                                               c => c.GROUP_ID,
+                                                               g => g.ID,
+                                                               (c, g) => new { c, g })
+                                                               .Where(c => c.c.ID == cat.CHART_OF_ACCOUNT_ID)
+                                                               .Select(c => new
+                                                               {
+                                                                   c.c.GROUP_ID,
+                                                                   c.c.GENERAL_LEDGER_ACCOUNT,
+                                                                   c.g.PPE_SUB_MAJOR_ACCT_GRP
+                                                               })
+                                                               .FirstOrDefault()).ConfigureAwait(false);
+                            if (string.IsNullOrEmpty(coa.GROUP_ID.ToString()))
+                            {
+                                bolerror = true;
+                                _errorMessage = "Item's group is either empty or invalid.";
+                            }
+                            else
+                            {
+                                if (string.IsNullOrEmpty(coa.GENERAL_LEDGER_ACCOUNT))
+                                {
+                                    bolerror = true;
+                                    _errorMessage = "Item's general ledger account is either empty or invalid.";
+                                }
+                                else
+                                {
+                                    //When all validation is passed
+                                    //Get total count issued for the underlying item category
+                                    var totalIssuedCount = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                                               .Join(_ctx.EAMIS_PROPERTYITEMS,
+                                                               d => d.ITEM_CODE,
+                                                               p => p.PROPERTY_NO,
+                                                               (d, p) => new { d, p })
+                                                               .Join(_ctx.EAMIS_ITEM_CATEGORY,
+                                                               pi => pi.p.CATEGORY_ID,
+                                                               c => c.ID,
+                                                               (pi, c) => new { pi, c })
+                                                               .Where(i => i.c.ID == itemCategory.CATEGORY_ID)
+                                                               .GroupBy(g => new { g.c.ID })
+                                                               .Select(s => new { Count = s.Count() })
+                                                               .FirstOrDefault();
+                                    if (totalIssuedCount.Count > 0)
+                                    {
+                                        //construct the property number
+                                        //YEAR PURCHASED +
+                                        //PPE SUB-MAJOR ACCOUNT GROUP +
+                                        //GEN.LEDGER ACCOUNT +
+                                        //"SERIAL NUMBER (first three digit - category type, next four digit - series per category type, last three digit - location)" +
+                                        //OFFICE
+
+                                        //- first 3 digits of category type - Get from Eamis_Item_Category, ID column. if length is less than 3, pad zero(0)
+                                        //-next four digit-series per category type - count no if issuance/issued item then increment by 1
+                                        //- last three digit-location
+
+                                        string serialNumber = "";
+                                        string propertyNumber = "";
+                                        int totalCount = totalIssuedCount.Count + 1;
+                                        int locStart = loc.LOCATION_CODE.Length - (loc.LOCATION_CODE.Length - 3);
+                                        if (itemCategory.CATEGORY_ID.ToString().Length < 3)
+                                            serialNumber = itemCategory.CATEGORY_ID.ToString().PadLeft(3, '0');
+                                        else
+                                            serialNumber = itemCategory.CATEGORY_ID.ToString().Substring(0, 3);
+
+                                        serialNumber += totalCount.ToString().PadLeft(4, '0') +
+                                                           loc.LOCATION_CODE.Substring(locStart + 1);
+
+                                        propertyNumber = yearPurchased + 
+                                                         coa.PPE_SUB_MAJOR_ACCT_GRP.ToString() + 
+                                                         coa.GENERAL_LEDGER_ACCOUNT.ToString() + 
+                                                         serialNumber + 
+                                                         loc.OFFICE_CODE.ToString();
+                                        return propertyNumber;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             return string.Empty;
         }
 
+
+        private List<IssuedQtyDTO> GetIssuedQtyDTO()
+        {
+            var itemIssued = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                d => d.PROPERTY_TRANS_ID,
+                                h => h.ID,
+                                (d, h) => new { d, h })
+                                .Where(t => t.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance)
+                                .GroupBy(x => new { x.d.ITEM_CODE, x.d.PO })
+                                .Select(i => new IssuedQtyDTO
+                                {
+                                    ItemCode = i.Key.ITEM_CODE,
+                                    PO = i.Key.PO,
+                                    IssuedQty = i.Sum(q => q.d.QTY)
+                                })
+                                .ToList();
+            return itemIssued;
+        }
         public async Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config)
         {
             IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredItemsForReceiving(filter);
@@ -355,11 +509,37 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
 
             var paged = PagedQueryItemsForReceiving(query, resolved_size, resolved_index);
-            return new DataList<EamisPropertyTransactionDetailsDTO>
+            var result = new DataList<EamisPropertyTransactionDetailsDTO>
             {
                 Count = await query.CountAsync(),
                 Items = await QueryToDTOItemsForReceiving(paged).ToListAsync()
             };
+
+            //Display only property items with remaining qty 
+            List<EamisPropertyTransactionDetailsDTO> lstNew = new List<EamisPropertyTransactionDetailsDTO>();
+
+            List<IssuedQtyDTO> lstIssuedQty = GetIssuedQtyDTO();
+            for (int intItem = 0; intItem < result.Items.Count(); intItem++)
+            {
+                for (int intQty = 0; intQty < lstIssuedQty.Count(); intQty++)
+                {
+                    if (result.Items[intItem].ItemCode == lstIssuedQty[intQty].ItemCode &&
+                       result.Items[intItem].Po == lstIssuedQty[intQty].PO)
+                    {
+                        int remainingQty = result.Items[intItem].Qty - lstIssuedQty[intQty].IssuedQty;
+                        result.Items[intItem].IssuedQty = lstIssuedQty[intQty].IssuedQty;
+                        result.Items[intItem].RemainingQty = remainingQty;
+                        if (remainingQty > 0)
+                            //add item to the list
+                            lstNew.Add(result.Items[intItem]);
+                        break;
+                    }
+                }
+            }
+
+            result.Items = lstNew;
+            result.Count = result.Items.Count();
+            return result;
         }
         private IQueryable<EamisPropertyTransactionDetailsDTO> QueryToDTOItemsForReceiving(IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query)
         {
@@ -417,78 +597,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                 .Select(x => x.PROPERTY_NUMBER)
                                 .ToList();
 
-            List<int> itemsIssued = new List<int>();
-
-            var lstForReceivingItems = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
-                                        .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
-                                               d => d.PROPERTY_TRANS_ID,
-                                               h => h.ID,
-                                               (d, h) => new { d, h })
-                                        .Where(x => x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving)
-                                        .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
-                                        {
-                                            ID = x.d.ID,
-                                            PROPERTY_TRANS_ID = x.d.PROPERTY_TRANS_ID,
-                                            IS_DEPRECIATION = x.d.IS_DEPRECIATION,
-                                            DR = x.d.DR,
-                                            PROPERTY_NUMBER = x.d.PROPERTY_NUMBER,
-                                            ITEM_CODE = x.d.ITEM_CODE,
-                                            ITEM_DESCRIPTION = x.d.ITEM_DESCRIPTION,
-                                            SERIAL_NUMBER = x.d.SERIAL_NUMBER,
-                                            PO = x.d.PO,
-                                            PR = x.d.PR,
-                                            ACQUISITION_DATE = x.d.ACQUISITION_DATE,
-                                            ASSIGNEE_CUSTODIAN = x.d.ASSIGNEE_CUSTODIAN,
-                                            REQUESTED_BY = x.d.REQUESTED_BY,
-                                            OFFICE = x.d.OFFICE,
-                                            DEPARTMENT = x.d.DEPARTMENT,
-                                            RESPONSIBILITY_CODE = x.d.RESPONSIBILITY_CODE,
-                                            UNIT_COST = x.d.UNIT_COST,
-                                            QTY = x.d.QTY,
-                                            SALVAGE_VALUE = x.d.SALVAGE_VALUE,
-                                            BOOK_VALUE = x.d.BOOK_VALUE,
-                                            ESTIMATED_LIFE = x.d.ESTIMATED_LIFE,
-                                            AREA = x.d.AREA,
-                                            SEMI_EXPANDABLE_AMOUNT = x.d.SEMI_EXPANDABLE_AMOUNT,
-                                            USER_STAMP = x.d.USER_STAMP,
-                                            TIME_STAMP = x.d.TIME_STAMP,
-                                            WARRANTY_EXPIRY = x.d.WARRANTY_EXPIRY,
-                                            INVOICE = x.d.INVOICE,
-                                            PROPERTY_CONDITION = x.d.PROPERTY_CONDITION
-                                        }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER)).ToList();
-
-            //Check if item have been issued
-            foreach (var item in lstForReceivingItems)
-            {
-                string drNo = item.DR;
-                string itemCode = item.ITEM_CODE;
-                var itemTransactions = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
-                                           .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
-                                           d => d.PROPERTY_TRANS_ID,
-                                           h => h.ID,
-                                           (d, h) => new { d, h })
-                                           .Where(x => x.d.ITEM_CODE == itemCode &&
-                                                       x.d.DR == drNo)
-                                           .Select(i => new
-                                           {
-                                               i.d.ID,
-                                               i.d.PROPERTY_TRANS_ID,
-                                               i.d.DR,
-                                               i.d.ITEM_CODE,
-                                               i.h.TRANSACTION_TYPE,
-                                               i.d.IS_DEPRECIATION
-                                           })
-                                           .ToList();
-                bool bolValid = true;
-                foreach (var trn in itemTransactions)
-                {
-                    if (trn.TRANSACTION_TYPE == TransactionTypeSettings.Issuance)
-                        bolValid = false;
-                }
-                if (!bolValid)
-                    itemsIssued.Add(item.ID);
-            }
-
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
                                         .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
                                                d => d.PROPERTY_TRANS_ID,
@@ -525,8 +633,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             WARRANTY_EXPIRY = x.d.WARRANTY_EXPIRY,
                                             INVOICE = x.d.INVOICE,
                                             PROPERTY_CONDITION = x.d.PROPERTY_CONDITION
-                                        }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER) &&
-                                                      !itemsIssued.Contains(s.ID)
+                                        }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER)  //&&
+                                                      //!itemsIssued.Contains(s.ID)
                                                 );
             return query.Where(predicate);
         }
@@ -543,5 +651,12 @@ namespace EAMIS.Core.LogicRepository.Transaction
         //    await _ctx.SaveChangesAsync();
         //    return item;
         //}
+
+        partial class IssuedQtyDTO
+        {
+            public string ItemCode { get; set; }
+            public string PO { get; set; }
+            public int IssuedQty { get; set; }
+        }
     }
 }
