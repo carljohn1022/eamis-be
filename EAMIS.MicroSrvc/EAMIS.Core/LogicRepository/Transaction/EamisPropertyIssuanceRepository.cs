@@ -301,7 +301,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TIME_STAMP = item.TimeStamp,
                 WARRANTY_EXPIRY = item.WarrantyExpiry,
                 INVOICE = item.Invoice,
-                PROPERTY_CONDITION = item.PropertyCondition
+                PROPERTY_CONDITION = item.PropertyCondition,
+                REFERENCE_ID = item.transactionDetailId
 
 
             };
@@ -338,7 +339,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             return query;
         }
 
-        public async Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode)
+        public async Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode, string responsibilityCode)
         {
             //check item's category
             var itemDetails = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
@@ -346,6 +347,13 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                     x.ITEM_CODE == itemCode)
                                         .Select(i => new { i.SERIAL_NUMBER, i.ACQUISITION_DATE, i.RESPONSIBILITY_CODE })
                                         .FirstOrDefault()).ConfigureAwait(false);
+            if (itemDetails.SERIAL_NUMBER == null || itemDetails.SERIAL_NUMBER == string.Empty)
+            {
+                bolerror = true;
+                _errorMessage = "Could not generate property number for this item.";
+                return string.Empty;
+            }
+
             if (string.IsNullOrEmpty(itemDetails.SERIAL_NUMBER))
             {
                 bolerror = true;
@@ -379,7 +387,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     {
                         //get responsibility center office and location
                         var loc = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.AsNoTracking()
-                                                           .Where(r => r.RESPONSIBILITY_CENTER == itemDetails.RESPONSIBILITY_CODE)
+                                                           .Where(r => r.RESPONSIBILITY_CENTER == responsibilityCode)
                                                            .Select(s => new { s.OFFICE_CODE, s.LOCATION_CODE })
                                                            .FirstOrDefault()).ConfigureAwait(false);
 
@@ -496,9 +504,10 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                 h => h.ID,
                                 (d, h) => new { d, h })
                                 .Where(t => t.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance)
-                                .GroupBy(x => new { x.d.ITEM_CODE, x.d.PO })
+                                .GroupBy(x => new { x.d.ITEM_CODE, x.d.PO, x.d.REFERENCE_ID })
                                 .Select(i => new IssuedQtyDTO
                                 {
+                                    ID = i.Key.REFERENCE_ID,
                                     ItemCode = i.Key.ITEM_CODE,
                                     PO = i.Key.PO,
                                     IssuedQty = i.Sum(q => q.d.QTY)
@@ -529,20 +538,34 @@ namespace EAMIS.Core.LogicRepository.Transaction
             List<IssuedQtyDTO> lstIssuedQty = GetIssuedQtyDTO();
             for (int intItem = 0; intItem < result.Items.Count(); intItem++)
             {
+                bool bolFound = false;
+                int remainingQty = 0;
+                int issuedQty = 0;
                 for (int intQty = 0; intQty < lstIssuedQty.Count(); intQty++)
                 {
                     if (result.Items[intItem].ItemCode == lstIssuedQty[intQty].ItemCode &&
-                       result.Items[intItem].Po == lstIssuedQty[intQty].PO)
+                       result.Items[intItem].Po == lstIssuedQty[intQty].PO &&
+                       result.Items[intItem].Id == lstIssuedQty[intQty].ID
+                       )
                     {
-                        int remainingQty = result.Items[intItem].Qty - lstIssuedQty[intQty].IssuedQty;
-                        result.Items[intItem].IssuedQty = lstIssuedQty[intQty].IssuedQty;
-                        result.Items[intItem].RemainingQty = remainingQty;
-                        if (remainingQty > 0)
-                            //add item to the list
-                            lstNew.Add(result.Items[intItem]);
+                        bolFound = true;
+                        remainingQty = result.Items[intItem].Qty - lstIssuedQty[intQty].IssuedQty;
+                        issuedQty = lstIssuedQty[intQty].IssuedQty;
                         break;
                     }
                 }
+                if (bolFound)
+                {
+                    if (remainingQty > 0) //item have issuance
+                    {
+                        //add item to the list
+                        result.Items[intItem].IssuedQty = issuedQty;
+                        result.Items[intItem].RemainingQty = remainingQty;
+                        lstNew.Add(result.Items[intItem]);
+                    }
+                }
+                else
+                    lstNew.Add(result.Items[intItem]); //item has no issuane yet, display as it is
             }
 
             result.Items = lstNew;
@@ -581,6 +604,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TimeStamp = x.TIME_STAMP,
                 Invoice = x.INVOICE,
                 PropertyCondition = x.PROPERTY_CONDITION,
+                transactionDetailId = x.REFERENCE_ID,
                 PropertyTransactionGroup = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Select(x => new EamisPropertyTransactionDTO
                 {
                     Id = x.ID,
@@ -640,7 +664,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             TIME_STAMP = x.d.TIME_STAMP,
                                             WARRANTY_EXPIRY = x.d.WARRANTY_EXPIRY,
                                             INVOICE = x.d.INVOICE,
-                                            PROPERTY_CONDITION = x.d.PROPERTY_CONDITION
+                                            PROPERTY_CONDITION = x.d.PROPERTY_CONDITION,
+                                            REFERENCE_ID = x.d.REFERENCE_ID
                                         }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER)  //&&
                                                                                                    //!itemsIssued.Contains(s.ID)
                                                 );
@@ -685,6 +710,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         partial class IssuedQtyDTO
         {
+            public int ID { get; set; }
             public string ItemCode { get; set; }
             public string PO { get; set; }
             public int IssuedQty { get; set; }

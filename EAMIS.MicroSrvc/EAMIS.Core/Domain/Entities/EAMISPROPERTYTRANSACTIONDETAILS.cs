@@ -35,6 +35,7 @@ namespace EAMIS.Core.Domain.Entities
         public int WARRANTY_EXPIRY { get; set; }
         public string INVOICE { get; set;}
         public string PROPERTY_CONDITION { get; set; }
+        public int REFERENCE_ID { get; set; }
         public EAMISPROPERTYTRANSACTION PROPERTY_TRANSACTION_GROUP { get; set; }
 
 

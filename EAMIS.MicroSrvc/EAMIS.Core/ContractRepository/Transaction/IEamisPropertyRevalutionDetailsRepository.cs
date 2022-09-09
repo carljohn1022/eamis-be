@@ -16,5 +16,6 @@ namespace EAMIS.Core.ContractRepository.Transaction
         EamisPropertyRevaluationDetailsDTO CalculateRevaluationDetails(EamisPropertyRevaluationDetailsDTO item, DateTime? newDepreciationDate);
         Task<EamisPropertyRevaluationDetailsDTO> Insert(EamisPropertyRevaluationDetailsDTO item);
         Task<EamisPropertyRevaluationDetailsDTO> Update(EamisPropertyRevaluationDetailsDTO item);
+        Task<string> GetEstimatedLife(string itemCode);
     }
 }

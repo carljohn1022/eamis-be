@@ -299,5 +299,16 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
 
         #endregion Creation of Property Item for Revaluation
+
+        public async Task<string> GetEstimatedLife(string itemCode)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.Where(s => s.PROPERTY_NO == itemCode).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                retValue = result[0].ITEM_CATEGORY.ESTIMATED_LIFE.ToString();
+            }
+            return retValue;
+        }
     }
 }

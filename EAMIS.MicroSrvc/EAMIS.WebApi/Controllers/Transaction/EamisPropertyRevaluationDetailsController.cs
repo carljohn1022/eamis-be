@@ -78,5 +78,11 @@ namespace EAMIS.WebApi.Controllers.Transaction
 
             return Ok(result);
         }
+        [HttpGet("GetEstimatedLife")]
+        public async Task<string> GetPropertyNo(string itemCode)
+        {
+            var response = await _eamisPropertyRevalutionDetailsRepository.GetEstimatedLife(itemCode);
+            return response;
+        }
     }
 }

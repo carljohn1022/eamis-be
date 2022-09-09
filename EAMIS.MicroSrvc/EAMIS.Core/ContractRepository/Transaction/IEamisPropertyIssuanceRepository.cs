@@ -24,6 +24,6 @@ namespace EAMIS.Core.ContractRepository.Transaction
         //Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item);
         string ErrorMessage { get; set; }
         bool HasError { get; set; }
-        Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode);
+        Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode, string responsibilityCode);
     }
 }
