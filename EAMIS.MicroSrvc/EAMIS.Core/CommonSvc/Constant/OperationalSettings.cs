@@ -39,7 +39,7 @@ namespace EAMIS.Core.CommonSvc.Constant
     public static class PrefixSettings
     {
         public const string DRPrefix = "DR";//Delivery receipt prefix. change according to the business rule.
-        public const string PRPrefix = "PR";//Property receiving prefix. change according to the business rule.
+        public const string PRPrefix = "RV";//Property receiving prefix. change according to the business rule.
         public const string ISPrefix = "I"; //Propery issuance prefix. change according to the business rule.
         public const string PTPrefix = "PT"; //Property transfer prefix. change according to the business rule.
         public const string SLPrefix = "SL"; //Service Log prefix. change according to the business rule.

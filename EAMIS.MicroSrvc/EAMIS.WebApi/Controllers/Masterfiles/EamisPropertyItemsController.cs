@@ -53,117 +53,89 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             return Ok(await _eamisPropertyItemsRepository.List(filter, config));
         }
 
-        //[HttpPost("Add")]
-        //public async Task<ActionResult<EamisPropertyItemsDTO>> Add([FromForm] EamisPropertyItemsDTO item)
-        //{
-        //    if (await _eamisPropertyItemsRepository.ValidateExistingItem(item.PropertyNo))
-        //    {
-        //        return Unauthorized();
-        //    }
-
-        //    if (item == null)
-        //        item = new EamisPropertyItemsDTO();
-
-        //     //Check if the request contains multipart/form-data.
-        //    if (item.Photo == null)
-        //    {
-        //        return new UnsupportedMediaTypeResult();
-        //    }
-        //    IFormFile formFile = item.Photo;
-        //    string fileName = "";
-        //    if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == ".jpg") //Change the file type according to the business rule
-        //    {
-        //        string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, @"StaticFiles\Uploaded\PropertyImages\");
-        //        fileName = Guid.NewGuid().ToString() + "_" + Path.GetExtension(formFile.FileName);
-        //        string filePath = Path.Combine(targetPath, fileName);
-
-        //        using (var stream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            formFile.CopyTo(stream);
-        //        }
-        //        item.ImageURL = fileName;
-        //    }
-        //    return Ok(await _eamisPropertyItemsRepository.Insert(item));
-        //}
         [HttpPost("Add")]
-        public async Task<ActionResult<EamisPropertyItemsDTO>> Add([FromBody] EamisPropertyItemsDTO item)
+        public async Task<ActionResult<EamisPropertyItemsDTO>> Add([FromForm] EamisPropertyItemsDTO item)
         {
             if (await _eamisPropertyItemsRepository.ValidateExistingItem(item.PropertyNo))
             {
                 return Unauthorized();
             }
+
             if (item == null)
                 item = new EamisPropertyItemsDTO();
+
+            //Check if the request contains multipart/form-data.
+            if (item.Photo == null)
+            {
+                return new UnsupportedMediaTypeResult();
+            }
+            IFormFile formFile = item.Photo;
+            string fileName = "";
+            if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == ".jpg") //Change the file type according to the business rule
+            {
+                string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, @"StaticFiles\Uploaded\PropertyImages\");
+                fileName = Guid.NewGuid().ToString() + "_" + Path.GetExtension(formFile.FileName);
+                string filePath = Path.Combine(targetPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    formFile.CopyTo(stream);
+                }
+                item.ImageURL = fileName;
+            }
             return Ok(await _eamisPropertyItemsRepository.Insert(item));
         }
 
-        //[HttpPut("Edit")]
-        //public async Task<ActionResult<EamisPropertyItemsDTO>> Edit([FromForm] EamisPropertyItemsDTO item)
-        //{
-        //    var data = new EamisPropertyItemsDTO();
-        //    var itemindb = await _eamisPropertyItemsRepository.UpdateValidateExistingItem(item.PropertyNo, item.Id);
-        //    if (!itemindb)
-        //        return NotFound();
 
-
-        //    if (item.Photo == null)
-        //    {
-        //        return new UnsupportedMediaTypeResult();
-        //    }
-        //    string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, @"StaticFiles\Uploaded\PropertyImages\");
-        //    //if propertyItemId is not empty, get the image file name from DB
-        //    //check the file if it exist in the image repository,
-        //    //if file found/exist then delete it
-        //    if (item.Id > 0)
-        //    {
-        //        //get the image file name from DB
-        //        string imageInDB = _eamisPropertyItemsRepository.GetPropertyImageFileName(item.Id);
-        //        if (imageInDB != null)
-        //            if (imageInDB != "")
-        //            {
-        //                filePath = Path.Combine(targetPath, imageInDB);
-        //                FileInfo file = new FileInfo(filePath);
-        //                if (file.Exists) //check the file if it exist in the image repository
-        //                    file.Delete(); //if file found/exist then delete it
-        //            }
-        //    }
-        //    IFormFile formFile = item.Photo;
-        //    string fileName = "";
-        //    if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == ".jpg") //Change the file type according to the business rule
-        //    {
-
-        //        fileName = Guid.NewGuid().ToString() + "" + Path.GetExtension(formFile.FileName);
-        //        string filePath = Path.Combine(targetPath, fileName);
-
-        //        using (var stream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            formFile.CopyTo(stream);
-        //        }
-        //        item.ImageURL = fileName;
-        //        return Ok(await _eamisPropertyItemsRepository.Update(item));
-        //    }
-        //    else
-        //        return new UnsupportedMediaTypeResult();
-        //}
         [HttpPut("Edit")]
-        public async Task<ActionResult<EamisPropertyItemsDTO>> Edit([FromBody] EamisPropertyItemsDTO item)
+        public async Task<ActionResult<EamisPropertyItemsDTO>> Edit([FromForm] EamisPropertyItemsDTO item)
         {
             var data = new EamisPropertyItemsDTO();
-            if (await _eamisPropertyItemsRepository.UpdateValidateExistingItem(item.PropertyNo, item.Id))
+            var itemindb = await _eamisPropertyItemsRepository.UpdateValidateExistingItem(item.PropertyNo, item.Id);
+            if (!itemindb)
+                return NotFound();
+
+
+            if (item.Photo == null)
             {
-                if (item == null)
-                    item = new EamisPropertyItemsDTO();
-                return Ok(await _eamisPropertyItemsRepository.Update(item));
+                return new UnsupportedMediaTypeResult();
             }
-            else if (await _eamisPropertyItemsRepository.ValidateExistingItem(item.PropertyNo))
+            string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, @"StaticFiles\Uploaded\PropertyImages\");
+            //if propertyItemId is not empty, get the image file name from DB
+            //check the file if it exist in the image repository,
+            //if file found/exist then delete it
+            if (item.Id > 0)
             {
-                return Unauthorized();
+                //get the image file name from DB
+                string imageInDB = _eamisPropertyItemsRepository.GetPropertyImageFileName(item.Id);
+                if (imageInDB != null)
+                    if (imageInDB != "")
+                    {
+                        filePath = Path.Combine(targetPath, imageInDB);
+                        FileInfo file = new FileInfo(filePath);
+                        if (file.Exists) //check the file if it exist in the image repository
+                            file.Delete(); //if file found/exist then delete it
+                    }
+            }
+            IFormFile formFile = item.Photo;
+            string fileName = "";
+            if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == ".jpg") //Change the file type according to the business rule
+            {
+
+                fileName = Guid.NewGuid().ToString() + "" + Path.GetExtension(formFile.FileName);
+                string filePath = Path.Combine(targetPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    formFile.CopyTo(stream);
+                }
+                item.ImageURL = fileName;
+                return Ok(await _eamisPropertyItemsRepository.Update(item));
             }
             else
-            {
-                return Ok(await _eamisPropertyItemsRepository.Update(item));
-            }
+                return new UnsupportedMediaTypeResult();
         }
+        
         [HttpGet("getPropertyNo")]
         public async Task<string> GetSupplier(int categoryId)
         {
