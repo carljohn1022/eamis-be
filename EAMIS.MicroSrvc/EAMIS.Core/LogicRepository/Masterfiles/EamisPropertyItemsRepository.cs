@@ -124,7 +124,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
             item.Id = data.ID;
-            string _PropertyNo = item.PropertyNo.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0');
+            //ICT000000261
+            string _PropertyNo = item.PropertyNo.Substring(0, 3) + Convert.ToString(data.ID).PadLeft(6, '0');
             if(item.PropertyNo != _PropertyNo)
             {
                 item.PropertyNo = _PropertyNo;

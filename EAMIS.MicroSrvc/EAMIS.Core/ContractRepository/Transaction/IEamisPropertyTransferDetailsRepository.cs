@@ -12,5 +12,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
     {
         Task<DataList<EamisPropertyTransferDetailsDTO>> List(EamisPropertyTransferDetailsDTO filter, PageConfig config);
         Task<EamisPropertyTransferDetailsDTO> Insert(EamisPropertyTransferDetailsDTO item);
+
+        Task<DataList<EamisPropertyTransferDetailsDTO>> ListItemsForTranser(EamisPropertyTransferDetailsDTO filter, PageConfig config);
     }
 }

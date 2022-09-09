@@ -33,6 +33,8 @@ namespace EAMIS.Common.DTO.Transaction
         public int WarrantyExpiry  { get; set; }
         public string Invoice  { get; set; }
         public string PropertyCondition  { get; set; }
+        public int IssuedQty { get; set; }
+        public int RemainingQty { get; set; }
         public EamisPropertyTransactionDTO PropertyTransactionGroup { get; set; }
 
     }

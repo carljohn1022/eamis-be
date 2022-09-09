@@ -21,6 +21,7 @@ namespace EAMIS.Core.Domain.Entities
         public string UNIT_DESC { get; set; }
         public bool IS_ACTIVE { get; set; }
         public string RESPONSIBILITY_CENTER { get; set; }
-       
+        public string LOCATION_CODE { get; set; }
+        public string LOCATION_DESC { get; set; }
     }
 }
