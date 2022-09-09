@@ -29,6 +29,8 @@ namespace EAMIS.Core.CommonSvc.Constant
     public static class PropertyItemStatus
     {
         public const string ForCondemn = "FOR CONDEMN";
+        public const string Approved = "APPROVED";
+        public const string Draft = "DRAFT";
     }
 
     public static class FactorTypes

@@ -41,5 +41,22 @@ namespace EAMIS.WebApi.Controllers.Transaction
                 item = new EamisPropertyTransferDetailsDTO();
             return Ok(await _eamisPropertyTransferDetailsRepository.Insert(item));
         }
+
+        [HttpGet("list")]
+        public async Task<ActionResult<EamisPropertyTransferDetailsDTO>> List([FromQuery] EamisPropertyTransferDetailsDTO filter, [FromQuery] PageConfig config)
+        {
+            if (filter == null)
+                filter = new EamisPropertyTransferDetailsDTO();
+            return Ok(await _eamisPropertyTransferDetailsRepository.ListItemsForTranser(filter, config));
+        }
+
+
+        [HttpGet("listitemsfortransfer")]
+        public async Task<ActionResult<EamisPropertyTransferDetailsDTO>> ListItemsForTransfer([FromBody] EamisPropertyTransferDetailsDTO item, [FromQuery] PageConfig config)
+        {
+            if (item == null)
+                item = new EamisPropertyTransferDetailsDTO();
+            return Ok(await _eamisPropertyTransferDetailsRepository.ListItemsForTranser(item, config));
+        }
     }
 }
