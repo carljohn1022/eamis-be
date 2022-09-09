@@ -25,5 +25,10 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> ValidateExistDesc(string ShortDesc, string UomDesc);
         Task<EamisUnitofMeasureDTO> InsertFromExcel(EamisUnitofMeasureDTO item);
         Task<List<EAMISUNITOFMEASURE>> ListAllIUnitOfMeasurement();
+
+        string ErrorMessage { get; set; }
+
+        bool HasError { get; set; }
+        Task<bool> InsertFromExcel(List<EamisUnitofMeasureDTO> Items);
     }
 }

@@ -22,5 +22,8 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<string> GetResponsibilityCenterByID(string responsibilityCode);
         Task<string> GetPropertyNumber(DateTime acquisitionDate, string responsibilityCode, string serialNumber);
         //Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item);
+        string ErrorMessage { get; set; }
+        bool HasError { get; set; }
+        Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode);
     }
 }

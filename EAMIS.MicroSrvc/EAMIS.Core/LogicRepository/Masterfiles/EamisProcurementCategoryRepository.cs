@@ -18,6 +18,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
     {
         private readonly EAMISContext _ctx;
         private readonly int _maxPageSize;
+        private string _errorMessage = "";
+        public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
+
+        private bool bolerror = false;
+        public bool HasError { get => bolerror; set => value = bolerror; }
         public EamisProcurementCategoryRepository(EAMISContext ctx)
         {
             _ctx = ctx;
@@ -28,6 +33,29 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         {
             var result = await Task.Run(() => _ctx.EAMIS_PROCUREMENTCATEGORY.AsNoTracking().ToList()).ConfigureAwait(false);
             return result;
+        }
+
+        public async Task<bool> InsertFromExcel(List<EamisProcurementCategoryDTO> Items)
+        {
+            List<EAMISPROCUREMENTCATEGORY> lstProcurement = new List<EAMISPROCUREMENTCATEGORY>();
+            try
+            {
+                for (int intItems = 0; intItems < Items.Count(); intItems++)
+                {
+                    EAMISPROCUREMENTCATEGORY objProcurement = MapToEntity(Items[intItems]);
+
+                    lstProcurement.Add(objProcurement);
+                }
+                _ctx.EAMIS_PROCUREMENTCATEGORY.AddRange(lstProcurement);
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+                bolerror = false;
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
+            }
+            return HasError;
         }
         public async Task<EamisProcurementCategoryDTO> InsertFromExcel(EamisProcurementCategoryDTO item)
         {

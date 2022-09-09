@@ -26,5 +26,10 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<List<EAMISITEMCATEGORY>> GetAllItemCategories();
 
         Task<List<EAMISITEMCATEGORY>> ListCategoriesById(int categoryId);
+
+        string ErrorMessage { get; set; }
+
+        bool HasError { get; set; }
+        Task<bool> InsertFromExcel(List<EamisItemCategoryDTO> Items);
     }
 }

@@ -29,8 +29,9 @@ namespace EAMIS.Core.CommonSvc.Utility
 
         Task<List<EAMISUNITOFMEASURE>> DownloadUOM();
         Task<string> DownloadExcelTemplate(string WorkSheetTemplateName);
-        Task<bool> UploadExcelToDB(string ExcelFilePath, string TemplateName);
+        //Task<bool> UploadExcelToDB(string ExcelFilePath, string TemplateName);
+        Task<bool> UploadFileToDB(string fileFormat, string FilePath, string TemplateName);
         string ErrorMessage { get; set; }
-        bool bolError { get; set; }
+        bool HasError { get; set; }
     }
 }

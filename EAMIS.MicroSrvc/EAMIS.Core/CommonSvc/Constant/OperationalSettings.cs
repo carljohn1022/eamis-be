@@ -29,6 +29,8 @@ namespace EAMIS.Core.CommonSvc.Constant
     public static class PropertyItemStatus
     {
         public const string ForCondemn = "FOR CONDEMN";
+        public const string Approved = "APPROVED";
+        public const string Draft = "DRAFT";
     }
 
     public static class FactorTypes
@@ -73,7 +75,17 @@ namespace EAMIS.Core.CommonSvc.Constant
     {
         public const string StaticFolderLocation = "StaticFiles";
         public const string EAMISAttachmentLocation = "EAMIS_Attached_Files";
+        public const string PropertyItemExcelFileLocation = @"Uploaded\Excel\";
+        public const string PropertyItemCSVFileLocation = @"Uploaded\CSV\";
     }
+
+    public static class FileFormat
+    {
+        public const string ExcelFile = ".xlsx";
+        public const string CSVFile = ".csv";
+        public const string Separator = ","; //to do: change when separator is finalized/decided
+    }
+
     public static class FileType
     {
         public const string SpreadSheetType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";

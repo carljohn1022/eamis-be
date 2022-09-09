@@ -18,6 +18,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
     {
         private readonly EAMISContext _ctx;
         private readonly int _maxPageSize;
+        private string _errorMessage = "";
+        public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
+
+        private bool bolerror = false;
+        public bool HasError { get => bolerror; set => value = bolerror; }
         private List<EamisPropertyTypeDTO> dto = new List<EamisPropertyTypeDTO>()
         {
             new EamisPropertyTypeDTO{ Id = 1, Amount = 500,DescriptionRules ="Sample",Name = "PPE" },
@@ -38,7 +43,31 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                 : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
- 
+
+        public async Task<bool> InsertFromExcel(List<EamisPropertyItemsDTO> Items)
+        {
+            List<EAMISPROPERTYITEMS> lstItem = new List<EAMISPROPERTYITEMS>();
+            try
+            {
+                for (int intItems = 0; intItems < Items.Count(); intItems++)
+                {
+                    EAMISPROPERTYITEMS objPropertyItem = MapToEntity(Items[intItems]);
+
+                    lstItem.Add(objPropertyItem);
+                }
+
+                _ctx.EAMIS_PROPERTYITEMS.AddRange(lstItem);
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+                bolerror = false;
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
+            }
+            return HasError;
+        }
+
         public async Task<EamisPropertyItemsDTO> InsertFromExcel(EamisPropertyItemsDTO item)
         {
             try
@@ -46,15 +75,14 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 EAMISPROPERTYITEMS data = MapToEntity(item);
                 _ctx.Entry(data).State = EntityState.Added;
 
+                item.Id = data.ID;
                 _ctx.SaveChangesAsync().GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
             }
-
-
             return item;
         }
         public async Task<EamisPropertyItemsDTO> Delete(EamisPropertyItemsDTO item)
@@ -95,25 +123,15 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             EAMISPROPERTYITEMS data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
-            //ensure that recently added record has the correct transaction type number
-            //item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
-
-            //string _propertyNo = item.PropertyNo.Substring(0,6) + Convert.ToString(data.ID).PadLeft(6, '0');
-
-            ////check if the forecasted transaction type matches with the actual transaction type (saved/created in DB)
-            ////forecasted transaction type = item.TransactionType
-            ////actual transaction type = item.TransactionType.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0')
-            //if (item.PropertyNo != _propertyNo)
-            //{
-            //    item.PropertyNo = _propertyNo; //if not matched, replace value of FTT with  ATT
-
-            //    //reset context state to avoid error
-            //    _ctx.Entry(data).State = EntityState.Detached;
-
-            //    //call the update method, force to update the transaction type in the DB
-            //    await this.Update(item);
-            //}
-
+            item.Id = data.ID;
+            //ICT000000261
+            string _PropertyNo = item.PropertyNo.Substring(0, 3) + Convert.ToString(data.ID).PadLeft(6, '0');
+            if(item.PropertyNo != _PropertyNo)
+            {
+                item.PropertyNo = _PropertyNo;
+                _ctx.Entry(data).State = EntityState.Detached;
+                await this.Update(item);
+            }
             return item;
         }
         

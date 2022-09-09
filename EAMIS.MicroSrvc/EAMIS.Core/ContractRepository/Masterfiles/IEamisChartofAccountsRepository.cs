@@ -20,5 +20,9 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<List<EAMISCHARTOFACCOUNTS>> ListCOAById(int coaId);
 
         Task<List<EAMISCHARTOFACCOUNTS>> ListAllCOA();
+        string ErrorMessage { get; set; }
+
+        bool HasError { get; set; }
+        Task<bool> InsertFromExcel(List<EamisChartofAccountsDTO> Items);
     }
 }

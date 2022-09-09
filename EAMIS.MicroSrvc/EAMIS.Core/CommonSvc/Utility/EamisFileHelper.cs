@@ -1,4 +1,6 @@
 ﻿using ClosedXML.Excel;
+using EAMIS.Common.DTO;
+using EAMIS.Common.DTO.Classification;
 using EAMIS.Common.DTO.Masterfiles;
 using EAMIS.Core.CommonSvc.Constant;
 using EAMIS.Core.CommonSvc.Helper;
@@ -10,6 +12,7 @@ using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -50,7 +53,7 @@ namespace EAMIS.Core.CommonSvc.Utility
         private string _errorMessage = "";
         private bool bolerror = false;
         public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
-        public bool bolError { get => bolerror; set => value = bolerror; }
+        public bool HasError { get => bolerror; set => value = bolerror; }
 
         #region constructor
         public EamisFileHelper(IEamisPropertyItemsRepository eamisPropertyItemsRepository,
@@ -271,7 +274,415 @@ namespace EAMIS.Core.CommonSvc.Utility
             return null;
         }
 
-        public async Task<bool> UploadExcelToDB(string ExcelFilePath, string TemplateName)
+        public async Task<bool> UploadFileToDB(string fileFormat, string FilePath, string TemplateName)
+        {
+            try
+            {
+                if (fileFormat == FileFormat.ExcelFile)
+                    return await UploadExcelToDB(FilePath, TemplateName);
+                else
+                    return await UploadCSVFileToDB(FilePath, TemplateName);
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                throw;
+            }
+        }
+
+        private static EamisPropertyItemsDTO GetCSVPropertyItemRowValue(string csvLine)
+        {
+            string[] rowValues = csvLine.Split(FileFormat.Separator);
+            return new EamisPropertyItemsDTO
+            {
+                Id = 0,
+                PropertyName = rowValues[1].ToString(),
+                Brand = rowValues[2].ToString(),
+                Model = rowValues[3].ToString(),
+                PropertyType = rowValues[4].ToString(),
+                Quantity = Convert.ToInt32(rowValues[7]),
+                AppNo = rowValues[8].ToString(),
+                IsActive = Convert.ToBoolean(rowValues[10]),
+                PropertyNo = rowValues[11].ToString(),
+                Warehouse = new EamisWarehouseDTO { Warehouse_Description = rowValues[0].ToString() },
+                UnitOfMeasure = new EamisUnitofMeasureDTO { Uom_Description = rowValues[5].ToString() },
+                Supplier = new EamisSupplierDTO { CompanyName = rowValues[6].ToString() },
+                ItemCategory = new EamisItemCategoryDTO { CategoryName = rowValues[9].ToString() , ShortDesc = rowValues[12].ToString() }
+            };
+        }
+
+        private static EamisSupplierDTO GetCSVSupplierRowValue(string csvLine)
+        {
+            string[] rowValues = csvLine.Split(FileFormat.Separator);
+            EamisSupplierDTO eamisSupplierDTO = new EamisSupplierDTO();
+            eamisSupplierDTO.Id = 0;
+            eamisSupplierDTO.CompanyName = rowValues[0].ToString();
+            eamisSupplierDTO.CompanyDescription = rowValues[1].ToString();
+            eamisSupplierDTO.ContactPersonName = rowValues[2].ToString();
+            eamisSupplierDTO.ContactPersonNumber = rowValues[3].ToString();
+            eamisSupplierDTO.Barangay = new EamisBarangayDTO { BrgyDescription = rowValues[7].ToString() };
+            eamisSupplierDTO.Barangay.Region = new EamisRegionDTO { RegionDescription = rowValues[4].ToString() };
+            eamisSupplierDTO.Barangay.Province = new EamisProvinceDTO { ProvinceDescription = rowValues[5].ToString() };
+            eamisSupplierDTO.Barangay.Municipality = new EamisMunicipalityDTO { CityMunicipalityDescription = rowValues[6].ToString() };
+
+            eamisSupplierDTO.Street = rowValues[8].ToString();
+            eamisSupplierDTO.Bank = rowValues[9].ToString();
+            eamisSupplierDTO.AccountName = rowValues[10].ToString();
+            eamisSupplierDTO.AccountNumber = rowValues[11].ToString(); //Convert.ToInt32(row.Cell(12).Value);
+            eamisSupplierDTO.Branch = rowValues[12].ToString();
+            eamisSupplierDTO.IsActive = Convert.ToBoolean(rowValues[13]);
+
+            return eamisSupplierDTO;
+        }
+
+        private static EamisItemCategoryDTO GetCSVCategoryValue(string csvLine)
+        {
+            string[] rowValues = csvLine.Split(FileFormat.Separator);
+            return new EamisItemCategoryDTO
+            {
+                ChartOfAccounts = new EamisChartofAccountsDTO { AccountCode = rowValues[0].ToString() },
+                CategoryName = rowValues[1].ToString(),
+                ShortDesc = rowValues[2].ToString(),
+                IsSupplies = Convert.ToBoolean(rowValues[3]),
+                IsAsset = Convert.ToBoolean(rowValues[4]),
+                IsSerialized = Convert.ToBoolean(rowValues[5]),
+                IsStockable = Convert.ToBoolean(rowValues[6]),
+                CostMethod = rowValues[7].ToString(),
+                EstimatedLife = Convert.ToInt32(rowValues[8]),
+                DepreciationMethod = rowValues[9].ToString().ToLower() == "" ? "Straight Line(Default)" : rowValues[9].ToString(),
+                IsActive = Convert.ToBoolean(rowValues[10])
+            };
+        }
+
+        private static EamisItemSubCategoryDTO GetCSVSubCategoryValue(string csvLine)
+        {
+            string[] rowValues = csvLine.Split(FileFormat.Separator);
+            EamisItemSubCategoryDTO eamisSubCategoryDTO = new EamisItemSubCategoryDTO
+            {
+                ItemCategory = new EamisItemCategoryDTO { CategoryName = rowValues[0].ToString() },
+                SubCategoryName = rowValues[1].ToString(),
+                IsActive = Convert.ToBoolean(rowValues[2])
+            };
+            return eamisSubCategoryDTO;
+        }
+
+        private static EamisChartofAccountsDTO GetCSVCOAValue(string csvLine)
+        {
+            string[] rowValues = csvLine.Split(FileFormat.Separator);
+            EamisChartofAccountsDTO eamisChartofAccountsDTO = new EamisChartofAccountsDTO
+            {
+                Id = 0,
+                ObjectCode = rowValues[3].ToString(),
+                AccountCode = rowValues[4].ToString(),
+                IsActive = Convert.ToBoolean(rowValues[6]),
+                IsPartofInventroy = Convert.ToBoolean(rowValues[5]),
+                ClassificationDTO = new EamisClassificationDTO { NameClassification = rowValues[0].ToString() },
+                SubClassificationDTO = new EamisSubClassificationDTO { NameSubClassification = rowValues[1].ToString() },
+                GroupClassificationDTO = new EamisGroupClassificationDTO { NameGroupClassification = rowValues[2].ToString() }
+            };
+            return eamisChartofAccountsDTO;
+        }
+
+        private static EamisFundSourceDTO GetCSVFundValue(string csvLine)
+        {
+            string[] rowValues = csvLine.Split(FileFormat.Separator);
+            return new EamisFundSourceDTO
+            {
+                Id = 0,
+                GeneralFundSource = new EamisGeneralFundSourceDTO { Name = rowValues[0].ToString() },
+                Code = rowValues[1].ToString(),
+                FinancingSource = new EamisFinancingSourceDTO { FinancingSourceName = rowValues[2].ToString() },
+                Authorization = new EamisAuthorizationDTO { AuthorizationName = rowValues[3].ToString() },
+                FundCategory = rowValues[4].ToString(),
+                IsActive = Convert.ToBoolean(rowValues[5])
+            };
+        }
+
+        private static EamisProcurementCategoryDTO GetCSVProcurementValue(string csvLine)
+        {
+            string[] rowValues = csvLine.Split(FileFormat.Separator);
+            return new EamisProcurementCategoryDTO
+            {
+                Id = 0,
+                ProcurementDescription = rowValues[0].ToString(),
+                IsActive = Convert.ToBoolean(rowValues[1])
+            };
+        }
+
+        private static EamisUnitofMeasureDTO GetCSVUOMValue(string csvLine)
+        {
+            string[] rowValues = csvLine.Split(FileFormat.Separator);
+            return new EamisUnitofMeasureDTO
+            {
+                Id = 0,
+                Short_Description = rowValues[0].ToString(),
+                Uom_Description = rowValues[1].ToString(),
+                isActive = Convert.ToBoolean(rowValues[2])
+            };
+        }
+        private static EamisResponsibilityCenterDTO GetCSVResponsibilityCenterValue(string csvLine)
+        {
+            string[] rowValues = csvLine.Split(FileFormat.Separator, StringSplitOptions.RemoveEmptyEntries);
+            return new EamisResponsibilityCenterDTO
+            {
+                Id = 0,
+                mainGroupCode = rowValues[0].ToString(),
+                mainGroupDesc = rowValues[1].ToString(),
+                subGroupCode = rowValues[2].ToString(),
+                subGroupDesc = rowValues[3].ToString(),
+                officeCode = rowValues[4].ToString().PadLeft(10, '0'),
+                officeDesc = rowValues[5].ToString(),
+                unitCode = rowValues[6].ToString(),
+                unitDesc = rowValues[7].ToString(),
+                isActive = Convert.ToBoolean(rowValues[8])
+            };
+        }
+
+        private async Task<bool> UploadCSVFileToDB(string CSVFilePath, string TemplateName)
+        {
+            try
+            {
+                var warehouses = await _eamisWarehouseRepository.ListAllWarehouse();
+                var uom = await _eamisUnitofMeasureRepository.ListAllIUnitOfMeasurement();
+                var supplier = await _eamisSupplierRepository.ListAllSuppliers();
+                var category = await _eamisItemCategoryRepository.ListAllItemCategories();
+                var subcategory = await _eamisItemSubCategoryRepository.ListAllItemSubCategories();
+
+                switch (TemplateName)
+                {
+                    #region Item
+                    case WorkSheetTemplateNames.Items:
+                        List<EamisPropertyItemsDTO> lsteamisPropertyItemsDTO = File.ReadAllLines(CSVFilePath)
+                                           .Skip(1) //skip header
+                                           .Select(csvRow => GetCSVPropertyItemRowValue(csvRow))
+                                           .ToList();
+
+                        for (int intItem = 0; intItem < lsteamisPropertyItemsDTO.Count(); intItem++)
+                        {
+                            var warehouseId = warehouses.Find(x => x.WAREHOUSE_DESCRIPTION.ToLower().Trim() == lsteamisPropertyItemsDTO[intItem].Warehouse.Warehouse_Description.ToLower().Trim());
+                            lsteamisPropertyItemsDTO[intItem].WarehouseId = warehouseId == null ? 0 : warehouseId.ID; //obtain from warehouse table
+
+                            var uomID = uom.Find(x => x.UOM_DESCRIPTION.ToLower().Trim() == lsteamisPropertyItemsDTO[intItem].UnitOfMeasure.Uom_Description.ToLower().Trim());
+                            lsteamisPropertyItemsDTO[intItem].UomId = uomID == null ? 0 : uomID.ID;
+
+                            var supplierId = supplier.Find(x => x.COMPANY_NAME.ToLower().Trim() == lsteamisPropertyItemsDTO[intItem].Supplier.CompanyName.ToLower().Trim());
+                            lsteamisPropertyItemsDTO[intItem].SupplierId = supplierId == null ? 0 : supplierId.ID;
+
+                            var categoryId = category.Find(x => x.CATEGORY_NAME.ToLower().Trim() == lsteamisPropertyItemsDTO[intItem].ItemCategory.CategoryName.ToLower().Trim());
+                            lsteamisPropertyItemsDTO[intItem].CategoryId = categoryId == null ? 0 : categoryId.ID;
+
+                            var subCategoryId = subcategory.Find(x => x.SUB_CATEGORY_NAME.ToLower().Trim() == lsteamisPropertyItemsDTO[intItem].ItemCategory.ShortDesc.ToLower().Trim());
+                            lsteamisPropertyItemsDTO[intItem].SubCategoryId = subCategoryId == null ? 0 : subCategoryId.ID;
+
+                            //var result = await _eamisPropertyItemsRepository.InsertFromExcel(lsteamisPropertyItemsDTO[intItem]);
+                            //if (_eamisPropertyItemsRepository.HasError)
+                            //{
+                            //    _errorMessage = _eamisPropertyItemsRepository.ErrorMessage;
+                            //    bolerror = true;
+                            //    return HasError;
+                            //}
+                        }
+
+                        var itemResult = await _eamisPropertyItemsRepository.InsertFromExcel(lsteamisPropertyItemsDTO);
+                        if (_eamisPropertyItemsRepository.HasError)
+                        {
+                            _errorMessage = _eamisPropertyItemsRepository.ErrorMessage;
+                            bolerror = true;
+                            return HasError;
+                        }
+                        break;
+                    #endregion Item
+
+                    #region supplier
+                    case WorkSheetTemplateNames.Suppliers:
+                        List<EamisSupplierDTO> lsteamisSupplierDTO = File.ReadAllLines(CSVFilePath)
+                                           .Skip(1) //skip header
+                                           .Select(csvRow => GetCSVSupplierRowValue(csvRow))
+                                           .ToList();
+                        for (int intSupplier = 0; intSupplier < lsteamisSupplierDTO.Count(); intSupplier++)
+                        {
+                            var region = _eamisRegionRepository.ListRegion(lsteamisSupplierDTO[intSupplier].Barangay.Region.RegionDescription);
+                            lsteamisSupplierDTO[intSupplier].RegionCode = region == null ? 0 : region.Result[0].REGION_CODE;
+
+                            var province = _eamisProvinceRepository.ListProvince(lsteamisSupplierDTO[intSupplier].Barangay.Province.ProvinceDescription);
+                            lsteamisSupplierDTO[intSupplier].ProvinceCode = province == null ? 0 : province.Result[0].PROVINCE_CODE;
+
+                            var city = _eamisMunicipalityRepository.ListMunicipality(lsteamisSupplierDTO[intSupplier].Barangay.Municipality.CityMunicipalityDescription);
+                            lsteamisSupplierDTO[intSupplier].CityMunicipalityCode = city == null ? 0 : city.Result[0].MUNICIPALITY_CODE;
+
+                            var brgy = _eamisBarangayRepository.ListBarangay(lsteamisSupplierDTO[intSupplier].Barangay.BrgyDescription);
+                            lsteamisSupplierDTO[intSupplier].BrgyCode = brgy == null ? 0 : brgy.Result[0].BRGY_CODE;
+                        }
+                        var supplierResult = await _eamisSupplierRepository.InsertFromExcel(lsteamisSupplierDTO);
+                        if (_eamisSupplierRepository.HasError)
+                        {
+                            _errorMessage = _eamisSupplierRepository.ErrorMessage;
+                            bolerror = true;
+                            return HasError;
+                        }
+                        break;
+                    #endregion supplier
+
+                    #region category
+                    case WorkSheetTemplateNames.Category:
+                        List<EamisItemCategoryDTO> lsteamisCategoryDTO = File.ReadAllLines(CSVFilePath)
+                                           .Skip(1) //skip header
+                                           .Select(csvRow => GetCSVCategoryValue(csvRow))
+                                           .ToList();
+                        for (int intItem = 0; intItem < lsteamisCategoryDTO.Count(); intItem++)
+                        {
+                            var coa = _eamisChartofAccountsRepository.ListCOA(lsteamisCategoryDTO[intItem].ChartOfAccounts.AccountCode.ToString());
+                            lsteamisCategoryDTO[intItem].ChartOfAccountId = coa.Result == null ? 0 : coa.Result[0].ID;
+                        }
+                        var categoryResult = await _eamisItemCategoryRepository.InsertFromExcel(lsteamisCategoryDTO);
+                        if (_eamisItemCategoryRepository.HasError)
+                        {
+                            _errorMessage = _eamisItemCategoryRepository.ErrorMessage;
+                            bolerror = true;
+                            return HasError;
+                        }
+                        break;
+                    #endregion category
+
+                    #region subcategory
+                    case WorkSheetTemplateNames.SubCategory:
+                        List<EamisItemSubCategoryDTO> lsteamisSubCategoryDTO = File.ReadAllLines(CSVFilePath)
+                                           .Skip(1) //skip header
+                                           .Select(csvRow => GetCSVSubCategoryValue(csvRow))
+                                           .ToList();
+                        for (int intItem = 0; intItem < lsteamisSubCategoryDTO.Count(); intItem++)
+                        {
+                            var catmain = _eamisItemCategoryRepository.ListCategories(lsteamisSubCategoryDTO[intItem].ItemCategory.CategoryName);
+                            lsteamisSubCategoryDTO[intItem].CategoryId = catmain.Result == null ? 0 : catmain.Result[0].ID;
+                        }
+                        var subcategoryResult = await _eamisItemSubCategoryRepository.InsertFromExcel(lsteamisSubCategoryDTO);
+                        if (_eamisItemSubCategoryRepository.HasError)
+                        {
+                            _errorMessage = _eamisItemSubCategoryRepository.ErrorMessage;
+                            bolerror = true;
+                            return HasError;
+                        }
+                        break;
+                    #endregion subcategory
+
+                    #region chartofaccount
+                    case WorkSheetTemplateNames.ChartOfAccount:
+                        List<EamisChartofAccountsDTO> lsteamisCOA = File.ReadAllLines(CSVFilePath)
+                                          .Skip(1) //skip header
+                                          .Select(csvRow => GetCSVCOAValue(csvRow))
+                                          .ToList();
+                        for (int intItem = 0; intItem < lsteamisCOA.Count(); intItem++)
+                        {
+
+                            var classificationId = _eamisClassificationRepository.ListClassifications(lsteamisCOA[intItem].ClassificationDTO.NameClassification);
+                            //uncomment next line when classification id is added on the chart of account model/dto
+                            //lsteamisCOA[intItem].ClassificationId = classificationId.Result == null ? 0 : classificationId.Result[0].ID;
+
+                            var subClassificationId = _eamisSubClassificationRepository.ListSubClassifications(lsteamisCOA[intItem].SubClassificationDTO.NameSubClassification);
+                            //uncomment next line when classification id is added on the chart of account model/dto
+                            //lsteamisCOA[intItem].SubClassificationId = subClassificationId.Result == null ? 0 : subClassificationId.Result[0].ID;
+
+                            var groupId = _eamisGroupClassificationRepository.ListGroups(lsteamisCOA[intItem].GroupClassificationDTO.NameGroupClassification);
+                            lsteamisCOA[intItem].GroupId = groupId.Result == null ? 0 : groupId.Result[0].ID;
+                        }
+                        var coaResult = await _eamisChartofAccountsRepository.InsertFromExcel(lsteamisCOA);
+                        if (_eamisChartofAccountsRepository.HasError)
+                        {
+                            _errorMessage = _eamisChartofAccountsRepository.ErrorMessage;
+                            bolerror = true;
+                            return HasError;
+                        }
+                        break;
+                    #endregion chartofaccount
+
+                    #region fund
+                    case WorkSheetTemplateNames.Funds:
+                        List<EamisFundSourceDTO> lsteamisFund = File.ReadAllLines(CSVFilePath)
+                                          .Skip(1) //skip header
+                                          .Select(csvRow => GetCSVFundValue(csvRow))
+                                          .ToList();
+                        for (int intItem = 0; intItem < lsteamisFund.Count(); intItem++)
+                        {
+                            var fundId = _eamisGeneralFundSourceRepository.ListGeneralFunds(lsteamisFund[intItem].GeneralFundSource.Name);
+                            lsteamisFund[intItem].GenFundId = fundId.Result == null ? 0 : fundId.Result[0].ID;
+
+                            var financeSourceId = _eamisFinancingSourceRepository.ListFinancingSource(lsteamisFund[intItem].FinancingSource.FinancingSourceName);
+                            lsteamisFund[intItem].FinancingSourceId = financeSourceId.Result == null ? 0 : financeSourceId.Result[0].ID;
+
+                            var authorizationId = _eamisAuthorizationRepository.ListAuthorization(lsteamisFund[intItem].Authorization.AuthorizationName);
+                            lsteamisFund[intItem].AuthorizationId = authorizationId.Result == null ? 0 : authorizationId.Result[0].ID;
+                        }
+                        var fundResult = await _eamisFundSourceRepository.InsertFromExcel(lsteamisFund);
+                        if (_eamisFundSourceRepository.HasError)
+                        {
+                            _errorMessage = _eamisFundSourceRepository.ErrorMessage;
+                            bolerror = true;
+                            return HasError;
+                        }
+                        break;
+                    #endregion fund
+
+                    #region Procurement
+                    case WorkSheetTemplateNames.ProcurementCategory:
+                        List<EamisProcurementCategoryDTO> lsteamisProcurement = File.ReadAllLines(CSVFilePath)
+                                          .Skip(1) //skip header
+                                          .Select(csvRow => GetCSVProcurementValue(csvRow))
+                                          .ToList();
+
+                        var procurementResult = await _eamisProcurementCategoryRepository.InsertFromExcel(lsteamisProcurement);
+                        if (_eamisProcurementCategoryRepository.HasError)
+                        {
+                            _errorMessage = _eamisProcurementCategoryRepository.ErrorMessage;
+                            bolerror = true;
+                            return HasError;
+                        }
+                        break;
+                    #endregion Procurement
+
+                    #region UOM
+                    case WorkSheetTemplateNames.UnitofMeasurement:
+                        List<EamisUnitofMeasureDTO> lsteamisUOM = File.ReadAllLines(CSVFilePath)
+                                          .Skip(1) //skip header
+                                          .Select(csvRow => GetCSVUOMValue(csvRow))
+                                          .ToList();
+
+                        var uomResult = await _eamisUnitofMeasureRepository.InsertFromExcel(lsteamisUOM);
+                        if (_eamisUnitofMeasureRepository.HasError)
+                        {
+                            _errorMessage = _eamisUnitofMeasureRepository.ErrorMessage;
+                            bolerror = true;
+                            return HasError;
+                        }
+                        break;
+                    #endregion UOM
+                    #region Responsibility Center
+                    case WorkSheetTemplateNames.ResponsibilityCenter:
+                        List<EamisResponsibilityCenterDTO> lsteamisResponsibilityCenter = File.ReadAllLines(CSVFilePath)
+                                          .Skip(1) //skip header
+                                          .Select(csvRow => GetCSVResponsibilityCenterValue(csvRow))
+                                          .ToList();
+
+                        var responsibilitycenterResult = await _eamisResponsibilityCenterRepository.InsertFromExcel(lsteamisResponsibilityCenter);
+                        if (_eamisResponsibilityCenterRepository.HasError)
+                        {
+                            _errorMessage = _eamisResponsibilityCenterRepository.ErrorMessage;
+                            bolerror = true;
+                            return HasError;
+                        }
+                        break;
+                        #endregion Responsibility Center
+                }
+                bolerror = false;
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.Message;
+            }
+            return HasError;
+        }
+
+        private async Task<bool> UploadExcelToDB(string ExcelFilePath, string TemplateName)
         {
             try
             {
@@ -415,7 +826,7 @@ namespace EAMIS.Core.CommonSvc.Utility
                                 eamisSupplierDTO.Street = row.Cell(9).Value.ToString();
                                 eamisSupplierDTO.Bank = row.Cell(10).Value.ToString();
                                 eamisSupplierDTO.AccountName = row.Cell(11).Value.ToString();
-                                eamisSupplierDTO.AccountNumber = row.Cell(12).Value.ToString();
+                                eamisSupplierDTO.AccountNumber = row.Cell(12).Value.ToString(); //Convert.ToInt32(row.Cell(12).Value);
                                 eamisSupplierDTO.Branch = row.Cell(13).Value.ToString();
                                 eamisSupplierDTO.IsActive = Convert.ToBoolean(row.Cell(14).Value);
                                 rowCtr += 1;
@@ -437,10 +848,10 @@ namespace EAMIS.Core.CommonSvc.Utility
                                 eamisItemCategoryDTO.ChartOfAccountId = coa.Result == null ? 0 : coa.Result[0].ID;
                                 eamisItemCategoryDTO.CategoryName = row.Cell(2).Value.ToString();
                                 eamisItemCategoryDTO.ShortDesc = row.Cell(3).Value.ToString();
-                                eamisItemCategoryDTO.IsSupplies = row.Cell(4).Value.ToString().ToLower() == "supplies" ? true : false;
-                                eamisItemCategoryDTO.IsAsset = row.Cell(5).Value.ToString().ToLower() == "asset" ? true : false;
-                                eamisItemCategoryDTO.IsSerialized = row.Cell(6).Value.ToString().ToLower() == "serialized" ? true : false;
-                                eamisItemCategoryDTO.IsStockable = row.Cell(7).Value.ToString().ToLower() == "stockable" ? true : false;
+                                eamisItemCategoryDTO.IsSupplies = Convert.ToBoolean(row.Cell(4).Value); //row.Cell(4).Value.ToString().ToLower() == "supplies" ? true : false;
+                                eamisItemCategoryDTO.IsAsset = Convert.ToBoolean(row.Cell(5).Value); //row.Cell(5).Value.ToString().ToLower() == "asset" ? true : false;
+                                eamisItemCategoryDTO.IsSerialized = Convert.ToBoolean(row.Cell(6).Value);  //row.Cell(6).Value.ToString().ToLower() == "serialized" ? true : false;
+                                eamisItemCategoryDTO.IsStockable = Convert.ToBoolean(row.Cell(7).Value); //row.Cell(7).Value.ToString().ToLower() == "stockable" ? true : false;
                                 eamisItemCategoryDTO.CostMethod = row.Cell(8).Value.ToString();
                                 eamisItemCategoryDTO.EstimatedLife = Convert.ToInt32(row.Cell(9).Value);
                                 eamisItemCategoryDTO.DepreciationMethod = row.Cell(10).Value.ToString().ToLower() == "" ? "Straight Line(Default)" : row.Cell(10).Value.ToString();
@@ -582,7 +993,7 @@ namespace EAMIS.Core.CommonSvc.Utility
                                 eamisResponsibilityCenterDTO.mainGroupDesc = row.Cell(2).Value.ToString();
                                 eamisResponsibilityCenterDTO.subGroupCode = row.Cell(3).Value.ToString();
                                 eamisResponsibilityCenterDTO.subGroupDesc = row.Cell(4).Value.ToString();
-                                eamisResponsibilityCenterDTO.officeCode = row.Cell(5).Value.ToString();
+                                eamisResponsibilityCenterDTO.officeCode = officecode;
                                 eamisResponsibilityCenterDTO.officeDesc = row.Cell(6).Value.ToString();
                                 eamisResponsibilityCenterDTO.unitCode = row.Cell(7).Value.ToString();
                                 eamisResponsibilityCenterDTO.unitDesc = row.Cell(8).Value.ToString();
@@ -596,11 +1007,11 @@ namespace EAMIS.Core.CommonSvc.Utility
                     }
 
                 }
-                bolerror = true;
+                bolerror = false;
             }
             catch (Exception ex)
             {
-                bolerror = false;
+                bolerror = true;
                 _errorMessage = ex.Message;
             }
             return bolerror;

@@ -19,6 +19,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         {
             private readonly EAMISContext _ctx;
             private readonly int _maxPageSize;
+            private string _errorMessage = "";
+            public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
+
+            private bool bolerror = false;
+            public bool HasError { get => bolerror; set => value = bolerror; }
             public EamisResponsibilityCenterRepository(EAMISContext ctx)
             {
                 _ctx = ctx;
@@ -68,6 +73,29 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             {
                 var result = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.ToList()).ConfigureAwait(false);
                 return result;
+            }
+
+            public async Task<bool> InsertFromExcel(List<EamisResponsibilityCenterDTO> Items)
+            {
+                List<EAMISRESPONSIBILITYCENTER> lstCenter = new List<EAMISRESPONSIBILITYCENTER>();
+                try
+                {
+                    for (int intItems = 0; intItems < Items.Count(); intItems++)
+                    {
+                        EAMISRESPONSIBILITYCENTER objCenter = MapToEntity(Items[intItems]);
+
+                        lstCenter.Add(objCenter);
+                    }
+                    _ctx.EAMIS_RESPONSIBILITY_CENTER.AddRange(lstCenter);
+                    _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+                    bolerror = false;
+                }
+                catch (Exception ex)
+                {
+                    bolerror = true;
+                    _errorMessage = ex.InnerException.Message;
+                }
+                return HasError;
             }
             public async Task<EamisResponsibilityCenterDTO> InsertFromExcel(EamisResponsibilityCenterDTO item)
             {

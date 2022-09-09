@@ -18,11 +18,39 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
     {
         private EAMISContext _ctx;
         private readonly int _maxPageSize;
+        private string _errorMessage = "";
+        public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
+
+        private bool bolerror = false;
+        public bool HasError { get => bolerror; set => value = bolerror; }
         public EamisFundSourceRepository(EAMISContext ctx)
         {
             _ctx = ctx;
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                            : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
+        }
+
+        public async Task<bool> InsertFromExcel(List<EamisFundSourceDTO> Items)
+        {
+            List<EAMISFUNDSOURCE> lstFund = new List<EAMISFUNDSOURCE>();
+            try
+            {
+                for (int intItems = 0; intItems < Items.Count(); intItems++)
+                {
+                    EAMISFUNDSOURCE objFund = MapToEntity(Items[intItems]);
+
+                    lstFund.Add(objFund);
+                }
+                _ctx.EAMIS_FUND_SOURCE.AddRange(lstFund);
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+                bolerror = false;
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
+            }
+            return HasError;
         }
         public async Task<EamisFundSourceDTO> InsertFromExcel(EamisFundSourceDTO item)
         {

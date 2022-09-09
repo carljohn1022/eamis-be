@@ -143,6 +143,17 @@ namespace EAMIS.WebApi.Controllers.Transaction
         {
             return Ok(await _eamisPropertyIssuanceRepository.SearchReceiving(type, searchValue));
         }
+
+        [HttpGet("GeneratePropertyNumber")]
+        public async Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode)
+        {
+            var result = await _eamisPropertyIssuanceRepository.GeneratePropertyNumber(transactionDetailId, itemCode);
+
+            if (_eamisPropertyIssuanceRepository.HasError)
+                return _eamisPropertyIssuanceRepository.ErrorMessage;
+
+            return result;
+        }
         //[HttpDelete("Delete")]
         //public async Task<ActionResult<EamisPropertyTransactionDetailsDTO>> Delete([FromBody] EamisPropertyTransactionDetailsDTO item)
         //{

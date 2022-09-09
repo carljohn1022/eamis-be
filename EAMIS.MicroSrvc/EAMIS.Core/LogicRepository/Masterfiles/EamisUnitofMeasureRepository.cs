@@ -17,6 +17,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
     {
         private readonly EAMISContext _ctx;
         private readonly int _maxPageSize;
+        private string _errorMessage = "";
+        public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
+
+        private bool bolerror = false;
+        public bool HasError { get => bolerror; set => value = bolerror; }
         public EamisUnitofMeasureRepository(EAMISContext ctx)
         {
             _ctx = ctx;
@@ -30,6 +35,29 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             await _ctx.SaveChangesAsync();
             return item;
         }
+
+        public async Task<bool> InsertFromExcel(List<EamisUnitofMeasureDTO> Items)
+        {
+            List<EAMISUNITOFMEASURE> lstUOM = new List<EAMISUNITOFMEASURE>();
+            try
+            {
+                for (int intItems = 0; intItems < Items.Count(); intItems++)
+                {
+                    EAMISUNITOFMEASURE objSupplier = MapToEntity(Items[intItems]);
+
+                    lstUOM.Add(objSupplier);
+                }
+                _ctx.EAMIS_UNITOFMEASURE.AddRange(lstUOM);
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+                bolerror = false;
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
+            }
+            return HasError;
+        }
         public async Task<EamisUnitofMeasureDTO> InsertFromExcel(EamisUnitofMeasureDTO item)
         {
             try
@@ -40,7 +68,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             }
             catch (Exception ex)
             {
-                throw ex;
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
             }
             return item;
         }
