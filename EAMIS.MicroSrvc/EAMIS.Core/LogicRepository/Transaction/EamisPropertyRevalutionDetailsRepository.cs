@@ -306,7 +306,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
             var result = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.Where(s => s.PROPERTY_NO == itemCode).AsNoTracking().ToList()).ConfigureAwait(false);
             if (result != null)
             {
-                retValue = result[0].ITEM_CATEGORY.ESTIMATED_LIFE.ToString();
+                var result1 = await Task.Run(() => _ctx.EAMIS_ITEM_CATEGORY.Where(s => s.ID == result[0].CATEGORY_ID).AsNoTracking().ToList()).ConfigureAwait(false);
+                retValue = result1[0].ESTIMATED_LIFE.ToString();
             }
             return retValue;
         }
