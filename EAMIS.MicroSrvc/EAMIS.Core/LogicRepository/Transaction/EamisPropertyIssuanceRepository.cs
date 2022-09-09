@@ -434,45 +434,50 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                                pi => pi.p.CATEGORY_ID,
                                                                c => c.ID,
                                                                (pi, c) => new { pi, c })
-                                                               .Where(i => i.c.ID == itemCategory.CATEGORY_ID &&
-                                                                           !(i.pi.d.PROPERTY_NUMBER == null || i.pi.d.PROPERTY_NUMBER == string.Empty))
-                                                               .GroupBy(g => new { g.c.ID })
+                                                               .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                                               di => di.pi.d.PROPERTY_TRANS_ID,
+                                                               h => h.ID,
+                                                               (di, h) => new { di, h })
+                                                               .Where(i => i.di.c.ID == itemCategory.CATEGORY_ID &&
+                                                                           !(i.di.pi.d.PROPERTY_NUMBER == null || i.di.pi.d.PROPERTY_NUMBER == string.Empty) &&
+                                                                           i.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance)
+                                                               .GroupBy(g => new { g.di.c.ID })
                                                                .Select(s => new { Count = s.Count() })
                                                                .FirstOrDefault();
                                     int totalCount = 0;
                                     if (totalIssuedCount.Count > 0)
                                         totalCount = totalIssuedCount.Count + 1;
-                                    
-                                        //construct the property number
-                                        //YEAR PURCHASED +
-                                        //PPE SUB-MAJOR ACCOUNT GROUP +
-                                        //GEN.LEDGER ACCOUNT +
-                                        //"SERIAL NUMBER (first three digit - category type, next four digit - series per category type, last three digit - location)" +
-                                        //OFFICE
 
-                                        //- first 3 digits of category type - Get from Eamis_Item_Category, ID column. if length is less than 3, pad zero(0)
-                                        //-next four digit-series per category type - count no if issuance/issued item then increment by 1
-                                        //- last three digit-location
+                                    //construct the property number
+                                    //YEAR PURCHASED +
+                                    //PPE SUB-MAJOR ACCOUNT GROUP +
+                                    //GEN.LEDGER ACCOUNT +
+                                    //"SERIAL NUMBER (first three digit - category type, next four digit - series per category type, last three digit - location)" +
+                                    //OFFICE
 
-                                        string serialNumber = "";
-                                        string propertyNumber = "";
-                                        
-                                        int locStart = loc.LOCATION_CODE.Length - (loc.LOCATION_CODE.Length - 3);
-                                        if (itemCategory.CATEGORY_ID.ToString().Length < 3)
-                                            serialNumber = itemCategory.CATEGORY_ID.ToString().PadLeft(3, '0');
-                                        else
-                                            serialNumber = itemCategory.CATEGORY_ID.ToString().Substring(0, 3);
+                                    //- first 3 digits of category type - Get from Eamis_Item_Category, ID column. if length is less than 3, pad zero(0)
+                                    //-next four digit-series per category type - count no if issuance/issued item then increment by 1
+                                    //- last three digit-location
 
-                                        serialNumber += totalCount.ToString().PadLeft(4, '0') + "-" +
-                                                           loc.LOCATION_CODE.Substring(locStart + 1);
+                                    string serialNumber = "";
+                                    string propertyNumber = "";
 
-                                        propertyNumber = yearPurchased + "-" +
-                                                         coa.PPE_SUB_MAJOR_ACCT_GRP.ToString() + "-" +
-                                                         coa.GENERAL_LEDGER_ACCOUNT.ToString() + "-" +
-                                                         serialNumber + "-" +
-                                                         loc.OFFICE_CODE.ToString();
-                                        return propertyNumber;
-                                    
+                                    int locStart = loc.LOCATION_CODE.Length - (loc.LOCATION_CODE.Length - 3);
+                                    if (itemCategory.CATEGORY_ID.ToString().Length < 3)
+                                        serialNumber = itemCategory.CATEGORY_ID.ToString().PadLeft(3, '0');
+                                    else
+                                        serialNumber = itemCategory.CATEGORY_ID.ToString().Substring(0, 3);
+
+                                    serialNumber += "-" + totalCount.ToString().PadLeft(4, '0') + "-" +
+                                                       loc.LOCATION_CODE.Substring(locStart + 1);
+
+                                    propertyNumber = yearPurchased + "-" +
+                                                     coa.PPE_SUB_MAJOR_ACCT_GRP.ToString() + "-" +
+                                                     coa.GENERAL_LEDGER_ACCOUNT.ToString() + "-" +
+                                                     serialNumber + "-" +
+                                                     loc.OFFICE_CODE.ToString();
+                                    return propertyNumber;
+
                                 }
                             }
                         }
@@ -637,7 +642,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             INVOICE = x.d.INVOICE,
                                             PROPERTY_CONDITION = x.d.PROPERTY_CONDITION
                                         }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER)  //&&
-                                                      //!itemsIssued.Contains(s.ID)
+                                                                                                   //!itemsIssued.Contains(s.ID)
                                                 );
             return query.Where(predicate);
         }
