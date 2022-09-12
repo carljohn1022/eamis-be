@@ -25,5 +25,6 @@ namespace EAMIS.Core.ContractRepository.Transaction
         string ErrorMessage { get; set; }
         bool HasError { get; set; }
         Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode, string responsibilityCode);
+        Task<string> GetDRNumFrSupplier(string dr);
     }
 }

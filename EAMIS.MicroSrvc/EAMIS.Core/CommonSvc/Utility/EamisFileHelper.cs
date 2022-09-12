@@ -2,6 +2,7 @@
 using EAMIS.Common.DTO;
 using EAMIS.Common.DTO.Classification;
 using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Report;
 using EAMIS.Core.CommonSvc.Constant;
 using EAMIS.Core.CommonSvc.Helper;
 using EAMIS.Core.ContractRepository;
@@ -47,11 +48,21 @@ namespace EAMIS.Core.CommonSvc.Utility
 
         private readonly IEamisProcurementCategoryRepository _eamisProcurementCategoryRepository;
         private readonly IEamisResponsibilityCenterRepository _eamisResponsibilityCenterRepository;
+        private readonly EAMISContext _ctx;
         #endregion dependency injection
 
 
         private string _errorMessage = "";
         private bool bolerror = false;
+        private string reportFileName = "";
+        private string reportStatus = "";
+        private int isReportReady = 0;
+
+        public int IsReportReady { get => isReportReady; set => value = isReportReady; }
+        public string ReportFileName { get => reportFileName; set => value = reportFileName; }
+
+        public string RptStatus { get => reportStatus; set => value = reportStatus; }
+
         public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
         public bool HasError { get => bolerror; set => value = bolerror; }
 
@@ -75,7 +86,8 @@ namespace EAMIS.Core.CommonSvc.Utility
                                IEamisFinancingSourceRepository eamisFinancingSourceRepository,
                                IEamisGeneralFundSourceRepository eamisGeneralFundSourceRepository,
                                IEamisProcurementCategoryRepository eamisProcurementCategoryRepository,
-                               IEamisResponsibilityCenterRepository eamisResponsibilityCenterRepository)
+                               IEamisResponsibilityCenterRepository eamisResponsibilityCenterRepository,
+                               EAMISContext ctx)
         {
             _eamisPropertyItemsRepository = eamisPropertyItemsRepository;
             _eamisWarehouseRepository = eamisWarehouseRepository;
@@ -97,6 +109,7 @@ namespace EAMIS.Core.CommonSvc.Utility
             _eamisGeneralFundSourceRepository = eamisGeneralFundSourceRepository;
             _eamisProcurementCategoryRepository = eamisProcurementCategoryRepository;
             _eamisResponsibilityCenterRepository = eamisResponsibilityCenterRepository;
+            _ctx = ctx;
         }
         #endregion constructor
 
@@ -273,7 +286,77 @@ namespace EAMIS.Core.CommonSvc.Utility
             //return file;
             return null;
         }
-
+        public async Task<bool> IsReportCompleted(int Id)
+        {
+            try
+            {
+                var result = await Task.Run(() => _ctx.EAMIS_REPORT_REQUEST_LISTENER
+                          .Where(r => r.ID == Id)
+                          .Select(v => new { v.RptIsReady, v.GenRptFilNam, v.RptStatus }).FirstOrDefault()).ConfigureAwait(false);
+                if (result != null)
+                {
+                    if (result.GenRptFilNam == ReportStatus.ErrorFound)
+                    {
+                        isReportReady = ReportStatus.ReportReady;
+                        reportFileName = result.GenRptFilNam + "::" + result.RptStatus;
+                        bolerror = true;
+                    }
+                    else
+                    {
+                        if (result.RptIsReady == ReportStatus.ReportNotReady)
+                        {
+                            isReportReady = ReportStatus.ReportNotReady;
+                            bolerror = true;
+                        }
+                        else
+                        {
+                            isReportReady = result.RptIsReady;
+                            reportFileName = result.GenRptFilNam;
+                        }
+                    }
+                    reportStatus = result.RptStatus;
+                }
+            }
+            catch (Exception ex)
+            {
+                _errorMessage = ex.Message;
+                bolerror = true;
+            }
+            return HasError;
+        }
+        public async Task<EamisReportRequestListener> GenerateReport(string RptReqCode, string RptCode, string ParFldVal, int GenTyp)
+        {
+            EamisReportRequestListener eamisReportRequestListener = new EamisReportRequestListener();
+            bolerror = false;
+            try
+            {
+                EAMISREPORTREQUESTLISTENER report = new EAMISREPORTREQUESTLISTENER
+                {
+                    ID = 0,
+                    RptReqCode = RptReqCode,
+                    RptCode = RptCode,
+                    ParFldVal = ParFldVal,
+                    GenTyp = GenTyp,
+                    EntCre = DateTime.Now
+                };
+                _ctx.Entry(report).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                await _ctx.SaveChangesAsync();
+                eamisReportRequestListener.ID = report.ID;
+                eamisReportRequestListener.GenTyp = report.GenTyp;
+                eamisReportRequestListener.GenRptFilNam = report.GenRptFilNam;
+                eamisReportRequestListener.RptIsReady = report.RptIsReady;
+                eamisReportRequestListener.RptReqCode = report.RptReqCode;
+                eamisReportRequestListener.RptStatus = report.RptStatus;
+                eamisReportRequestListener.EntCre = report.EntCre;
+                return eamisReportRequestListener;
+            }
+            catch (Exception ex)
+            {
+                _errorMessage = ex.Message;
+                bolerror = true;
+            }
+            return eamisReportRequestListener;
+        }
         public async Task<bool> UploadFileToDB(string fileFormat, string FilePath, string TemplateName)
         {
             try

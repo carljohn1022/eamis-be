@@ -41,7 +41,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
         }
         [HttpGet("Search")]
         public async Task<ActionResult<EAMISPROPERTYTRANSACTION>> Search(string type, string searchValue)
-        {
+       {
             return Ok(await _eamisPropertyTransactionRepository.SearchReceivingforIssuance(type, searchValue));
         }
         //[HttpGet("list")]
@@ -233,6 +233,12 @@ namespace EAMIS.WebApi.Controllers.Transaction
         public async Task<string> GetPropertyNo(DateTime acquisitionDate, string responsibilityCode, string serialNumber)
         {
             var response = await _eamisPropertyIssuanceRepository.GetPropertyNumber(acquisitionDate, responsibilityCode, serialNumber);
+            return response;
+        }
+        [HttpGet("GetDRNumFrSupplier")]
+        public async Task<string> GetDRNum(string dr)
+        {
+            var response = await _eamisPropertyIssuanceRepository.GetDRNumFrSupplier(dr);
             return response;
         }
     }

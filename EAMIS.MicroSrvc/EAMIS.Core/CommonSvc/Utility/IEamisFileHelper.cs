@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using EAMIS.Common.DTO.Report;
 using EAMIS.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -33,5 +34,12 @@ namespace EAMIS.Core.CommonSvc.Utility
         Task<bool> UploadFileToDB(string fileFormat, string FilePath, string TemplateName);
         string ErrorMessage { get; set; }
         bool HasError { get; set; }
+        string ReportFileName { get; set; }
+        string RptStatus { get; set; }
+
+        int IsReportReady { get; set; }
+
+        Task<bool> IsReportCompleted(int Id);
+        Task<EamisReportRequestListener> GenerateReport(string RptReqCode, string RptCode, string ParFldVal, int GenTyp);
     }
 }

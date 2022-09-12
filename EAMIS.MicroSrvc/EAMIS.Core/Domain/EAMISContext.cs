@@ -80,6 +80,8 @@ namespace EAMIS.Core.Domain
         public DbSet<EAMISPROPERTYSCHEDULE> EAMIS_PROPERTY_SCHEDULE { get; set; }
 
         public DbSet<EAMISFACTORTYPE> EAMIS_FACTOR_TYPE { get; set; }
+
+        public DbSet<EAMISREPORTREQUESTLISTENER> EAMIS_REPORT_REQUEST_LISTENER { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<EAMISATTACHMENTTYPE>()

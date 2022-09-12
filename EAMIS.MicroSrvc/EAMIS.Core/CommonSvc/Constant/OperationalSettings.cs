@@ -26,6 +26,13 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string AssetSchedule = "Asset Schedule";
     }
 
+    public static class ReportStatus
+    {
+        public const string ErrorFound = "ERRORFOUND";
+        public const int ReportReady = 1;
+        public const int ReportNotReady = 0;
+    }
+
     public static class PropertyItemStatus
     {
         public const string ForCondemn = "FOR CONDEMN";

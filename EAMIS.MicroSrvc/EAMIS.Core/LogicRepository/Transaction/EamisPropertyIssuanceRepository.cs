@@ -171,6 +171,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             {
                 Id = result.ID,
                 TransactionNumber = result.TRANSACTION_NUMBER,
+                TranType = result.TRAN_TYPE.Trim(),
                 TransactionDate = result.TRANSACTION_DATE,
                 FundSource = result.FUND_SOURCE,
                 FiscalPeriod = result.FISCALPERIOD,
@@ -211,7 +212,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     TimeStamp = x.TIME_STAMP,
                     WarrantyExpiry = x.WARRANTY_EXPIRY,
                     Invoice = x.INVOICE,
-                    PropertyCondition = x.PROPERTY_CONDITION
+                    PropertyCondition = x.PROPERTY_CONDITION,
+                    transactionDetailId = x.REFERENCE_ID
                 }).Where(i => i.PropertyTransactionID == result.ID).ToList()
             };
         }
@@ -247,6 +249,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             {
                 ID = item.Id,
                 TRANSACTION_NUMBER = item.TransactionNumber,
+                TRAN_TYPE = item.TranType.Trim(),
                 TRANSACTION_DATE = item.TransactionDate,
                 FUND_SOURCE = item.FundSource,
                 FISCALPERIOD = item.FiscalPeriod,
@@ -532,44 +535,44 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Items = await QueryToDTOItemsForReceiving(paged).ToListAsync()
             };
 
-            //Display only property items with remaining qty 
-            List<EamisPropertyTransactionDetailsDTO> lstNew = new List<EamisPropertyTransactionDetailsDTO>();
+            ////Display only property items with remaining qty 
+            //List<EamisPropertyTransactionDetailsDTO> lstNew = new List<EamisPropertyTransactionDetailsDTO>();
 
-            List<IssuedQtyDTO> lstIssuedQty = GetIssuedQtyDTO();
-            for (int intItem = 0; intItem < result.Items.Count(); intItem++)
-            {
-                bool bolFound = false;
-                int remainingQty = 0;
-                int issuedQty = 0;
-                for (int intQty = 0; intQty < lstIssuedQty.Count(); intQty++)
-                {
-                    if (result.Items[intItem].ItemCode == lstIssuedQty[intQty].ItemCode &&
-                       result.Items[intItem].Po == lstIssuedQty[intQty].PO &&
-                       result.Items[intItem].Id == lstIssuedQty[intQty].ID
-                       )
-                    {
-                        bolFound = true;
-                        remainingQty = result.Items[intItem].Qty - lstIssuedQty[intQty].IssuedQty;
-                        issuedQty = lstIssuedQty[intQty].IssuedQty;
-                        break;
-                    }
-                }
-                if (bolFound)
-                {
-                    if (remainingQty > 0) //item have issuance
-                    {
-                        //add item to the list
-                        result.Items[intItem].IssuedQty = issuedQty;
-                        result.Items[intItem].RemainingQty = remainingQty;
-                        lstNew.Add(result.Items[intItem]);
-                    }
-                }
-                else
-                    lstNew.Add(result.Items[intItem]); //item has no issuane yet, display as it is
-            }
+            //List<IssuedQtyDTO> lstIssuedQty = GetIssuedQtyDTO();
+            //for (int intItem = 0; intItem < result.Items.Count(); intItem++)
+            //{
+            //    bool bolFound = false;
+            //    int remainingQty = 0;
+            //    int issuedQty = 0;
+            //    for (int intQty = 0; intQty < lstIssuedQty.Count(); intQty++)
+            //    {
+            //        if (result.Items[intItem].ItemCode == lstIssuedQty[intQty].ItemCode &&
+            //           result.Items[intItem].Po == lstIssuedQty[intQty].PO &&
+            //           result.Items[intItem].Id == lstIssuedQty[intQty].ID
+            //           )
+            //        {
+            //            bolFound = true;
+            //            remainingQty = result.Items[intItem].Qty - lstIssuedQty[intQty].IssuedQty;
+            //            issuedQty = lstIssuedQty[intQty].IssuedQty;
+            //            break;
+            //        }
+            //    }
+            //    if (bolFound)
+            //    {
+            //        if (remainingQty > 0) //item have issuance
+            //        {
+            //            //add item to the list
+            //            result.Items[intItem].IssuedQty = issuedQty;
+            //            result.Items[intItem].RemainingQty = remainingQty;
+            //            lstNew.Add(result.Items[intItem]);
+            //        }
+            //    }
+            //    else
+            //        lstNew.Add(result.Items[intItem]); //item has no issuane yet, display as it is
+            //}
 
-            result.Items = lstNew;
-            result.Count = result.Items.Count();
+            //result.Items = lstNew;
+            //result.Count = result.Items.Count();
             return result;
         }
         private IQueryable<EamisPropertyTransactionDetailsDTO> QueryToDTOItemsForReceiving(IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query)
@@ -594,6 +597,15 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ResponsibilityCode = x.RESPONSIBILITY_CODE,
                 UnitCost = x.UNIT_COST,
                 Qty = x.QTY,
+                IssuedQty = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
+                                .Where(r => r.REFERENCE_ID == x.ID)
+                                .GroupBy(g => g.REFERENCE_ID)
+                                .Select(i => i.Sum(v => v.QTY)).FirstOrDefault(),
+                RemainingQty = x.QTY -
+                                _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
+                                .Where(r => r.REFERENCE_ID == x.ID)
+                                .GroupBy(g => g.REFERENCE_ID)
+                                .Select(i => i.Sum(v => v.QTY)).FirstOrDefault(),
                 SalvageValue = x.SALVAGE_VALUE,
                 BookValue = x.BOOK_VALUE,
                 EstLife = x.ESTIMATED_LIFE,
@@ -611,6 +623,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     TransactionStatus = x.TRANSACTION_STATUS,
                     TransactionType = x.TRANSACTION_TYPE,
                     TransactionNumber = x.TRANSACTION_NUMBER,
+                    TranType = x.TRAN_TYPE,
                     TransactionDate = x.TRANSACTION_DATE,
                     FundSource = x.FUND_SOURCE,
                     FiscalPeriod = x.FISCALPERIOD,
@@ -666,8 +679,11 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             INVOICE = x.d.INVOICE,
                                             PROPERTY_CONDITION = x.d.PROPERTY_CONDITION,
                                             REFERENCE_ID = x.d.REFERENCE_ID
-                                        }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER)  //&&
-                                                                                                   //!itemsIssued.Contains(s.ID)
+                                        }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER) &&
+                                                       (s.QTY - _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
+                                                                .Where(r => r.REFERENCE_ID == s.ID)
+                                                                .GroupBy(g => g.REFERENCE_ID)
+                                                                .Select(i => i.Sum(v => v.QTY)).FirstOrDefault()) > 0
                                                 );
             return query.Where(predicate);
         }
@@ -699,6 +715,17 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return retValue;
         }
+        public async Task<string> GetDRNumFrSupplier(string dr)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.Where(s => s.TRANSACTION_TYPE == dr).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                retValue = result[0].DR_BY_SUPPLIER_NUMBER.ToString();
+            }
+            return retValue;
+        }
+
 
         //public async Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item)
         //{

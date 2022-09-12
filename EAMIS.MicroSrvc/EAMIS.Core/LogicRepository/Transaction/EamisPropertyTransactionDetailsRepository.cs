@@ -202,7 +202,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TIME_STAMP = item.TimeStamp,
                 WARRANTY_EXPIRY = item.WarrantyExpiry,
                 INVOICE = item.Invoice,
-                PROPERTY_CONDITION = item.PropertyCondition
+                PROPERTY_CONDITION = item.PropertyCondition,
+                REFERENCE_ID = item.transactionDetailId
 
 
             };
@@ -321,6 +322,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 WarrantyExpiry = x.WARRANTY_EXPIRY,
                 Invoice = x.INVOICE,
                 PropertyCondition = x.PROPERTY_CONDITION,
+                transactionDetailId = x.REFERENCE_ID,
                 PropertyTransactionGroup = new EamisPropertyTransactionDTO
                 {
                     Id = x.PROPERTY_TRANSACTION_GROUP.ID,

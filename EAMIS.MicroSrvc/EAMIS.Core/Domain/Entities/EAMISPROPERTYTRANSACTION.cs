@@ -10,6 +10,7 @@ namespace EAMIS.Core.Domain.Entities
     {
         public int ID { get; set; }
         public string TRANSACTION_NUMBER { get; set; }
+        public string TRAN_TYPE { get; set; } //Added 9/12/22 for Issuance Module
         public DateTime TRANSACTION_DATE { get; set; }
         public string FISCALPERIOD { get; set; }
         public string TRANSACTION_TYPE { get; set; }

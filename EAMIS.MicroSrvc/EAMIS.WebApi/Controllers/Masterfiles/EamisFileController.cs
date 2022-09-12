@@ -574,5 +574,29 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             return Ok();
         }
 
+        [HttpGet("DownloadReport")]
+        public async Task<ActionResult> DownloadReport(string RptReqCode = "MARCTESTING01",
+                                                       string RptCode = "drnod",
+                                                       string ParFldVal = "",
+                                                       int GenTyp = 5)
+        {
+            var result = await _eamisFileHelper.GenerateReport(RptReqCode, RptCode, ParFldVal, GenTyp);
+
+            if (_eamisFileHelper.HasError)
+                return BadRequest(_eamisFileHelper.ErrorMessage);
+
+            //Check generated filename
+            while (_eamisFileHelper.IsReportReady == ReportStatus.ReportNotReady)
+            {
+                await _eamisFileHelper.IsReportCompleted(result.ID);
+                if (_eamisFileHelper.IsReportReady == ReportStatus.ReportReady)
+                {
+                    result.RptIsReady = ReportStatus.ReportReady;
+                    result.GenRptFilNam = _eamisFileHelper.ReportFileName;
+                    result.RptStatus = _eamisFileHelper.RptStatus;
+                }
+            }
+            return Ok(result);
+        }
     }
 }

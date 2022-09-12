@@ -34,6 +34,8 @@ namespace EAMIS.Core.Domain.Entities
         public decimal TOTAL_AMOUNT { get; set; }
         public string  TRANSACTION_STATUS { get; set; }
         public int WAREHOUSE_ID { get; set; }
+        public string DR_BY_SUPPLIER_NUMBER { get; set; }
+        public DateTime DR_BY_SUPPLIER_DATE { get; set; }
 
         public EAMISWAREHOUSE WAREHOUSE_GROUP { get; set; }
         public EAMISSUPPLIER SUPPLIER_GROUP { get; set; }

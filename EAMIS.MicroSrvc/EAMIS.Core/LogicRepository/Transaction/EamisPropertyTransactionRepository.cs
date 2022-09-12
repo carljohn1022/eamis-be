@@ -112,6 +112,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             {
                 ID = item.Id,
                 TRANSACTION_NUMBER = item.TransactionNumber,
+                TRAN_TYPE = item.TranType,
                 TRANSACTION_DATE = item.TransactionDate,
                 FISCALPERIOD = item.FiscalPeriod,
                 FUND_SOURCE = item.FundSource,
