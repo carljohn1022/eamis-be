@@ -13,5 +13,6 @@ namespace EAMIS.Core.ContractRepository.Transaction
 
         Task<EamisPropertyRevaluationDTO> Insert(EamisPropertyRevaluationDTO item);
         Task<EamisPropertyRevaluationDTO> Update(EamisPropertyRevaluationDTO item);
+        Task<DataList<EamisPropertyRevaluationDTO>> SearchPropertyRevaluation(string type, string searchValue);
     }
 }

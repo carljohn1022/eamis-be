@@ -64,7 +64,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             if (item == null)
                 item = new EamisPropertyItemsDTO();
 
-            //Check if the request contains multipart/form-data.
+            // Check if the request contains multipart/form-data.
             if (item.Photo == null)
             {
                 return new UnsupportedMediaTypeResult();
@@ -85,7 +85,6 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             }
             return Ok(await _eamisPropertyItemsRepository.Insert(item));
         }
-
 
         [HttpPut("Edit")]
         public async Task<ActionResult<EamisPropertyItemsDTO>> Edit([FromForm] EamisPropertyItemsDTO item)
@@ -135,7 +134,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             else
                 return new UnsupportedMediaTypeResult();
         }
-        
+
         [HttpGet("getPropertyNo")]
         public async Task<string> GetSupplier(int categoryId)
         {

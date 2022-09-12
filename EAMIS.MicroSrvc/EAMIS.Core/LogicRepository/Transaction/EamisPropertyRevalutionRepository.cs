@@ -156,6 +156,31 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
-
+        private IQueryable<EAMISPROPERTYREVALUATION> PagedQueryForSearch(IQueryable<EAMISPROPERTYREVALUATION> query)
+        {
+            return query;
+        }
+        public async Task<DataList<EamisPropertyRevaluationDTO>> SearchPropertyRevaluation(string type, string searchValue)
+        {
+            IQueryable<EAMISPROPERTYREVALUATION> query = null;
+            if (type == "Transaction Id")
+            {
+                query = _ctx.EAMIS_PROPERTY_REVALUATION.AsNoTracking().Where(x => x.TRAN_ID.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Transaction Date")
+            {
+                query = _ctx.EAMIS_PROPERTY_REVALUATION.AsNoTracking().Where(x => x.TRAN_DATE.ToString().Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Particulars")
+            {
+                query = _ctx.EAMIS_PROPERTY_REVALUATION.AsNoTracking().Where(x => x.PARTICULARS.Contains(searchValue)).AsQueryable();
+            }
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisPropertyRevaluationDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync()
+            };
+        }
     }
 }

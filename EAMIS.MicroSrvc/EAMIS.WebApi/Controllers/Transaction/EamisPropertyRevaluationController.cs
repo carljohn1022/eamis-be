@@ -74,5 +74,10 @@ namespace EAMIS.WebApi.Controllers.Transaction
 
             return Ok(result);
         }
+        [HttpGet("Search")]
+        public async Task<ActionResult<EAMISPROPERTYREVALUATION>> Search(string type, string searchValue)
+        {
+            return Ok(await _eamisPropertyRevalutionRepository.SearchPropertyRevaluation(type, searchValue));
+        }
     }
 }

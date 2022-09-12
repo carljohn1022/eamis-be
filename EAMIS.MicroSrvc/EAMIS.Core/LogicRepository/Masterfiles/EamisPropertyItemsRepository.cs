@@ -112,7 +112,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 MODEL = item.Model,
                 QUANTITY = item.Quantity,
                 SUPPLIER_ID = item.SupplierId,
-                IS_ACTIVE = item.IsActive
+                IS_ACTIVE = item.IsActive,
+                IMG_URL =item.ImageURL
                 
             };
         }
@@ -243,6 +244,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 Quantity = x.QUANTITY,
                 SupplierId = x.SUPPLIER_ID,
                 IsActive = x.IS_ACTIVE,
+                ImageURL =x.IMG_URL,
                 ItemCategory = new EamisItemCategoryDTO
                 {
                     Id = x.ITEM_CATEGORY.ID,
@@ -296,6 +298,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 Quantity = x.QUANTITY,
                 SupplierId = x.SUPPLIER_ID,
                 IsActive = x.IS_ACTIVE,
+                ImageURL=x.IMG_URL,
                 ItemCategory = new EamisItemCategoryDTO
                 {
                     Id = x.ITEM_CATEGORY.ID,
