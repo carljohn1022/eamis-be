@@ -56,7 +56,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TRANSACTION_STATUS = item.TransactionStatus,
                 WAREHOUSE_ID = item.StockroomId,
                 DR_BY_SUPPLIER_NUMBER = item.DRNumFrSupplier,
-                DR_BY_SUPPLIER_DATE = item.DRDate
+                DR_BY_SUPPLIER_DATE = item.DRDate,
+                APR_NUMBER = item.AprNum,
+                APR_DATE = item.AprDate
             };
         }
         //public async Task<EamisDeliveryReceiptDTO> GeneratedDRNum()
@@ -249,6 +251,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 StockroomId = result.WAREHOUSE_ID,
                 DRNumFrSupplier = result.DR_BY_SUPPLIER_NUMBER,
                 DRDate = result.DR_BY_SUPPLIER_DATE,
+                AprDate = result.APR_DATE,
+                AprNum = result.APR_NUMBER,
                 Warehouse = _ctx.EAMIS_WAREHOUSE.AsNoTracking().Select(w => new EamisWarehouseDTO
                 {
                     Id = w.ID,

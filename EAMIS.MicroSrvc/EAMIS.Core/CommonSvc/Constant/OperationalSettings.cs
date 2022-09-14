@@ -84,6 +84,7 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string EAMISAttachmentLocation = "EAMIS_Attached_Files";
         public const string PropertyItemExcelFileLocation = @"Uploaded\Excel\";
         public const string PropertyItemCSVFileLocation = @"Uploaded\CSV\";
+        public const string PropertyItemImageFileLocation = @"Uploaded\PropertyImages\";
     }
 
     public static class FileFormat
@@ -91,6 +92,9 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string ExcelFile = ".xlsx";
         public const string CSVFile = ".csv";
         public const string Separator = ","; //to do: change when separator is finalized/decided
+        public const string Jpg = ".jpg";
+        public const string Png = ".png";
+        public const string Jpeg = ".jpeg";
     }
 
     public static class FileType

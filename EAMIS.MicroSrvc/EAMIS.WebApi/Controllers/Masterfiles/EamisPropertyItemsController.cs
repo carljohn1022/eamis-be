@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Core.CommonSvc.Constant;
 using EAMIS.Core.ContractRepository.Masterfiles;
 using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
@@ -71,7 +72,8 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             }
             IFormFile formFile = item.Photo;
             string fileName = "";
-            if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == ".jpg") //Change the file type according to the business rule
+            if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpg ||
+                 System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpeg) //Change the file type according to the business rule
             {
                 string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, @"StaticFiles\Uploaded\PropertyImages\");
                 fileName = Guid.NewGuid().ToString() + "_" + Path.GetExtension(formFile.FileName);
@@ -118,7 +120,8 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             }
             IFormFile formFile = item.Photo;
             string fileName = "";
-            if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == ".jpg") //Change the file type according to the business rule
+            if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpeg || 
+                System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpg) //Change the file type according to the business rule
             {
 
                 fileName = Guid.NewGuid().ToString() + "" + Path.GetExtension(formFile.FileName);

@@ -729,6 +729,16 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return retValue;
         }
+        public async Task<string> GetAPRNum(string dr)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.Where(s => s.TRANSACTION_TYPE == dr).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                retValue = result[0].APR_NUMBER.ToString();
+            }
+            return retValue;
+        }
 
 
         //public async Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item)

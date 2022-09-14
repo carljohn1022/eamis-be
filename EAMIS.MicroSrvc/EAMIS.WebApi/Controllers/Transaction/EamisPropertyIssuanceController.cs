@@ -241,5 +241,11 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var response = await _eamisPropertyIssuanceRepository.GetDRNumFrSupplier(dr);
             return response;
         }
+        [HttpGet("GetAPRNumber")]
+        public async Task<string> GetAPRNum(string dr)
+        {
+            var response = await _eamisPropertyIssuanceRepository.GetDRNumFrSupplier(dr);
+            return response;
+        }
     }
 }

@@ -30,6 +30,8 @@ namespace EAMIS.Common.DTO.Transaction
         public int StockroomId { get; set; }
         public string DRNumFrSupplier { get; set; }
         public DateTime DRDate { get; set; }
+        public string AprNum { get; set; }
+        public DateTime AprDate { get; set; }
         public EamisWarehouseDTO Warehouse { get; set; }
         public EamisSupplierDTO Supplier { get; set; }
         public List<EamisDeliveryReceiptDetailsDTO> DeliveryReceiptDetails { get; set; } = new List<EamisDeliveryReceiptDetailsDTO>();
