@@ -63,14 +63,14 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         public async Task<ActionResult<EamisItemSubCategoryDTO>> Edit([FromBody] EamisItemSubCategoryDTO item)
         {
 
-            if (await _eamisItemSubCategoryRepository.Validation(item.CategoryId, item.SubCategoryName))
+            if (await _eamisItemSubCategoryRepository.ValidatingExistingID(item.Id, item.CategoryId, item.SubCategoryName))
+            {
+                return Ok(await _eamisItemSubCategoryRepository.Update(item));
+            }
+            else if (await _eamisItemSubCategoryRepository.Validation(item.CategoryId, item.SubCategoryName))
             {
                 //
                 return Unauthorized();
-            }
-            else if (await _eamisItemSubCategoryRepository.ValidateExistingSub(item.CategoryId))
-            {
-                return Ok(await _eamisItemSubCategoryRepository.Update(item));
             }
             else if (await _eamisItemSubCategoryRepository.ValidateExistingCategoryId(item.CategoryId))
             {

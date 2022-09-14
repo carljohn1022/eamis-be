@@ -21,6 +21,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> ValidateExistingCategoryId(int categoryId);
         Task<bool> ValidateExistingSubUpdate(string SubCategoryName, int categoryId);
         Task<bool> Validation(int categoryId, string subCategoryName);
+        Task<bool> ValidatingExistingID(int id, int categoryId, string subCategoryName);
         Task<List<EAMISITEMSUBCATEGORY>> ListAllItemSubCategories();
         string ErrorMessage { get; set; }
 

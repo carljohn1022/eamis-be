@@ -16,6 +16,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<EamisServiceLogDetailsDTO> UpdateServiceLogDetails(EamisServiceLogDetailsDTO item);
         int GetSupplierId(string transactionType);
         string GetSupplierCompany(int supplierId);
+        Task<string> GetGroupByLand(string itemCode);
 
         string ErrorMessage { get; set; }
         bool HasError { get; set; }

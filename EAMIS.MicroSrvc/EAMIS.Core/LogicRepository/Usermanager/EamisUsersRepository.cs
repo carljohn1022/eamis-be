@@ -275,6 +275,16 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
             return _ctx.EAMIS_USERS.AsNoTracking().AnyAsync(x => x.AGENCY_EMPLOYEE_NUMBER == EmployeeAgencyNumber);
         }
 
-        
+        public async Task<string> GetAgencyName(string AgencyEmployeeNumber)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _aisctx.Personnel.Where(s => s.AgencyEmployeeNumber == AgencyEmployeeNumber).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                retValue = result[0].FirstName + " " + result[0].MiddleName + " " + result[0].LastName;
+            }
+            return retValue;
+
+        }
     }
 }

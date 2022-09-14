@@ -102,7 +102,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DETAILS = string.Empty,
                 DISPOSED_AMOUNT = 0,
                 EST_LIFE = item.EstLife,
-                FOR_DEPRECIATION = string.Empty,
+                FOR_DEPRECIATION = item.isDepreciation,
                 INVOICE_NO = item.Invoice,
                 ITEM_DESCRIPTION = item.ItemDescription,
                 LAST_DEPARTMENT = string.Empty,

@@ -60,6 +60,12 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         {
             return Ok(await _applicationUsers.ChangePassword(item));
         }
+        [HttpGet("AgencyName")]
+        public async Task<string> GetAgencyName(string AgencyEmployeeNumber)
+        {
+            var response = await _applicationUsers.GetAgencyName(AgencyEmployeeNumber);
+            return response;
+        }
 
     }
 }

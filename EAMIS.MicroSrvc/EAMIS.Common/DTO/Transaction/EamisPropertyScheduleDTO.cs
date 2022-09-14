@@ -14,7 +14,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string ItemDescription { get; set; }
         public string Category { get; set; }
         public string SubCategory { get; set; }
-        public string ForDepreciation { get; set; }
+        public bool ForDepreciation { get; set; }
         public decimal AreaSQM { get; set; }
         public string SerialNo { get; set; }
         public string Location { get; set; }

@@ -255,9 +255,9 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             var result = await Task.Run(() => _ctx.EAMIS_SUPPLIER.Where(s => s.ID == supplierId).AsNoTracking().ToList()).ConfigureAwait(false);
             if (result != null)
             {
-                retValue = result[0].BANK.ToString() + "-" +
-                              result[0].ACCOUNT_NAME.ToString() + "-" +
-                              result[0].ACCOUNT_NUMBER.ToString() + "-" +
+                retValue = result[0].BANK.ToString() + ":" +
+                              result[0].ACCOUNT_NAME.ToString() + ":" +
+                              result[0].ACCOUNT_NUMBER.ToString() + ":" +
                               result[0].BRANCH.ToString();
             }
             return retValue;

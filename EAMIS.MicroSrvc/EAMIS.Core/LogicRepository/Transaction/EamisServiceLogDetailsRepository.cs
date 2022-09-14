@@ -278,5 +278,19 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         }
         #endregion for creation of new service log
+        public async Task<string> GetGroupByLand(string itemCode)
+        {
+            string retValue = "";
+            int partialValue = 0;
+
+            var result = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.Where(s => s.PROPERTY_NO == itemCode).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                partialValue = result[0].CATEGORY_ID;
+                var result1 = await Task.Run(() => _ctx.EAMIS_ITEM_CATEGORY.Where(c => c.ID == partialValue).AsNoTracking().ToList()).ConfigureAwait(false);
+               
+            }
+            return retValue;
+        }
     }
 }

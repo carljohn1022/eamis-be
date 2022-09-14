@@ -219,5 +219,10 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             return _ctx.EAMIS_ITEMS_SUB_CATEGORY.AsNoTracking().AnyAsync(x => x.CATEGORY_ID == categoryId && x.SUB_CATEGORY_NAME == subCategoryName);
            
         }
+        public Task<bool> ValidatingExistingID(int id, int categoryId, string subCategoryName)
+        {
+            return _ctx.EAMIS_ITEMS_SUB_CATEGORY.AsNoTracking().AnyAsync(x => x.ID == id && x.CATEGORY_ID == categoryId && x.SUB_CATEGORY_NAME == subCategoryName);
+        }
+
     }
 }

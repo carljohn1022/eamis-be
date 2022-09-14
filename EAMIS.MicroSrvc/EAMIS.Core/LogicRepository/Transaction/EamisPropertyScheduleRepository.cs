@@ -54,7 +54,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
             if (filter.Id != null && filter.Id != 0)
                 predicate = predicate.And(x => x.ID == filter.Id);
-            if (filter.ForDepreciation != null && filter.ForDepreciation != "")
+            if (filter.ForDepreciation != null && filter.ForDepreciation != false)
                 predicate = predicate.And(x => x.FOR_DEPRECIATION == filter.ForDepreciation);
             if (!string.IsNullOrEmpty(filter.PropertyNumber)) predicate = (strict)
                      ? predicate.And(x => x.PROPERTY_NUMBER.ToLower() == filter.PropertyNumber.ToLower())

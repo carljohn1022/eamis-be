@@ -14,7 +14,7 @@ namespace EAMIS.Core.Domain.Entities
         public string ITEM_DESCRIPTION { get; set; }
         public string CATEGORY { get; set; }
         public string SUB_CATEGORY { get; set; }
-        public string FOR_DEPRECIATION { get; set; }
+        public bool FOR_DEPRECIATION { get; set; }
         public decimal AREA_SQM { get; set; }
         public string  SERIAL_NO { get; set; } //to verify the correct data type with Justin
         public string LOCATION { get; set; }

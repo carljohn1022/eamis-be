@@ -17,7 +17,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsBlocked { get; set; }
-        public string? AgencyEmployeeNumber { get; set; }
+        public string AgencyEmployeeNumber { get; set; }
         public List<EamisUserRolesDTO> UserRoles {get;set;}
         public EamisUserloginDTO UserLogin { get; set; }
         public AisPersonnelDTO PersonnelInfo { get; set; }
