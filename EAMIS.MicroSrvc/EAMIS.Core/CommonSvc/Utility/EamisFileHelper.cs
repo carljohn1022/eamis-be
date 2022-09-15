@@ -57,6 +57,7 @@ namespace EAMIS.Core.CommonSvc.Utility
         private string reportFileName = "";
         private string reportStatus = "";
         private int isReportReady = 0;
+        private byte[] fileImage;
 
         public int IsReportReady { get => isReportReady; set => value = isReportReady; }
         public string ReportFileName { get => reportFileName; set => value = reportFileName; }
@@ -65,6 +66,8 @@ namespace EAMIS.Core.CommonSvc.Utility
 
         public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
         public bool HasError { get => bolerror; set => value = bolerror; }
+
+        public byte[] FileImage { get => fileImage; set => value = fileImage; }
 
         #region constructor
         public EamisFileHelper(IEamisPropertyItemsRepository eamisPropertyItemsRepository,
@@ -292,13 +295,13 @@ namespace EAMIS.Core.CommonSvc.Utility
             {
                 var result = await Task.Run(() => _ctx.EAMIS_REPORT_REQUEST_LISTENER
                           .Where(r => r.ID == Id)
-                          .Select(v => new { v.RptIsReady, v.GenRptFilNam, v.RptStatus }).FirstOrDefault()).ConfigureAwait(false);
+                          .Select(v => new { v.RptIsReady, v.GenRptFilNam, v.RptStatus, v.FileImage }).FirstOrDefault()).ConfigureAwait(false);
                 if (result != null)
                 {
                     if (result.GenRptFilNam == ReportStatus.ErrorFound)
                     {
                         isReportReady = ReportStatus.ReportReady;
-                        reportFileName = result.GenRptFilNam + "::" + result.RptStatus;
+                        reportFileName = result.GenRptFilNam;
                         bolerror = true;
                     }
                     else
@@ -312,6 +315,7 @@ namespace EAMIS.Core.CommonSvc.Utility
                         {
                             isReportReady = result.RptIsReady;
                             reportFileName = result.GenRptFilNam;
+                            fileImage = result.FileImage;
                         }
                     }
                     reportStatus = result.RptStatus;
@@ -324,6 +328,18 @@ namespace EAMIS.Core.CommonSvc.Utility
             }
             return HasError;
         }
+
+        public async Task<bool> Delete(int reportId)
+        {
+            EAMISREPORTREQUESTLISTENER data = new EAMISREPORTREQUESTLISTENER
+            {
+                ID = reportId
+            };
+            _ctx.Entry(data).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
+            await _ctx.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<EamisReportRequestListener> GenerateReport(string RptReqCode, string RptCode, string ParFldVal, int GenTyp)
         {
             EamisReportRequestListener eamisReportRequestListener = new EamisReportRequestListener();
@@ -348,11 +364,12 @@ namespace EAMIS.Core.CommonSvc.Utility
                 eamisReportRequestListener.RptReqCode = report.RptReqCode;
                 eamisReportRequestListener.RptStatus = report.RptStatus;
                 eamisReportRequestListener.EntCre = report.EntCre;
+                eamisReportRequestListener.FileImage = report.FileImage;
                 return eamisReportRequestListener;
             }
             catch (Exception ex)
             {
-                _errorMessage = ex.Message;
+                _errorMessage = ex.InnerException.Message;
                 bolerror = true;
             }
             return eamisReportRequestListener;

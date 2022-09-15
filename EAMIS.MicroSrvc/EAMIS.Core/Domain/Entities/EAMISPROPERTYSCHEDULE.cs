@@ -48,5 +48,8 @@ namespace EAMIS.Core.Domain.Entities
         public decimal REAL_ESTATE_TAX_PAYMENT { get; set; }
         public DateTime LAST_POSTED_DATE { get; set; }
         public string ITEM_CODE { get; set; }
+        public int REMAINING_LIFE { get; set; }
+        public int REFERENCE_ID { get; set; } //Property Transaction Details ID
+        public decimal ACCUMULATED_DEPREC_AMT { get; set; }
     }
 }

@@ -20,6 +20,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
     {
         private readonly EAMISContext _ctx;
         private readonly IFactorType _factorType;
+        private readonly IEamisPropertyScheduleRepository _eamisPropertyScheduleRepository;
         private readonly int _maxPageSize;
 
         private string _errorMessage = "";
@@ -32,10 +33,12 @@ namespace EAMIS.Core.LogicRepository.Transaction
         private int EstimatedLife { get => _estimatedLife; set => value = _estimatedLife; }
 
         private List<TempScheduleDTO> lsttempScheduleDTO = new List<TempScheduleDTO>();
-        public EamisPropertyDepreciationRepository(EAMISContext ctx, IFactorType factorType)
+        public EamisPropertyDepreciationRepository(EAMISContext ctx, IFactorType factorType,
+            IEamisPropertyScheduleRepository eamisPropertyScheduleRepository)
         {
             _ctx = ctx;
             _factorType = factorType;
+            _eamisPropertyScheduleRepository = eamisPropertyScheduleRepository;
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
@@ -75,6 +78,52 @@ namespace EAMIS.Core.LogicRepository.Transaction
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
             item.Id = data.ID;
+
+            //update property schedule
+            EamisPropertyScheduleDTO schedule = new EamisPropertyScheduleDTO
+            {
+                Id = item.PropertyScheduleId,
+                AccumulatedDepreciationAmount = item.DepreciationAmount,
+                RemainingLife = item.PropertyScheduleDetails.RemainingLife,
+                AcquisitionCost = item.PropertyScheduleDetails.AcquisitionCost,
+                BookValue = item.PropertyScheduleDetails.BookValue,
+                AcquisitionDate = item.PropertyScheduleDetails.AcquisitionDate,
+                Appraisalincrement = item.PropertyScheduleDetails.Appraisalincrement,
+                AppraisedValue = item.PropertyScheduleDetails.AppraisedValue,
+                AreaSQM = item.PropertyScheduleDetails.AreaSQM,
+                AssessedValue = item.PropertyScheduleDetails.AssessedValue,
+                AssetCondition = item.PropertyScheduleDetails.AssetCondition,
+                AssetTag = item.PropertyScheduleDetails.AssetTag,
+                Category = item.PropertyScheduleDetails.Category,
+                CostCenter = item.PropertyScheduleDetails.CostCenter,
+                Department = item.PropertyScheduleDetails.Department,
+                DeprecAmount = item.PropertyScheduleDetails.DeprecAmount,
+                Details = item.PropertyScheduleDetails.Details,
+                DisposedAmount = item.PropertyScheduleDetails.DisposedAmount,
+                ESTLife = item.PropertyScheduleDetails.ESTLife,
+                ForDepreciation = item.PropertyScheduleDetails.ForDepreciation,
+                InvoiceNo = item.PropertyScheduleDetails.InvoiceNo,
+                ItemDescription = item.PropertyScheduleDetails.ItemDescription,
+                LastDepartment = item.PropertyScheduleDetails.LastDepartment,
+                LastPostedDate = item.PropertyScheduleDetails.LastPostedDate,
+                Location = item.PropertyScheduleDetails.Location,
+                Names = item.PropertyScheduleDetails.Names,
+                PORef = item.PropertyScheduleDetails.PORef,
+                PropertyNumber = item.PropertyScheduleDetails.PropertyNumber,
+                RealEstateTaxPayment = item.PropertyScheduleDetails.RealEstateTaxPayment,
+                RevaluationCost = item.PropertyScheduleDetails.RevaluationCost,
+                RRDate = item.PropertyScheduleDetails.RRDate,
+                RRRef = item.PropertyScheduleDetails.RRRef,
+                SalvageValue = item.PropertyScheduleDetails.SalvageValue,
+                SerialNo = item.PropertyScheduleDetails.SerialNo,
+                Status = item.PropertyScheduleDetails.Status,
+                SubCategory = item.PropertyScheduleDetails.SubCategory,
+                SvcAgreementNo = item.PropertyScheduleDetails.SvcAgreementNo,
+                VendorName = item.PropertyScheduleDetails.VendorName,
+                Warranty = item.PropertyScheduleDetails.Warranty,
+                WarrantyDate = item.PropertyScheduleDetails.WarrantyDate
+            };
+            var result = await _eamisPropertyScheduleRepository.Update(schedule);
             return item;
         }
 
@@ -218,14 +267,12 @@ namespace EAMIS.Core.LogicRepository.Transaction
              };
 
             for (int intResult = 0; intResult < result.Items.Count; intResult++)
+            {
                 result.Items[intResult].DepreciationAmount = lsttempScheduleDTO.Find(i => i.ID == result.Items[intResult].PropertyScheduleId).DepreciationAmount;
-
+                result.Items[intResult].PropertyScheduleDetails.RemainingLife = lsttempScheduleDTO.Find(i => i.ID == result.Items[intResult].PropertyScheduleId).RemainingLife;
+                result.Items[intResult].PropertyScheduleDetails.BookValue = lsttempScheduleDTO.Find(i => i.ID == result.Items[intResult].PropertyScheduleId).NewBookValue;
+            }
             return result;
-            //return new DataList<EamisPropertyDepreciationDTO>
-            //{
-            //    Count = await query.CountAsync(),
-            //    Items = await QueryToDTOForDepreciationCreation(paged).ToListAsync(),
-            //};
         }
 
         private void GetEstimatedLife(string itemCode)
@@ -262,12 +309,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
             //Compute running estimated life based on acquisition date
 
             var propertySchedule = _ctx.EAMIS_PROPERTY_SCHEDULE
+                                    //.Where(i => i.ID == 46)
                                     .Select(x => new
                                     {
                                         x.ID,
                                         x.ACQUISITION_DATE,
                                         x.ACQUISITION_COST,
-                                        x.ITEM_CODE
+                                        x.ITEM_CODE,
+                                        x.SALVAGE_VALUE
                                     }
                                     ).ToList();
             string newDepreciationDate = filter.DepreciationMonth.ToString() + "/1/" + filter.DepreciationYear; //set to first day of the month. 
@@ -280,13 +329,29 @@ namespace EAMIS.Core.LogicRepository.Transaction
             foreach (var item in propertySchedule)
             {
                 //compute running life
+
+
                 int runningLife = ((filter.DepreciationYear - item.ACQUISITION_DATE.Year) * 12) + (filter.DepreciationMonth - item.ACQUISITION_DATE.Month);
                 GetEstimatedLife(item.ITEM_CODE);
-                if ((runningLife > 0) && (EstimatedLife > runningLife))
+                DateTime nextDepreciationDate;
+                if (runningLife == 0)
+                {
+                    //1-15 current month -> subject for depreciation for the month -> 1st depreciation
+                    nextDepreciationDate = item.ACQUISITION_DATE;
+                    runningLife = 1;
+                }
+                else
                 {
                     //Determine/forecast next depreciation month and year if within the given year and month
-                    DateTime nextDepreciationDate = item.ACQUISITION_DATE.AddMonths(runningLife);
+                    //16-end of the month -> due for next month -> 1st depreciation
+                    //succeeding depreciation -> 
+                    nextDepreciationDate = item.ACQUISITION_DATE.AddMonths(runningLife);
+                    if (item.ACQUISITION_DATE.Day < PropertyItemStatus.CutOffDay)
+                        runningLife += 1; //always add 1 to running life when items acquired day  between 1 and 15
+                }
 
+                if ((runningLife >= 0) && (EstimatedLife > runningLife))
+                {
                     //Check next depreciation month and year is matched with the given year and month
                     if (filter.DepreciationYear == nextDepreciationDate.Year &&
                        filter.DepreciationMonth == nextDepreciationDate.Month)
@@ -294,31 +359,30 @@ namespace EAMIS.Core.LogicRepository.Transaction
                         arrItemsForDepreciation.Add(item.ID);
 
                         //calculate depreciation
-
-                        decimal salvageValue = _factorType.GetFactorTypeValue(FactorTypes.SalvageValue); //Get salvage value factor
-                        decimal bookValue = item.ACQUISITION_COST - (item.ACQUISITION_COST * salvageValue); //Acquisition Cost * Salvage value factor
+                        //salvage value = item.ACQUISITION_COST * salvageValue
+                        //decimal salvageValue = _factorType.GetFactorTypeValue(FactorTypes.SalvageValue); //Get salvage value factor
+                        decimal bookValue = item.ACQUISITION_COST - item.SALVAGE_VALUE; //Acquisition Cost - Salvage Value
                         decimal monthlyDepreciation = bookValue / EstimatedLife; //Estimated life source is Item_Category
 
                         TempScheduleDTO tempScheduleDTO = new TempScheduleDTO();
+                        decimal newDepreciationAmount = Convert.ToDecimal(monthlyDepreciation.ToString("#0.00")) * runningLife;
                         tempScheduleDTO.ID = item.ID;
                         //tempScheduleDTO.DEPRECIATION_AMOUNT = monthlyDepreciation * runningLife;
                         tempScheduleDTO.AcquisitionDate = item.ACQUISITION_DATE;
                         tempScheduleDTO.AcquisitionCost = item.ACQUISITION_COST;
                         tempScheduleDTO.EstimatedLife = EstimatedLife; //get from category
                         tempScheduleDTO.RunningLife = runningLife;
-                        tempScheduleDTO.DepreciationAmount = Convert.ToDecimal(monthlyDepreciation.ToString("#0.00")) * runningLife;
+                        tempScheduleDTO.DepreciationAmount = newDepreciationAmount;
+                        tempScheduleDTO.SalvageValue = item.SALVAGE_VALUE;
+                        tempScheduleDTO.RemainingLife = EstimatedLife - runningLife;
+                        tempScheduleDTO.NewBookValue = item.ACQUISITION_COST - newDepreciationAmount;
                         lsttempScheduleDTO.Add(tempScheduleDTO);
-
                     }
                 }
             }
 
             //get the final list from database based on the above filter
-            //var query = custom_query ?? _ctx.EAMIS_PROPERTY_DEPRECIATION.AddRange((IEnumerable<EAMISPROPERTYDEPRECIATION>)lsttempScheduleDTO);
-            //foreach (var item in lsttempScheduleDTO)
-            //{
-            //    _ctx.EAMIS_PROPERTY_DEPRECIATION (item);
-            //}
+            
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_SCHEDULE.Where(x => arrItemsForDepreciation.Contains(x.ID))
                                             .Select(d => new EAMISPROPERTYDEPRECIATION
                                             {
@@ -329,15 +393,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                 DEPRECIATION_YEAR = filter.DepreciationYear,
                                                 POSTING_DATE = DateTime.Now
                                             });
-            //.Select(x => new EAMISPROPERTYDEPRECIATION
-            //{
-            //    ID = 0,
-            //    DEPRECIATION_AMOUNT = lsttempScheduleDTO.,
-            //    PROPERTY_SCHEDULE_ID = lsttempScheduleDTO.ID, //Property Schedule Id
-            //    DEPRECIATION_MONTH = filter.DepreciationMonth,
-            //    DEPRECIATION_YEAR = filter.DepreciationYear,
-            //    POSTING_DATE = DateTime.Now
-            //});
+            
             return query.Where(predicate);
         }
 
@@ -407,7 +463,10 @@ namespace EAMIS.Core.LogicRepository.Transaction
         public decimal AcquisitionCost { get; set; }
         public int EstimatedLife { get; set; }
         public int RunningLife { get; set; }
+        public decimal SalvageValue { get; set; }
         public decimal DepreciationAmount { get; set; }
         public int PropertyScheduleId { get; set; }
+        public int RemainingLife { get; set; }
+        public decimal NewBookValue { get; set; }
     }
 }

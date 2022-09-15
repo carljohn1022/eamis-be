@@ -34,6 +34,7 @@ namespace EAMIS.Core.CommonSvc.Utility
         Task<bool> UploadFileToDB(string fileFormat, string FilePath, string TemplateName);
         string ErrorMessage { get; set; }
         bool HasError { get; set; }
+        byte[] FileImage { get; set; }
         string ReportFileName { get; set; }
         string RptStatus { get; set; }
 
@@ -41,5 +42,7 @@ namespace EAMIS.Core.CommonSvc.Utility
 
         Task<bool> IsReportCompleted(int Id);
         Task<EamisReportRequestListener> GenerateReport(string RptReqCode, string RptCode, string ParFldVal, int GenTyp);
+
+        Task<bool> Delete(int reportId);
     }
 }

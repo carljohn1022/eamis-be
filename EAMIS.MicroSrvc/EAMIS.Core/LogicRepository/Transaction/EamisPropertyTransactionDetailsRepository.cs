@@ -82,6 +82,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         private EAMISPROPERTYSCHEDULE MapAssetScheduleEntity(EamisPropertyTransactionDetailsDTO item)
         {
+            decimal salvageValue = _factorType.GetFactorTypeValue(FactorTypes.SalvageValue); //Get salvage value factor
             //Construct the asset schedule data
             return new EAMISPROPERTYSCHEDULE
             {
@@ -92,7 +93,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 APPRAISED_VALUE = 0,
                 AREA_SQM = item.Area,
                 ASSESSED_VALUE = 0,
-                ASSET_CONDITION = string.Empty,
+                ASSET_CONDITION = item.PropertyCondition,
                 ASSET_TAG = string.Empty,
                 BOOK_VALUE = item.BookValue,
                 CATEGORY = CategoryName, //get from category, link to property item
@@ -102,7 +103,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DETAILS = string.Empty,
                 DISPOSED_AMOUNT = 0,
                 EST_LIFE = item.EstLife,
-                FOR_DEPRECIATION = item.isDepreciation,
+                FOR_DEPRECIATION = item.isDepreciation, //to do: include
                 INVOICE_NO = item.Invoice,
                 ITEM_DESCRIPTION = item.ItemDescription,
                 LAST_DEPARTMENT = string.Empty,
@@ -115,7 +116,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 REVALUATION_COST = 0,
                 RRDATE = DateTime.Now,
                 RRREF = 0,
-                SALVAGE_VALUE = item.SalvageValue,
+                SALVAGE_VALUE = item.UnitCost - (item.UnitCost * salvageValue), //calculated salvage valued must be included when inserting record to property schedule //salvage value = item.ACQUISITION_COST * salvageValue (85000 * 0.05)
                 SERIAL_NO = item.SerialNumber,
                 STATUS = string.Empty,
                 SUB_CATEGORY = SubCategoryName, //get from sub category, link to property item/Category
@@ -123,7 +124,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 VENDORNAME = string.Empty,
                 WARRANTY = string.Empty, //item.WarrantyExpiry?
                 WARRANTY_DATE = DateTime.Now,  //item.WarrantyExpiry?
-                ITEM_CODE = item.ItemCode
+                ITEM_CODE = item.ItemCode,
+                REFERENCE_ID = item.Id
             };
         }
 
@@ -221,6 +223,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     if (IsAssetPropertyItem(item.ItemCode)) //check if property item category is under asset
                     {
                         //insert new record to asset schedule
+                        item.Id = data.ID;
                         EAMISPROPERTYSCHEDULE asset = MapAssetScheduleEntity(item);
                         _ctx.Entry(asset).State = EntityState.Added;
                         await _ctx.SaveChangesAsync();

@@ -38,6 +38,7 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string ForCondemn = "FOR CONDEMN";
         public const string Approved = "APPROVED";
         public const string Draft = "DRAFT";
+        public const int CutOffDay = 16;
     }
 
     public static class FactorTypes
@@ -85,6 +86,7 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string PropertyItemExcelFileLocation = @"Uploaded\Excel\";
         public const string PropertyItemCSVFileLocation = @"Uploaded\CSV\";
         public const string PropertyItemImageFileLocation = @"Uploaded\PropertyImages\";
+        public const string ReportFileLocation = @"Reports\";
     }
 
     public static class FileFormat
@@ -95,10 +97,16 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string Jpg = ".jpg";
         public const string Png = ".png";
         public const string Jpeg = ".jpeg";
+        public const string Pdf = "pdf";
+        public const string CSV = "csv";
+        public const string Excel = "xls";
     }
 
     public static class FileType
     {
         public const string SpreadSheetType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        public const string PDFType = "application/pdf";
+        public const string CSVType = "application/pdf";
+        public const string ExcelType = "application/xls";
     }
 }

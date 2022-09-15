@@ -594,9 +594,64 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                     result.RptIsReady = ReportStatus.ReportReady;
                     result.GenRptFilNam = _eamisFileHelper.ReportFileName;
                     result.RptStatus = _eamisFileHelper.RptStatus;
+                    result.FileImage = _eamisFileHelper.FileImage;
                 }
             }
-            return Ok(result);
+
+            if (result.GenRptFilNam == ReportStatus.ErrorFound)
+                return BadRequest(result.RptStatus);
+
+            //create physical file of image
+            string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, FolderName.StaticFolderLocation + @"\" + FolderName.ReportFileLocation);
+            string fileName = result.GenRptFilNam;
+            byte[] byteFile = result.FileImage;
+
+            if (!Directory.Exists(targetPath))
+                Directory.CreateDirectory(targetPath); //create the target path if not yet exist
+
+            using (System.IO.FileStream fs = new System.IO.FileStream(targetPath + fileName, FileMode.Create, System.IO.FileAccess.ReadWrite))
+            {
+                using (System.IO.BinaryWriter bw = new System.IO.BinaryWriter(fs))
+                {
+                    bw.Write(byteFile);
+                    bw.Close();
+                }
+            }
+
+            string fileType = fileName.Substring(fileName.IndexOf('.') + 1);
+            bool bolReportTypeIsValid = true;
+            switch (fileType.ToLower())
+            {
+                case FileFormat.CSV:
+                    fileType = FileType.CSVType;
+                    break;
+                case FileFormat.Pdf:
+                    fileType = FileType.PDFType;
+                    break;
+                case FileFormat.Excel:
+                    fileType = FileType.ExcelType;
+                    break;
+                default:
+                    bolReportTypeIsValid = false;
+                    break;
+            }
+
+            if (!bolReportTypeIsValid)
+                return BadRequest("Either report type or format is invalid.");
+
+            //delete request 
+            await _eamisFileHelper.Delete(result.ID);
+
+            byte[] pdfBytes = System.IO.File.ReadAllBytes(targetPath + fileName);
+            using (var stream = new MemoryStream())
+            {
+                var content = stream.ToArray();
+                return await Task.Run(() => File(
+                   pdfBytes,
+                   fileType,
+                   fileName)).ConfigureAwait(false);
+            }
+
         }
     }
 }

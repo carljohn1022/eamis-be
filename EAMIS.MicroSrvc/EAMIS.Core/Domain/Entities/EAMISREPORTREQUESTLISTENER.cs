@@ -17,5 +17,6 @@ namespace EAMIS.Core.Domain.Entities
         public int RptIsReady { get; set; }
         public DateTime EntCre { get; set; }
         public string RptStatus { get; set; }
+        public byte[] FileImage { get; set; }
     }
 }

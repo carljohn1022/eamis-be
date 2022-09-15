@@ -1,4 +1,7 @@
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\EAMIS.WebApi
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Reports\MARCTESTING0709152022105457pm.pdf
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Reports\MARCTESTING0809152022105607pm.csv
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Reports\MARCTESTING0909152022105737pm.xls
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Uploaded\CSV\009ec139-c960-4614-add9-d038f0dd7e26.csv
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Uploaded\CSV\0245aa49-098d-4d62-ab14-40bafcfa6873.csv
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Uploaded\CSV\029bb3b5-2b1c-4b9b-b492-08251992eaf6.csv
@@ -64,6 +67,7 @@ C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAM
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Uploaded\CSV\ffdb27bd-c13a-4bd0-9d49-f6ab5a629442.csv
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Uploaded\PropertyImages\ada56fb2-9b0d-49c6-aa2b-faab5bd3a9be_.jpg
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Uploaded\PropertyImages\cece05ca-b245-4e8e-9e7a-4096de5831bf.jpg
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Uploaded\PropertyImages\ef764206-deb7-4caf-9e74-85d76dbfe2f5.jpg
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Uploaded\PropertyImages\f7ee05e6-4000-4e15-8c7f-9f4ff90a3b8a.jpg
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\appsettings.Development.json
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\appsettings.json

@@ -58,32 +58,35 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         public async Task<ActionResult<EamisPropertyItemsDTO>> Add([FromForm] EamisPropertyItemsDTO item)
         {
             if (await _eamisPropertyItemsRepository.ValidateExistingItem(item.PropertyNo))
-            {
                 return Unauthorized();
-            }
+
 
             if (item == null)
                 item = new EamisPropertyItemsDTO();
 
             // Check if the request contains multipart/form-data.
-            if (item.Photo == null)
+            if (item.Photo != null)
             {
-                return new UnsupportedMediaTypeResult();
-            }
-            IFormFile formFile = item.Photo;
-            string fileName = "";
-            if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpg ||
-                 System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpeg) //Change the file type according to the business rule
-            {
-                string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, @"StaticFiles\Uploaded\PropertyImages\");
-                fileName = Guid.NewGuid().ToString() + "_" + Path.GetExtension(formFile.FileName);
-                string filePath = Path.Combine(targetPath, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                IFormFile formFile = item.Photo;
+                string fileName = "";
+                if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpg ||
+                    System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpeg) //Change the file type according to the business rule
                 {
-                    formFile.CopyTo(stream);
+                    string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, FolderName.StaticFolderLocation + @"\" + FolderName.PropertyItemImageFileLocation);
+                    //@"StaticFiles\Uploaded\PropertyImages\");
+
+                    if (!Directory.Exists(targetPath))
+                        Directory.CreateDirectory(targetPath); //create the target path if not yet exist
+
+                    fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+                    string filePath = Path.Combine(targetPath, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        formFile.CopyTo(stream);
+                    }
+                    item.ImageURL = fileName;
                 }
-                item.ImageURL = fileName;
             }
             return Ok(await _eamisPropertyItemsRepository.Insert(item));
         }
@@ -96,46 +99,48 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             if (!itemindb)
                 return NotFound();
 
-
-            if (item.Photo == null)
-            {
-                return new UnsupportedMediaTypeResult();
-            }
-            string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, @"StaticFiles\Uploaded\PropertyImages\");
-            //if propertyItemId is not empty, get the image file name from DB
-            //check the file if it exist in the image repository,
-            //if file found/exist then delete it
-            if (item.Id > 0)
-            {
-                //get the image file name from DB
-                string imageInDB = _eamisPropertyItemsRepository.GetPropertyImageFileName(item.Id);
-                if (imageInDB != null)
-                    if (imageInDB != "")
-                    {
-                        filePath = Path.Combine(targetPath, imageInDB);
-                        FileInfo file = new FileInfo(filePath);
-                        if (file.Exists) //check the file if it exist in the image repository
-                            file.Delete(); //if file found/exist then delete it
-                    }
-            }
-            IFormFile formFile = item.Photo;
             string fileName = "";
-            if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpeg || 
-                System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpg) //Change the file type according to the business rule
+            if (item.Photo != null)
             {
-
-                fileName = Guid.NewGuid().ToString() + "" + Path.GetExtension(formFile.FileName);
-                string filePath = Path.Combine(targetPath, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, FolderName.StaticFolderLocation + @"\" + FolderName.PropertyItemImageFileLocation);
+                //@"StaticFiles\Uploaded\PropertyImages\");
+                //if propertyItemId is not empty, get the image file name from DB
+                //check the file if it exist in the image repository,
+                //if file found/exist then delete it
+                if (item.Id > 0)
                 {
-                    formFile.CopyTo(stream);
+                    //get the image file name from DB
+                    string imageInDB = _eamisPropertyItemsRepository.GetPropertyImageFileName(item.Id);
+                    if (imageInDB != null)
+                        if (imageInDB != "")
+                        {
+                            filePath = Path.Combine(targetPath, imageInDB);
+                            FileInfo file = new FileInfo(filePath);
+                            if (file.Exists) //check the file if it exist in the image repository
+                                file.Delete(); //if file found/exist then delete it
+                        }
                 }
-                item.ImageURL = fileName;
-                return Ok(await _eamisPropertyItemsRepository.Update(item));
+
+                IFormFile formFile = item.Photo;
+
+                if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpg ||
+                    System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpeg) //Change the file type according to the business rule
+                {
+                    fileName = Guid.NewGuid().ToString() + "" + Path.GetExtension(formFile.FileName);
+                    string filePath = Path.Combine(targetPath, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        formFile.CopyTo(stream);
+                    }
+                    item.ImageURL = fileName;
+                }
+                else
+                    return new UnsupportedMediaTypeResult();
             }
-            else
-                return new UnsupportedMediaTypeResult();
+
+            return Ok(await _eamisPropertyItemsRepository.Update(item));
+
         }
 
         [HttpGet("getPropertyNo")]

@@ -11,6 +11,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
     public interface IEamisPropertyScheduleRepository
     {
         Task<DataList<EamisPropertyScheduleDTO>> List(EamisPropertyScheduleDTO filter, PageConfig config);
+        Task<EamisPropertyScheduleDTO> Update(EamisPropertyScheduleDTO item);
         string ErrorMessage { get; set; }
 
         bool HasError { get; set; }

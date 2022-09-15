@@ -134,5 +134,19 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 WarrantyDate = d.WARRANTY_DATE
             });
         }
+
+        public async Task<EamisPropertyScheduleDTO> Update(EamisPropertyScheduleDTO item)
+        {
+            EAMISPROPERTYSCHEDULE schedule = new EAMISPROPERTYSCHEDULE
+            {
+                ID = item.Id,
+                ACCUMULATED_DEPREC_AMT = item.AccumulatedDepreciationAmount,
+                REMAINING_LIFE = item.RemainingLife,
+                BOOK_VALUE = item.BookValue
+            };
+            _ctx.Entry(schedule).State = EntityState.Modified;
+            await _ctx.SaveChangesAsync();
+            return item;
+        }
     }
 }
