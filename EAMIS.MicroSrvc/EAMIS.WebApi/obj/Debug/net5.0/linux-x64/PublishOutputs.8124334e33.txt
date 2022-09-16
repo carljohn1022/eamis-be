@@ -1,4 +1,14 @@
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\EAMIS.WebApi
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\api\StaticFiles\Reports\deleon2022-09-15T23490809162022074930am.pdf
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\api\StaticFiles\Reports\deleon2022-09-15T23512909162022075149am.xls
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\api\StaticFiles\Reports\deleon2022-09-15T23585509162022075909am.pdf
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\api\StaticFiles\Reports\deleon2022-09-16T00155409162022081606am.pdf
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\api\StaticFiles\Reports\MARCTESTING0109162022065425am.pdf
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\api\StaticFiles\Uploaded\PropertyImages\44ef0a26-fade-4049-b52c-deeb1d8ce44e.jpg
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Reports\deleon2022-09-16T00524309162022090120am.xls
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Reports\deleon2022-09-16T00544009162022090122am.pdf
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Reports\deleon2022-09-16T01031509162022090324am.pdf
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Reports\deleon2022-09-16T01043709162022090446am.xls
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Reports\MARCTESTING0709152022105457pm.pdf
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Reports\MARCTESTING0809152022105607pm.csv
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\publish\wwwroot\StaticFiles\Reports\MARCTESTING0909152022105737pm.xls
