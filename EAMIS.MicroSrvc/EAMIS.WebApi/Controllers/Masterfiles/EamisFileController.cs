@@ -575,10 +575,10 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         }
 
         [HttpGet("DownloadReport")]
-        public async Task<ActionResult> DownloadReport(string RptReqCode = "MARCTESTING01",
-                                                       string RptCode = "drnod",
-                                                       string ParFldVal = "",
-                                                       int GenTyp = 5)
+        public async Task<ActionResult> DownloadReport(string RptReqCode,
+                                                       string RptCode,
+                                                       string ParFldVal,
+                                                       int GenTyp)
         {
             var result = await _eamisFileHelper.GenerateReport(RptReqCode, RptCode, ParFldVal, GenTyp);
 

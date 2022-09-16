@@ -415,7 +415,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
 
         public Task<bool> UpdateValidateExistingItem(string propertyNo,int id)
         {
-            return _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().AnyAsync(x => x.PROPERTY_NO == propertyNo && x.ID == id);
+            //return _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().AnyAsync(x => x.PROPERTY_NO == propertyNo && x.ID == id);
+            return _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().AnyAsync(x =>  x.ID == id);
         }
     }
 }

@@ -142,7 +142,45 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ID = item.Id,
                 ACCUMULATED_DEPREC_AMT = item.AccumulatedDepreciationAmount,
                 REMAINING_LIFE = item.RemainingLife,
-                BOOK_VALUE = item.BookValue
+                BOOK_VALUE = item.BookValue,
+                ACQUISITION_COST = item.AcquisitionCost,
+                ACQUISITION_DATE = item.AcquisitionDate,
+                APPRAISAL_INCREMENT = item.Appraisalincrement,
+                APPRAISED_VALUE = item.AppraisedValue,
+                AREA_SQM = item.AreaSQM,
+                ASSESSED_VALUE = item.AssessedValue,
+                ASSET_CONDITION = item.AssetCondition,
+                ASSET_TAG = item.AssetTag,
+                CATEGORY = item.Category, //get from category, link to property item
+                COST_CENTER = item.CostCenter,
+                DEPARTMENT = item.Department,
+                DEPREC_AMOUNT = item.DeprecAmount,
+                DETAILS = item.Details,
+                DISPOSED_AMOUNT = item.DisposedAmount,
+                EST_LIFE = item.ESTLife,
+                FOR_DEPRECIATION = item.ForDepreciation, //to do: include
+                INVOICE_NO = item.InvoiceNo,
+                ITEM_DESCRIPTION = item.ItemDescription,
+                LAST_DEPARTMENT = item.LastDepartment,
+                LAST_POSTED_DATE = item.LastPostedDate,
+                LOCATION = item.Location,
+                NAMES = item.Names,
+                POREF = item.PORef,
+                PROPERTY_NUMBER = item.PropertyNumber,
+                REAL_ESTATE_TAX_PAYMENT = item.RealEstateTaxPayment,
+                REVALUATION_COST = item.RevaluationCost,
+                RRDATE = item.RRDate,
+                RRREF = item.RRRef,
+                SALVAGE_VALUE = item.SalvageValue, //calculated salvage valued must be included when inserting record to property schedule //salvage value = item.ACQUISITION_COST * salvageValue (85000 * 0.05)
+                SERIAL_NO = item.SerialNo,
+                STATUS = item.Status,
+                SUB_CATEGORY = item.SubCategory, //get from sub category, link to property item/Category
+                SVC_AGREEMENT_NO = item.SvcAgreementNo,
+                VENDORNAME = item.VendorName,
+                WARRANTY = item.Warranty, //item.WarrantyExpiry?
+                WARRANTY_DATE = item.WarrantyDate,  //item.WarrantyExpiry?
+                ITEM_CODE = item.ItemCode,
+                REFERENCE_ID = item.ReferenceId
             };
             _ctx.Entry(schedule).State = EntityState.Modified;
             await _ctx.SaveChangesAsync();

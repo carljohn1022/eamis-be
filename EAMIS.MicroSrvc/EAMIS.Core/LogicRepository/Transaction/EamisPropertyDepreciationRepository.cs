@@ -87,6 +87,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 RemainingLife = item.PropertyScheduleDetails.RemainingLife,
                 AcquisitionCost = item.PropertyScheduleDetails.AcquisitionCost,
                 BookValue = item.PropertyScheduleDetails.BookValue,
+
                 AcquisitionDate = item.PropertyScheduleDetails.AcquisitionDate,
                 Appraisalincrement = item.PropertyScheduleDetails.Appraisalincrement,
                 AppraisedValue = item.PropertyScheduleDetails.AppraisedValue,
@@ -121,7 +122,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 SvcAgreementNo = item.PropertyScheduleDetails.SvcAgreementNo,
                 VendorName = item.PropertyScheduleDetails.VendorName,
                 Warranty = item.PropertyScheduleDetails.Warranty,
-                WarrantyDate = item.PropertyScheduleDetails.WarrantyDate
+                WarrantyDate = item.PropertyScheduleDetails.WarrantyDate,
+                ReferenceId = item.PropertyScheduleDetails.ReferenceId,
+                ItemCode = item.PropertyScheduleDetails.ItemCode
             };
             var result = await _eamisPropertyScheduleRepository.Update(schedule);
             return item;
@@ -234,7 +237,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     SvcAgreementNo = d.SVC_AGREEMENT_NO,
                     VendorName = d.VENDORNAME,
                     Warranty = d.WARRANTY,
-                    WarrantyDate = d.WARRANTY_DATE
+                    WarrantyDate = d.WARRANTY_DATE,
+                    ReferenceId = d.REFERENCE_ID
                 }).Where(i => i.Id == x.PROPERTY_SCHEDULE_ID).FirstOrDefault()
             });
         }
@@ -446,7 +450,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     SvcAgreementNo = d.SVC_AGREEMENT_NO,
                     VendorName = d.VENDORNAME,
                     Warranty = d.WARRANTY,
-                    WarrantyDate = d.WARRANTY_DATE
+                    WarrantyDate = d.WARRANTY_DATE,
+                    ReferenceId = d.REFERENCE_ID,
+                    RemainingLife = d.REMAINING_LIFE
                 }).Where(i => i.Id == x.PROPERTY_SCHEDULE_ID).FirstOrDefault()
             });
 
