@@ -37,6 +37,7 @@ namespace EAMIS.Common.DTO.Transaction
         public int IssuedQty { get; set; }
         public int RemainingQty { get; set; }
         public int transactionDetailId { get; set; }
+        public string Remarks { get; set; }
         public EamisPropertyTransactionDTO PropertyTransactionGroup { get; set; }
 
     }

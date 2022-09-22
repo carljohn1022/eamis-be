@@ -214,7 +214,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     WarrantyExpiry = x.WARRANTY_EXPIRY,
                     Invoice = x.INVOICE,
                     PropertyCondition = x.PROPERTY_CONDITION,
-                    transactionDetailId = x.REFERENCE_ID
+                    transactionDetailId = x.REFERENCE_ID,
+                    Remarks = x.REMARKS
                 }).Where(i => i.PropertyTransactionID == result.ID).ToList()
             };
         }
@@ -307,7 +308,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 WARRANTY_EXPIRY = item.WarrantyExpiry,
                 INVOICE = item.Invoice,
                 PROPERTY_CONDITION = item.PropertyCondition,
-                REFERENCE_ID = item.transactionDetailId
+                REFERENCE_ID = item.transactionDetailId,
+                REMARKS = item.Remarks
 
 
             };
