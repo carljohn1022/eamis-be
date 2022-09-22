@@ -123,7 +123,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DELIVERY_DATE = item.DeliveryDate,
                 USER_STAMP = item.UserStamp,
                 TIMESTAMP = item.TimeStamp,
-                TRANSACTION_STATUS = item.TransactionStatus
+                TRANSACTION_STATUS = item.TransactionStatus,
+                IS_PROPERTY = item.IsProperty
 
             };
         }
@@ -236,6 +237,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.TransactionStatus)) predicate = (strict)
                    ? predicate.And(x => x.TRANSACTION_STATUS.ToLower() == filter.TransactionStatus.ToLower())
                    : predicate.And(x => x.TRANSACTION_STATUS.Contains(filter.TransactionStatus.ToLower()));
+            if (filter.IsProperty != null)
+                predicate = predicate.And(x => x.IS_PROPERTY == filter.IsProperty);
+
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION;
             return query.Where(predicate);
         }

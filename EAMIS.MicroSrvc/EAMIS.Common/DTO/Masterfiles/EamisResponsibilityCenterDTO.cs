@@ -17,6 +17,8 @@ namespace EAMIS.Common.DTO.Masterfiles
         public string officeDesc { get; set; }
         public string unitCode { get; set; }
         public string unitDesc { get; set; }
+        public string locationCode { get; set; }
+        public string locationDescription { get; set; }
         public bool isActive { get; set; }
         public string responsibilityCenter { get; set; }
     }

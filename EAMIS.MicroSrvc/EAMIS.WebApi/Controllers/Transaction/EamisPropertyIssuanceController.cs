@@ -41,7 +41,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
         }
         [HttpGet("Search")]
         public async Task<ActionResult<EAMISPROPERTYTRANSACTION>> Search(string type, string searchValue)
-       {
+        {
             return Ok(await _eamisPropertyTransactionRepository.SearchReceivingforIssuance(type, searchValue));
         }
         //[HttpGet("list")]
@@ -132,11 +132,14 @@ namespace EAMIS.WebApi.Controllers.Transaction
         //    return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceivingItems());
         //}
         [HttpGet("listitemsforreceiving")]
-        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> ListItemsForReceiving([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config)
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> ListItemsForReceiving([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config, bool bolIsProperty)
         {
             if (filter == null)
                 filter = new EamisPropertyTransactionDetailsDTO();
-            return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceiving(filter, config));
+            if (bolIsProperty)
+                return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceiving(filter, config));
+            else
+                return Ok(await _eamisPropertyIssuanceRepository.ListSupplyItemsForReceiving(filter, config));
         }
         [HttpGet("SearchReceiving")]
         public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> SearchReceiving(string type, string searchValue)

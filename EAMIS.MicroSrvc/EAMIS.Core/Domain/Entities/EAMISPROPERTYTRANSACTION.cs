@@ -22,6 +22,7 @@ namespace EAMIS.Core.Domain.Entities
         public string TIMESTAMP { get; set; }
         public string TRANSACTION_STATUS { get; set; }
         public string FUND_SOURCE { get; set; }
+        public bool IS_PROPERTY { get; set; }
         public List <EAMISPROPERTYTRANSACTIONDETAILS> PROPERTY_TRANSACTION_DETAILS { get; set; }
         public List <EAMISSERVICELOGDETAILS> SERVICE_LOG_DETAILS { get; set; }
 

@@ -46,6 +46,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                     OFFICE_DESC = item.officeDesc,
                     UNIT_CODE = item.unitCode,
                     UNIT_DESC = item.unitDesc,
+                    LOCATION_CODE = item.locationCode,
+                    LOCATION_DESC = item.locationDescription,
                     IS_ACTIVE = item.isActive,
                     RESPONSIBILITY_CENTER = item.responsibilityCenter
                     
@@ -128,6 +130,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                     officeDesc = x.OFFICE_DESC,
                     unitCode = x.UNIT_CODE,
                     unitDesc = x.UNIT_DESC,
+                    locationCode = x.LOCATION_CODE,
+                    locationDescription = x.LOCATION_DESC,
                     responsibilityCenter = x.RESPONSIBILITY_CENTER,
                     isActive = x.IS_ACTIVE
 

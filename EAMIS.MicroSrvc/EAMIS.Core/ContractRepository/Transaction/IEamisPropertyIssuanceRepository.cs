@@ -11,6 +11,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<DataList<EamisPropertyItemsDTO>> List(EamisPropertyItemsDTO filter, PageConfig config);
 
         Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config);
+        Task<DataList<EamisPropertyTransactionDetailsDTO>> ListSupplyItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config);
         Task<EamisPropertyTransactionDTO> InsertProperty(EamisPropertyTransactionDTO item);
         Task<EamisPropertyTransactionDetailsDTO> InsertPropertyTransaction(EamisPropertyTransactionDetailsDTO item);
         Task<EamisPropertyTransactionDTO> UpdateProperty(EamisPropertyTransactionDTO item);

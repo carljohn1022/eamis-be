@@ -19,6 +19,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string TransactionStatus { get; set; }
         public string FundSource { get; set; }
         public string TranType { get; set; }
+        public bool IsProperty { get; set; }
         public List<EamisPropertyTransactionDetailsDTO> PropertyTransactionDetails { get; set; } = new List<EamisPropertyTransactionDetailsDTO>();
     }
 }

@@ -183,6 +183,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 UserStamp = result.USER_STAMP,
                 TimeStamp = result.TIMESTAMP,
                 TransactionStatus = result.TRANSACTION_STATUS,
+                IsProperty = result.IS_PROPERTY,
                 PropertyTransactionDetails = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Select(x => new EamisPropertyTransactionDetailsDTO
                 {
                     Id = x.ID,
@@ -260,7 +261,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DELIVERY_DATE = item.DeliveryDate,
                 USER_STAMP = item.UserStamp,
                 TIMESTAMP = item.TimeStamp,
-                TRANSACTION_STATUS = item.TransactionStatus
+                TRANSACTION_STATUS = item.TransactionStatus,
+                IS_PROPERTY = item.IsProperty
 
             };
         }
@@ -522,6 +524,26 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                 .ToList();
             return itemIssued;
         }
+
+        public async Task<DataList<EamisPropertyTransactionDetailsDTO>> ListSupplyItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config)
+        {
+            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredSuppliesItemsForReceiving(filter);
+            string resolved_sort = config.SortBy ?? "Id";
+            bool resolve_isAscending = (config.IsAscending) ? config.IsAscending : false;
+            int resolved_size = config.Size ?? _maxPageSize;
+            if (resolved_size > _maxPageSize) resolved_size = _maxPageSize;
+            int resolved_index = config.Index ?? 1;
+
+
+            var paged = PagedQueryItemsForReceiving(query, resolved_size, resolved_index);
+            var result = new DataList<EamisPropertyTransactionDetailsDTO>
+            {
+                Count = await query.CountAsync(),
+                Items = await QueryToDTOItemsForReceiving(paged).ToListAsync()
+            };
+
+            return result;
+        }
         public async Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config)
         {
             IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredItemsForReceiving(filter);
@@ -637,7 +659,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             );
         }
-        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, bool strict = false)
+
+        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredSuppliesItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null)
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
             //Do not display items under service logs
@@ -651,38 +674,47 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                d => d.PROPERTY_TRANS_ID,
                                                h => h.ID,
                                                (d, h) => new { d, h })
-                                        .Where(x => x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving)
+                                        .Join(_ctx.EAMIS_PROPERTYITEMS,
+                                        i => i.d.ITEM_CODE,
+                                        p => p.PROPERTY_NO,
+                                        (i, p) => new { i, p })
+                                        .Join(_ctx.EAMIS_ITEM_CATEGORY,
+                                        c => c.p.CATEGORY_ID,
+                                        ic => ic.ID,
+                                        (c, ic) => new { ic, c })
+                                        .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving &&
+                                                    x.ic.IS_SUPPLIES == true)
                                         .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                         {
-                                            ID = x.d.ID,
-                                            PROPERTY_TRANS_ID = x.d.PROPERTY_TRANS_ID,
-                                            IS_DEPRECIATION = x.d.IS_DEPRECIATION,
-                                            DR = x.d.DR,
-                                            PROPERTY_NUMBER = x.d.PROPERTY_NUMBER,
-                                            ITEM_CODE = x.d.ITEM_CODE,
-                                            ITEM_DESCRIPTION = x.d.ITEM_DESCRIPTION,
-                                            SERIAL_NUMBER = x.d.SERIAL_NUMBER,
-                                            PO = x.d.PO,
-                                            PR = x.d.PR,
-                                            ACQUISITION_DATE = x.d.ACQUISITION_DATE,
-                                            ASSIGNEE_CUSTODIAN = x.d.ASSIGNEE_CUSTODIAN,
-                                            REQUESTED_BY = x.d.REQUESTED_BY,
-                                            OFFICE = x.d.OFFICE,
-                                            DEPARTMENT = x.d.DEPARTMENT,
-                                            RESPONSIBILITY_CODE = x.d.RESPONSIBILITY_CODE,
-                                            UNIT_COST = x.d.UNIT_COST,
-                                            QTY = x.d.QTY,
-                                            SALVAGE_VALUE = x.d.SALVAGE_VALUE,
-                                            BOOK_VALUE = x.d.BOOK_VALUE,
-                                            ESTIMATED_LIFE = x.d.ESTIMATED_LIFE,
-                                            AREA = x.d.AREA,
-                                            SEMI_EXPANDABLE_AMOUNT = x.d.SEMI_EXPANDABLE_AMOUNT,
-                                            USER_STAMP = x.d.USER_STAMP,
-                                            TIME_STAMP = x.d.TIME_STAMP,
-                                            WARRANTY_EXPIRY = x.d.WARRANTY_EXPIRY,
-                                            INVOICE = x.d.INVOICE,
-                                            PROPERTY_CONDITION = x.d.PROPERTY_CONDITION,
-                                            REFERENCE_ID = x.d.REFERENCE_ID
+                                            ID = x.c.i.d.ID,
+                                            PROPERTY_TRANS_ID = x.c.i.d.PROPERTY_TRANS_ID,
+                                            IS_DEPRECIATION = x.c.i.d.IS_DEPRECIATION,
+                                            DR = x.c.i.d.DR,
+                                            PROPERTY_NUMBER = x.c.i.d.PROPERTY_NUMBER,
+                                            ITEM_CODE = x.c.i.d.ITEM_CODE,
+                                            ITEM_DESCRIPTION = x.c.i.d.ITEM_DESCRIPTION,
+                                            SERIAL_NUMBER = x.c.i.d.SERIAL_NUMBER,
+                                            PO = x.c.i.d.PO,
+                                            PR = x.c.i.d.PR,
+                                            ACQUISITION_DATE = x.c.i.d.ACQUISITION_DATE,
+                                            ASSIGNEE_CUSTODIAN = x.c.i.d.ASSIGNEE_CUSTODIAN,
+                                            REQUESTED_BY = x.c.i.d.REQUESTED_BY,
+                                            OFFICE = x.c.i.d.OFFICE,
+                                            DEPARTMENT = x.c.i.d.DEPARTMENT,
+                                            RESPONSIBILITY_CODE = x.c.i.d.RESPONSIBILITY_CODE,
+                                            UNIT_COST = x.c.i.d.UNIT_COST,
+                                            QTY = x.c.i.d.QTY,
+                                            SALVAGE_VALUE = x.c.i.d.SALVAGE_VALUE,
+                                            BOOK_VALUE = x.c.i.d.BOOK_VALUE,
+                                            ESTIMATED_LIFE = x.c.i.d.ESTIMATED_LIFE,
+                                            AREA = x.c.i.d.AREA,
+                                            SEMI_EXPANDABLE_AMOUNT = x.c.i.d.SEMI_EXPANDABLE_AMOUNT,
+                                            USER_STAMP = x.c.i.d.USER_STAMP,
+                                            TIME_STAMP = x.c.i.d.TIME_STAMP,
+                                            WARRANTY_EXPIRY = x.c.i.d.WARRANTY_EXPIRY,
+                                            INVOICE = x.c.i.d.INVOICE,
+                                            PROPERTY_CONDITION = x.c.i.d.PROPERTY_CONDITION,
+                                            REFERENCE_ID = x.c.i.d.REFERENCE_ID
                                         }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER) &&
                                                        (s.QTY - _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
                                                                 .Where(r => r.REFERENCE_ID == s.ID)
@@ -691,6 +723,123 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                 );
             return query.Where(predicate);
         }
+        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null)
+        {
+            var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
+            //Do not display items under service logs
+            var arrservicelogs = _ctx.EAMIS_SERVICE_LOG_DETAILS.AsNoTracking()
+                                .Where(pn => !(pn.PROPERTY_NUMBER == null || pn.PROPERTY_NUMBER.Trim() == string.Empty))
+                                .Select(x => x.PROPERTY_NUMBER)
+                                .ToList();
+
+            var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                        .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                               d => d.PROPERTY_TRANS_ID,
+                                               h => h.ID,
+                                               (d, h) => new { d, h })
+                                        .Join(_ctx.EAMIS_PROPERTYITEMS,
+                                        i => i.d.ITEM_CODE,
+                                        p => p.PROPERTY_NO,
+                                        (i, p) => new { i, p })
+                                        .Join(_ctx.EAMIS_ITEM_CATEGORY,
+                                        c => c.p.CATEGORY_ID,
+                                        ic => ic.ID,
+                                        (c, ic) => new { ic, c })
+                                        .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving &&
+                                                    x.ic.IS_ASSET == true)
+                                        .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
+                                        {
+                                            ID = x.c.i.d.ID,
+                                            PROPERTY_TRANS_ID = x.c.i.d.PROPERTY_TRANS_ID,
+                                            IS_DEPRECIATION = x.c.i.d.IS_DEPRECIATION,
+                                            DR = x.c.i.d.DR,
+                                            PROPERTY_NUMBER = x.c.i.d.PROPERTY_NUMBER,
+                                            ITEM_CODE = x.c.i.d.ITEM_CODE,
+                                            ITEM_DESCRIPTION = x.c.i.d.ITEM_DESCRIPTION,
+                                            SERIAL_NUMBER = x.c.i.d.SERIAL_NUMBER,
+                                            PO = x.c.i.d.PO,
+                                            PR = x.c.i.d.PR,
+                                            ACQUISITION_DATE = x.c.i.d.ACQUISITION_DATE,
+                                            ASSIGNEE_CUSTODIAN = x.c.i.d.ASSIGNEE_CUSTODIAN,
+                                            REQUESTED_BY = x.c.i.d.REQUESTED_BY,
+                                            OFFICE = x.c.i.d.OFFICE,
+                                            DEPARTMENT = x.c.i.d.DEPARTMENT,
+                                            RESPONSIBILITY_CODE = x.c.i.d.RESPONSIBILITY_CODE,
+                                            UNIT_COST = x.c.i.d.UNIT_COST,
+                                            QTY = x.c.i.d.QTY,
+                                            SALVAGE_VALUE = x.c.i.d.SALVAGE_VALUE,
+                                            BOOK_VALUE = x.c.i.d.BOOK_VALUE,
+                                            ESTIMATED_LIFE = x.c.i.d.ESTIMATED_LIFE,
+                                            AREA = x.c.i.d.AREA,
+                                            SEMI_EXPANDABLE_AMOUNT = x.c.i.d.SEMI_EXPANDABLE_AMOUNT,
+                                            USER_STAMP = x.c.i.d.USER_STAMP,
+                                            TIME_STAMP = x.c.i.d.TIME_STAMP,
+                                            WARRANTY_EXPIRY = x.c.i.d.WARRANTY_EXPIRY,
+                                            INVOICE = x.c.i.d.INVOICE,
+                                            PROPERTY_CONDITION = x.c.i.d.PROPERTY_CONDITION,
+                                            REFERENCE_ID = x.c.i.d.REFERENCE_ID
+                                        }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER) &&
+                                                       (s.QTY - _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
+                                                                .Where(r => r.REFERENCE_ID == s.ID)
+                                                                .GroupBy(g => g.REFERENCE_ID)
+                                                                .Select(i => i.Sum(v => v.QTY)).FirstOrDefault()) > 0
+                                                );
+            return query.Where(predicate);
+        }
+        //private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, bool strict = false)
+        //{
+        //    var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
+        //    //Do not display items under service logs
+        //    var arrservicelogs = _ctx.EAMIS_SERVICE_LOG_DETAILS.AsNoTracking()
+        //                        .Where(pn => !(pn.PROPERTY_NUMBER == null || pn.PROPERTY_NUMBER.Trim() == string.Empty))
+        //                        .Select(x => x.PROPERTY_NUMBER)
+        //                        .ToList();
+
+        //    var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+        //                                .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+        //                                       d => d.PROPERTY_TRANS_ID,
+        //                                       h => h.ID,
+        //                                       (d, h) => new { d, h })
+        //                                .Where(x => x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving)
+        //                                .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
+        //                                {
+        //                                    ID = x.d.ID,
+        //                                    PROPERTY_TRANS_ID = x.d.PROPERTY_TRANS_ID,
+        //                                    IS_DEPRECIATION = x.d.IS_DEPRECIATION,
+        //                                    DR = x.d.DR,
+        //                                    PROPERTY_NUMBER = x.d.PROPERTY_NUMBER,
+        //                                    ITEM_CODE = x.d.ITEM_CODE,
+        //                                    ITEM_DESCRIPTION = x.d.ITEM_DESCRIPTION,
+        //                                    SERIAL_NUMBER = x.d.SERIAL_NUMBER,
+        //                                    PO = x.d.PO,
+        //                                    PR = x.d.PR,
+        //                                    ACQUISITION_DATE = x.d.ACQUISITION_DATE,
+        //                                    ASSIGNEE_CUSTODIAN = x.d.ASSIGNEE_CUSTODIAN,
+        //                                    REQUESTED_BY = x.d.REQUESTED_BY,
+        //                                    OFFICE = x.d.OFFICE,
+        //                                    DEPARTMENT = x.d.DEPARTMENT,
+        //                                    RESPONSIBILITY_CODE = x.d.RESPONSIBILITY_CODE,
+        //                                    UNIT_COST = x.d.UNIT_COST,
+        //                                    QTY = x.d.QTY,
+        //                                    SALVAGE_VALUE = x.d.SALVAGE_VALUE,
+        //                                    BOOK_VALUE = x.d.BOOK_VALUE,
+        //                                    ESTIMATED_LIFE = x.d.ESTIMATED_LIFE,
+        //                                    AREA = x.d.AREA,
+        //                                    SEMI_EXPANDABLE_AMOUNT = x.d.SEMI_EXPANDABLE_AMOUNT,
+        //                                    USER_STAMP = x.d.USER_STAMP,
+        //                                    TIME_STAMP = x.d.TIME_STAMP,
+        //                                    WARRANTY_EXPIRY = x.d.WARRANTY_EXPIRY,
+        //                                    INVOICE = x.d.INVOICE,
+        //                                    PROPERTY_CONDITION = x.d.PROPERTY_CONDITION,
+        //                                    REFERENCE_ID = x.d.REFERENCE_ID
+        //                                }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER) &&
+        //                                               (s.QTY - _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
+        //                                                        .Where(r => r.REFERENCE_ID == s.ID)
+        //                                                        .GroupBy(g => g.REFERENCE_ID)
+        //                                                        .Select(i => i.Sum(v => v.QTY)).FirstOrDefault()) > 0
+        //                                        );
+        //    return query.Where(predicate);
+        //}
 
         private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> PagedQueryItemsForReceiving(IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query, int resolved_size, int resolved_index)
         {
@@ -710,33 +859,24 @@ namespace EAMIS.Core.LogicRepository.Transaction
         public async Task<string> GetPropertyNumber(DateTime acquisitionDate, string responsibilityCode, string serialNumber)
         {
             string retValue = "";
-            var result = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.Where(s => s.RESPONSIBILITY_CENTER == responsibilityCode).AsNoTracking().ToList()).ConfigureAwait(false);
-            if (result != null)
-            {
+            var result = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.Where(s => s.RESPONSIBILITY_CENTER == responsibilityCode).AsNoTracking().ToList()).ConfigureAwait(false);     
                 retValue = acquisitionDate.Year.ToString() + "-" +
                     serialNumber.ToString() + "-" +
                     result[0].OFFICE_CODE.ToString();
-            }
             return retValue;
         }
         public async Task<string> GetDRNumFrSupplier(string dr)
         {
             string retValue = "";
-            var result = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.Where(s => s.TRANSACTION_TYPE == dr).AsNoTracking().ToList()).ConfigureAwait(false);
-            if (result != null)
-            {
-                retValue = result[0].DR_BY_SUPPLIER_NUMBER.ToString();
-            }
+            var result = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.Where(s => s.TRANSACTION_TYPE == dr).AsNoTracking().ToList()).ConfigureAwait(false); 
+            retValue = result[0].DR_BY_SUPPLIER_NUMBER.ToString();      
             return retValue;
         }
         public async Task<string> GetAPRNum(string dr)
         {
             string retValue = "";
             var result = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.Where(s => s.TRANSACTION_TYPE == dr).AsNoTracking().ToList()).ConfigureAwait(false);
-            if (result != null)
-            {
-                retValue = result[0].APR_NUMBER.ToString();
-            }
+            retValue = result[0].APR_NUMBER.ToString();
             return retValue;
         }
 
