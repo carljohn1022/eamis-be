@@ -25,6 +25,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public int SupplierId { get; set; }
         public bool IsActive { get; set; }
         public string ImageURL { get; set; }
+        public string SpecificDesc { get; set; }
         public IFormFile Photo { get; set; }
         public EamisItemCategoryDTO ItemCategory { get; set; }
         public EamisUnitofMeasureDTO UnitOfMeasure { get; set; }

@@ -60,6 +60,8 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             if (await _eamisPropertyItemsRepository.ValidateExistingItem(item.PropertyNo))
                 return Unauthorized();
 
+            if (await _eamisPropertyItemsRepository.ValidateExistingPropertyName(item.PropertyName))
+                return Unauthorized();
 
             if (item == null)
                 item = new EamisPropertyItemsDTO();
@@ -70,7 +72,8 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                 IFormFile formFile = item.Photo;
                 string fileName = "";
                 if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpg ||
-                    System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpeg) //Change the file type according to the business rule
+                   System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpeg ||
+                   System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Png) //Change the file type according to the business rule
                 {
                     string targetPath = Path.Combine(_hostingEnvironment.WebRootPath, FolderName.StaticFolderLocation + @"\" + FolderName.PropertyItemImageFileLocation);
                     //@"StaticFiles\Uploaded\PropertyImages\");
@@ -96,8 +99,8 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         {
             var data = new EamisPropertyItemsDTO();
             var itemindb = await _eamisPropertyItemsRepository.UpdateValidateExistingItem(item.PropertyNo, item.Id);
-            if (!itemindb)
-                return NotFound();
+
+
 
             string fileName = "";
             if (item.Photo != null)
@@ -124,7 +127,8 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                 IFormFile formFile = item.Photo;
 
                 if (System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpg ||
-                    System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpeg) //Change the file type according to the business rule
+                    System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Jpeg ||
+                    System.IO.Path.GetExtension(formFile.FileName).ToLower() == FileFormat.Png) //Change the file type according to the business rule
                 {
                     fileName = Guid.NewGuid().ToString() + "" + Path.GetExtension(formFile.FileName);
                     string filePath = Path.Combine(targetPath, fileName);

@@ -120,7 +120,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 STOCK_QUANTITY = item.StockQuantity,
                 IS_ASSET = item.IsAsset,
                 IS_SUPPLIES = item.IsSupplies,
-                IS_ACTIVE = item.IsActive
+                IS_ACTIVE = item.IsActive,
+                FOR_DEPRECIATION = item.ForDepreciation
             };
         }
 
@@ -199,6 +200,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 IsAsset = x.IS_ASSET,
                 IsSupplies = x.IS_SUPPLIES,
                 IsActive = x.IS_ACTIVE,
+                ForDepreciation = x.FOR_DEPRECIATION,
                 ChartOfAccounts = new EamisChartofAccountsDTO
                 {
                     Id = x.CHART_OF_ACCOUNTS.ID,

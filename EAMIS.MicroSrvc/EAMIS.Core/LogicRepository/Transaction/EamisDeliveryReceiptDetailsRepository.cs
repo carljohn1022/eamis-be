@@ -104,6 +104,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 await _eamisPropertyTransactionDetailsRepository.UpdatePropertyItemQty(item);
 
                 transaction.Commit();
+                item.Id = data.ID;
             }
             catch (Exception ex)
             {
@@ -169,8 +170,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     SupplierId = x.DELIVERY_RECEIPT_GROUP.SUPPLIER_ID,
                     StockroomId = x.DELIVERY_RECEIPT_GROUP.WAREHOUSE_ID,
                     SaleInvoiceNumber = x.DELIVERY_RECEIPT_GROUP.SALE_INVOICE_NUMBER,
-
-                }
+                },
+                PropertySerialTran = _ctx.EAMIS_SERIAL_TRAN.AsNoTracking().Select(s => new EamisSerialTranDTO
+                {
+                    Id = s.ID,
+                    SerialNumber = s.SERIAL_NO,
+                    WarrantyExpiryDate = s.WARRANTY_EXPIRY_DATE,
+                    DeliveryReceiptDetailsId = s.DELIVERY_RECEIPT_DETAILS_ID
+                }).Where(i => i.DeliveryReceiptDetailsId == x.ID).ToList()
             });
         }
 
@@ -229,5 +236,35 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return retValue;
         }
+        public async Task<EAMISSERIALTRAN> PostSerialTranByItem(EamisSerialTranDTO item)
+        {
+            EAMISSERIALTRAN serialTran = MapToEntity(item);
+            try
+            {
+                _ctx.Entry(serialTran).State = EntityState.Added;
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+                bolerror = false;
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
+            }
+            return serialTran;
+        }
+        private EAMISSERIALTRAN MapToEntity(EamisSerialTranDTO item)
+        {
+            return new EAMISSERIALTRAN
+            {
+                ID = item.Id,
+                DELIVERY_RECEIPT_DETAILS_ID = item.DeliveryReceiptDetailsId,
+                SERIAL_NO = item.SerialNumber,
+                WARRANTY_EXPIRY_DATE = item.WarrantyExpiryDate
+            };
+        }
+
+
+
+
     }
 }

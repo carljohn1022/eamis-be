@@ -113,21 +113,22 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 QUANTITY = item.Quantity,
                 SUPPLIER_ID = item.SupplierId,
                 IS_ACTIVE = item.IsActive,
-                IMG_URL =item.ImageURL
-                
+                IMG_URL = item.ImageURL,
+                SPECIFIC_DESC = item.SpecificDesc,
+
             };
         }
 
         public async Task<EamisPropertyItemsDTO> Insert(EamisPropertyItemsDTO item)
         {
-          
+
             EAMISPROPERTYITEMS data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
             item.Id = data.ID;
             //ICT000000261
             string _PropertyNo = item.PropertyNo.Substring(0, 3) + Convert.ToString(data.ID).PadLeft(6, '0');
-            if(item.PropertyNo != _PropertyNo)
+            if (item.PropertyNo != _PropertyNo)
             {
                 item.PropertyNo = _PropertyNo;
                 _ctx.Entry(data).State = EntityState.Detached;
@@ -135,13 +136,13 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             }
             return item;
         }
-        
 
-        public async Task<DataList<EamisPropertyItemsDTO>> PublicSearch(string type,string SearchValue)
+
+        public async Task<DataList<EamisPropertyItemsDTO>> PublicSearch(string type, string SearchValue)
         {
 
             IQueryable<EAMISPROPERTYITEMS> query = null;
-            if(type == "Item Number")
+            if (type == "Item Number")
             {
                 query = _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().Where(x => x.PROPERTY_NO.Contains(SearchValue)).AsQueryable();
             }
@@ -165,10 +166,10 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             {
                 query = _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().Where(x => x.PROPERTY_NAME.Contains(SearchValue)).AsQueryable();
             }
-            
-           
-           
-       
+
+
+
+
             var paged = PagedQueryForSearch(query);
             return new DataList<EamisPropertyItemsDTO>
             {
@@ -244,7 +245,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 Quantity = x.QUANTITY,
                 SupplierId = x.SUPPLIER_ID,
                 IsActive = x.IS_ACTIVE,
-                ImageURL =x.IMG_URL,
+                ImageURL = x.IMG_URL,
+                SpecificDesc = x.SPECIFIC_DESC,
                 ItemCategory = new EamisItemCategoryDTO
                 {
                     Id = x.ITEM_CATEGORY.ID,
@@ -298,13 +300,14 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 Quantity = x.QUANTITY,
                 SupplierId = x.SUPPLIER_ID,
                 IsActive = x.IS_ACTIVE,
-                ImageURL=x.IMG_URL,
+                ImageURL = x.IMG_URL,
+                SpecificDesc = x.SPECIFIC_DESC,
                 ItemCategory = new EamisItemCategoryDTO
                 {
                     Id = x.ITEM_CATEGORY.ID,
                     CategoryName = x.ITEM_CATEGORY.CATEGORY_NAME,
                     ShortDesc = x.ITEM_CATEGORY.SHORT_DESCRIPTION,
-                    SubCategory = x.ITEM_CATEGORY.ITEM_SUB_CATEGORY.Select(y => new EamisItemSubCategoryDTO {Id = y.ID, CategoryId = y.CATEGORY_ID, SubCategoryName = y.SUB_CATEGORY_NAME}).ToList(),
+                    SubCategory = x.ITEM_CATEGORY.ITEM_SUB_CATEGORY.Select(y => new EamisItemSubCategoryDTO { Id = y.ID, CategoryId = y.CATEGORY_ID, SubCategoryName = y.SUB_CATEGORY_NAME }).ToList(),
                     IsSerialized = x.ITEM_CATEGORY.IS_SERIALIZED
                 },
                 UnitOfMeasure = new EamisUnitofMeasureDTO
@@ -329,7 +332,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
 
         private IQueryable<EAMISPROPERTYITEMS> PagedQuery(IQueryable<EAMISPROPERTYITEMS> query, int resolved_size, int resolved_index)
         {
-            return query.OrderByDescending(x=>x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+            return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
 
         private IQueryable<EAMISPROPERTYITEMS> FilteredEntites(EamisPropertyItemsDTO filter, IQueryable<EAMISPROPERTYITEMS> custom_query = null, bool strict = false)
@@ -404,19 +407,21 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 Id = specificProperty.ID,
                 AppNo = specificProperty.APP_NO
             };
-            return  propertyItems;
+            return propertyItems;
         }
-
+        public Task<bool> ValidateExistingPropertyName(string propertyName)
+        {
+            return _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().AnyAsync(x => x.PROPERTY_NAME == propertyName);
+        }
 
         public Task<bool> ValidateExistingItem(string propertyNo)
         {
             return _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().AnyAsync(x => x.PROPERTY_NO == propertyNo);
         }
 
-        public Task<bool> UpdateValidateExistingItem(string propertyNo,int id)
+        public Task<bool> UpdateValidateExistingItem(string propertyNo, int id)
         {
-            //return _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().AnyAsync(x => x.PROPERTY_NO == propertyNo && x.ID == id);
-            return _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().AnyAsync(x =>  x.ID == id);
+            return _ctx.EAMIS_PROPERTYITEMS.AsNoTracking().AnyAsync(x => x.PROPERTY_NO == propertyNo && x.ID == id);
         }
     }
 }

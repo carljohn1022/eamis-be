@@ -22,6 +22,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public bool IsAsset { get; set; }
         public bool IsSupplies { get; set; }
         public bool IsActive { get; set; }
+        public bool ForDepreciation { get; set; }
         public AisOfficeDTO OfficeInfo { get; set; }
         public EamisChartofAccountsDTO ChartOfAccounts { get; set; }
         public List<EamisItemSubCategoryDTO> SubCategory { get; set; }

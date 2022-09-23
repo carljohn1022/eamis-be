@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Transaction;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using System.Threading.Tasks;
 
@@ -14,5 +15,6 @@ namespace EAMIS.Core.ContractRepository.Transaction
         string ErrorMessage { get; set; }
         bool HasError { get; set; }
         Task<DataList<EamisDeliveryReceiptDetailsDTO>> SearchDeliveryDetailsforReceiving(string type, string searchvalue);
+        Task<EAMISSERIALTRAN> PostSerialTranByItem(EamisSerialTranDTO item);
     }
 }

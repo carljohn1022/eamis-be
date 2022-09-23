@@ -47,5 +47,19 @@ namespace EAMIS.WebApi.Controllers.Transaction
                 item = new EamisDeliveryReceiptDetailsDTO();
             return Ok(await _eamisDeliveryReceiptDetailsRepository.Delete(item));
         }
+        [HttpPost("PostSerialTranByRecord")]
+        public async Task<ActionResult<EamisSerialTranDTO>> PostSerialTran([FromBody] EamisSerialTranDTO item)
+        {
+            if (item == null)
+                return BadRequest("At least one serial row is required");
+
+            var result = await _eamisDeliveryReceiptDetailsRepository.PostSerialTranByItem(item);
+
+            if (_eamisDeliveryReceiptDetailsRepository.HasError)
+                return BadRequest(_eamisDeliveryReceiptDetailsRepository.ErrorMessage);
+
+            return Ok(result);
+        }
+
     }
 }

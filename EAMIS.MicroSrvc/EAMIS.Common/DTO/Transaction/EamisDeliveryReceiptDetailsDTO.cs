@@ -1,5 +1,6 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
 using System;
+using System.Collections.Generic;
 
 namespace EAMIS.Common.DTO.Transaction
 {
@@ -21,6 +22,7 @@ namespace EAMIS.Common.DTO.Transaction
         //public DateTime WarrantyExpiryDate  { get; set; }
         public Masterfiles.EamisPropertyItemsDTO PropertyItem { get; set; }
         public EamisDeliveryReceiptDTO DeliveryReceipt { get; set; }
+        public List<EamisSerialTranDTO> PropertySerialTran { get; set; }
 
     }
 }

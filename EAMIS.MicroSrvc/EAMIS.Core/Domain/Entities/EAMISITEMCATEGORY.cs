@@ -24,6 +24,7 @@ namespace EAMIS.Core.Domain.Entities
         public bool IS_ASSET { get; set; }
         public bool IS_SUPPLIES { get; set; }
         public bool IS_ACTIVE { get; set; }
+        public bool FOR_DEPRECIATION { get; set; }
         public EAMISCHARTOFACCOUNTS CHART_OF_ACCOUNTS { get; set; }
         public List<EAMISITEMSUBCATEGORY> ITEM_SUB_CATEGORY { get; set; }
         public List<EAMISPROPERTYITEMS> PROPERTY_ITEMS { get; set; }

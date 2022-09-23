@@ -23,8 +23,9 @@ namespace EAMIS.Core.Domain.Entities
         public string MODEL { get; set; }
         public int QUANTITY { get; set; }
         public int SUPPLIER_ID { get; set; }
-        public string IMG_URL { get; set; }
+        public string IMG_URL { get; set; } 
         public bool IS_ACTIVE { get; set; }
+        public string SPECIFIC_DESC { get; set; }
         public EAMISITEMCATEGORY ITEM_CATEGORY { get; set; }
         public EAMISUNITOFMEASURE UOM_GROUP { get; set; }
         public EAMISWAREHOUSE WAREHOUSE_GROUP { get; set; }

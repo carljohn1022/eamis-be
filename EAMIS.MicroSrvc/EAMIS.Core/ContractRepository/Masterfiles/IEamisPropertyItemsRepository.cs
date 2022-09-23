@@ -21,6 +21,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<EamisPropertyItemsDTO> Delete(EamisPropertyItemsDTO item);
         Task<EamisPropertyItemsDTO> GeneratedProperty();
         Task<bool> ValidateExistingItem(string propertyNo);
+        Task<bool> ValidateExistingPropertyName(string propertyName);
         Task<bool> UpdateValidateExistingItem(string propertyNo, int id);
         string GetPropertyImageFileName(int propertyItemId);
         string ErrorMessage { get; set; }
