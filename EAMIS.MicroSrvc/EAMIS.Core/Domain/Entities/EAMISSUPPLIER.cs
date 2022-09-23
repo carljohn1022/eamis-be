@@ -25,6 +25,7 @@ namespace EAMIS.Core.Domain.Entities
         public string ACCOUNT_NAME { get; set; }
         public string ACCOUNT_NUMBER { get; set; }
         public string BRANCH { get; set; }
+        public string EMAIL_ADD { get; set; }
         public bool IS_ACTIVE { get; set; }
 
         [ForeignKey("BRGY_CODE")]

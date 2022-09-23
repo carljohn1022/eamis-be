@@ -23,6 +23,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public string AccountNumber { get; set; }
         public string Branch { get; set; }
         public bool IsActive { get; set; }
+        public string EmailAdd { get; set; }
         public EamisBarangayDTO Barangay { get; set; }
     }
 }

@@ -20,6 +20,11 @@ namespace EAMIS.WebApi.Controllers.Transaction
         {
             _eamisPropertyScheduleRepository = eamisPropertyScheduleRepository;
         }
+        [HttpGet("Search")]
+        public async Task<ActionResult<EAMISPROPERTYSCHEDULE>> Search(string type, string searchValue)
+        {
+            return Ok(await _eamisPropertyScheduleRepository.Search(type, searchValue));
+        }
 
         [HttpGet("list")]
         public async Task<ActionResult<EAMISPROPERTYSCHEDULE>> List([FromQuery] EamisPropertyScheduleDTO filter, [FromQuery] PageConfig config)

@@ -29,6 +29,33 @@ namespace EAMIS.Core.LogicRepository.Transaction
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
               : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
+        public async Task<DataList<EamisPropertyScheduleDTO>> Search(string type, string searchValue)
+        {
+            IQueryable<EAMISPROPERTYSCHEDULE> query = null;
+            if (type == "Serial Number")
+            {
+                query = _ctx.EAMIS_PROPERTY_SCHEDULE.AsNoTracking().Where(x => x.SERIAL_NO.Contains(searchValue)).AsQueryable();
+            }
+            if (type == "Item Description")
+            {
+                query = _ctx.EAMIS_PROPERTY_SCHEDULE.AsNoTracking().Where(x => x.ITEM_DESCRIPTION.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Item Category")
+            {
+                query = _ctx.EAMIS_PROPERTY_SCHEDULE.AsNoTracking().Where(x => x.CATEGORY.Contains(searchValue)).AsQueryable();
+            }
+
+            var paged = PagedQueryForSearch(query);
+            return new DataList<EamisPropertyScheduleDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync()
+            };
+        }
+        private IQueryable<EAMISPROPERTYSCHEDULE> PagedQueryForSearch(IQueryable<EAMISPROPERTYSCHEDULE> query)
+        {
+            return query;
+        }
         public async Task<DataList<EamisPropertyScheduleDTO>> List(EamisPropertyScheduleDTO filter, PageConfig config)
         {
             IQueryable<EAMISPROPERTYSCHEDULE> query = FilteredEntites(filter);

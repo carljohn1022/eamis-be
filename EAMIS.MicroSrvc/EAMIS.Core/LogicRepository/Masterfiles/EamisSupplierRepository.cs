@@ -101,6 +101,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 ACCOUNT_NUMBER = item.AccountNumber,
                 BANK = item.Bank,
                 BRANCH = item.Branch,
+                EMAIL_ADD = item.EmailAdd,
                 COMPANY_DESCRIPTION = item.CompanyDescription,
                 STREET = item.Street,
                 COMPANY_NAME = item.CompanyName,
@@ -158,6 +159,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 AccountName = x.ACCOUNT_NAME,
                 AccountNumber = x.ACCOUNT_NUMBER,
                 Branch = x.BRANCH,
+                EmailAdd = x.EMAIL_ADD,
                 IsActive = x.IS_ACTIVE,
                 Barangay = new Common.DTO.EamisBarangayDTO
                 {
