@@ -244,7 +244,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     TimeStamp = x.TIME_STAMP,
                     WarrantyExpiry = x.WARRANTY_EXPIRY,
                     Invoice = x.INVOICE,
-                    PropertyCondition = x.PROPERTY_CONDITION
+                    PropertyCondition = x.PROPERTY_CONDITION,
+                    transactionDetailId = x.REFERENCE_ID
                 }).Where(i => i.PropertyTransactionID == result.ID).ToList()
             };
         }

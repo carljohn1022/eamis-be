@@ -177,6 +177,52 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 SERVICE_LOG_TYPE = item.ServiceLogType
             };
         }
+        //public async Task<EamisServiceLogDTO> getServiceLogItemById(int itemID)
+        //{
+        //    var result = await Task.Run(() => _ctx.EAMIS_SERVICE_LOG.AsNoTracking().FirstOrDefaultAsync(x => x.ID == itemID)).ConfigureAwait(false);
+        //    return new EamisServiceLogDTO
+        //    {
+        //        Id = result.ID,
+        //        TransactionDate = result.TRAN_DATE,
+        //        TransactionId = result.TRAN_ID,
+        //        ServiceLogDetails = _ctx.EAMIS_SERVICE_LOG_DETAILS.AsNoTracking().Select(w => new EamisServiceLogDetailsDTO
+        //        {
+        //            ID = w.ID,
+        //            AppraisalIncrement = w.APPRAISAL_INCREMENT,
+        //            AppraisedValue = w.APPRAISED_VALUE,
+        //            AreaSQM = w.AREA_SQM,
+        //            AssessedValue = w.ASSESSED_VALUE,
+        //            AssetCondition = w.ASSET_CONDITION,
+        //            DueDate = w.DUE_DATE,
+        //            Notes = w.NOTES,
+        //            PropertyDescription = w.PROPERTY_DESC,
+        //            PropertyNumber = w.PROPERTY_NUMBER,
+        //            RealEstateTaxPayment = w.REAL_ESTATE_TAX_PAYMENT,
+        //            ReceivingAmount = w.RECEIVING_AMOUNT,
+        //            ReceivingTransactionId = w.RECEIVING_TRAN_ID,
+        //            ReceivingGroup = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Select(r => new EamisPropertyTransactionDTO
+        //            {    
+        //                Id = r.ID,
+        //                TransactionNumber = r.TRANSACTION_NUMBER
+        //            }).FirstOrDefault(x => x.Id == w.RECEIVING_TRAN_ID),
+        //            ServiceDate = w.SERVICE_DATE,
+        //            SupplierDescription = w.SUPPLIER_DESC,
+        //            SupplierId = w.SUPPLIER_ID,
+        //            SupplierGroup = _ctx.EAMIS_SUPPLIER.AsNoTracking().Select(s => new EamisSupplierDTO
+        //            {
+        //                Id = s.ID,
+        //                CompanyName = s.COMPANY_NAME,
+        //                CompanyDescription = s.COMPANY_DESCRIPTION,
+        //                ContactPersonName = s.CONTACT_PERSON_NAME,
+        //                ContactPersonNumber = s.CONTACT_PERSON_NUMBER,
+        //                AccountName = s.ACCOUNT_NAME,
+        //                AccountNumber = s.ACCOUNT_NUMBER
+        //            }).FirstOrDefault(x => x.Id == w.SUPPLIER_ID),
+
+
+        //        }).Where(svcId => svcId.ServiceLogId == result.ID).ToList()
+        //    };
+        //}
 
     }
 }

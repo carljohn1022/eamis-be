@@ -259,7 +259,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Id = d.ID,
                 AcquisitionCost = d.ACQUISITION_COST,
                 AcquisitionDate = d.ACQUISITION_DATE,
-                Appraisalincrement = d.APPRAISAL_INCREMENT,
+                AppraisalIncrement = d.APPRAISAL_INCREMENT,
                 AppraisedValue = d.APPRAISED_VALUE,
                 AreaSQM = d.AREA_SQM,
                 AssessedValue = d.ASSESSED_VALUE,

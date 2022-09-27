@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Transaction;
+﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.CommonSvc.Constant;
 using EAMIS.Core.CommonSvc.Utility;
 using EAMIS.Core.ContractRepository.Transaction;
@@ -80,9 +81,28 @@ namespace EAMIS.Core.LogicRepository.Transaction
             return false;
         }
 
+        private EamisDeliveryReceiptDTO GetPropertyItemDeliveryLatestValue(string drNumber)
+        {
+            var result = _ctx.EAMIS_DELIVERY_RECEIPT
+                             .Where(d => d.TRANSACTION_TYPE == drNumber)
+                             .Select(d => new EamisDeliveryReceiptDTO
+                             {
+                                 Id = d.ID,
+                                 DRDate = d.DR_BY_SUPPLIER_DATE,
+                                 DRNumFrSupplier = d.DR_BY_SUPPLIER_NUMBER,
+                                 Supplier = _ctx.EAMIS_SUPPLIER.AsNoTracking().Select(s => new EamisSupplierDTO
+                                 {
+                                     Id = s.ID,
+                                     CompanyDescription = s.COMPANY_DESCRIPTION
+                                 }).Where(i => i.Id == d.SUPPLIER_ID).FirstOrDefault()
+                             }).FirstOrDefault();
+            return result;
+        }
+
         private EAMISPROPERTYSCHEDULE MapAssetScheduleEntity(EamisPropertyTransactionDetailsDTO item)
         {
             decimal salvageValue = _factorType.GetFactorTypeValue(FactorTypes.SalvageValue); //Get salvage value factor
+            var delivery = GetPropertyItemDeliveryLatestValue(item.Dr);
             //Construct the asset schedule data
             return new EAMISPROPERTYSCHEDULE
             {
@@ -95,37 +115,42 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ASSESSED_VALUE = 0,
                 ASSET_CONDITION = item.PropertyCondition,
                 ASSET_TAG = string.Empty,
-                BOOK_VALUE = item.BookValue,
+                DEPRECIABLE_COST = item.UnitCost - (item.UnitCost * salvageValue), //BOOK_VALUE = item.BookValue, Acquisition Cost less salvage value
+                BOOK_VALUE = item.BookValue, //Acquisition cost less depreciation
                 CATEGORY = CategoryName, //get from category, link to property item
-                COST_CENTER = string.Empty,
+                COST_CENTER = item.ResponsibilityCode,
                 DEPARTMENT = item.Department,
-                DEPREC_AMOUNT = 0,
+                DEPREC_AMOUNT = 0, //Depreciable cost divided by estimated life
                 DETAILS = string.Empty,
                 DISPOSED_AMOUNT = 0,
                 EST_LIFE = item.EstLife,
-                FOR_DEPRECIATION = item.isDepreciation, //to do: include
+                FOR_DEPRECIATION = item.isDepreciation, //itemCategory.For_Depreciation
                 INVOICE_NO = item.Invoice,
                 ITEM_DESCRIPTION = item.ItemDescription,
-                LAST_DEPARTMENT = string.Empty,
+                LAST_DEPARTMENT = item.Department,
                 LAST_POSTED_DATE = DateTime.Now,
-                LOCATION = string.Empty,
+                LOCATION = _ctx.EAMIS_RESPONSIBILITY_CENTER.AsNoTracking()
+                                                      .Where(r => r.RESPONSIBILITY_CENTER == item.ResponsibilityCode)
+                                                      .Select(v => v.LOCATION_DESC).FirstOrDefault(),
                 NAMES = string.Empty,
-                POREF = 0,
+                POREF = item.Po,
                 PROPERTY_NUMBER = item.PropertyNumber,
                 REAL_ESTATE_TAX_PAYMENT = 0,
                 REVALUATION_COST = 0,
-                RRDATE = DateTime.Now,
-                RRREF = 0,
-                SALVAGE_VALUE = item.UnitCost - (item.UnitCost * salvageValue), //calculated salvage valued must be included when inserting record to property schedule //salvage value = item.ACQUISITION_COST * salvageValue (85000 * 0.05)
+                RRDATE = delivery.DRDate,
+                RRREF = delivery.DRNumFrSupplier,
+                SALVAGE_VALUE = item.UnitCost * salvageValue, //calculated salvage valued must be included when inserting record to property schedule //salvage value = item.ACQUISITION_COST * salvageValue (85000 * 0.05)
                 SERIAL_NO = item.SerialNumber,
                 STATUS = string.Empty,
                 SUB_CATEGORY = SubCategoryName, //get from sub category, link to property item/Category
                 SVC_AGREEMENT_NO = 0,
-                VENDORNAME = string.Empty,
-                WARRANTY = string.Empty, //item.WarrantyExpiry?
-                WARRANTY_DATE = DateTime.Now,  //item.WarrantyExpiry?
+                VENDORNAME = delivery.Supplier.CompanyDescription,
+                WARRANTY = item.WarrantyExpiry, //item.WarrantyExpiry?
+                WARRANTY_DATE = item.AcquisitionDate.AddMonths(item.WarrantyExpiry),  //item.WarrantyExpiry?
                 ITEM_CODE = item.ItemCode,
-                REFERENCE_ID = item.Id
+                REFERENCE_ID = item.Id,
+                REMAINING_LIFE = item.EstLife,
+                ACCUMULATED_DEPREC_AMT = 0 //Deprecition amount multiplied by running life(property item's age)
             };
         }
 

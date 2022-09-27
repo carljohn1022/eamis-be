@@ -32,7 +32,7 @@ namespace EAMIS.Core.CommonSvc.Utility
                 case TransactionTypeSettings.Issuance:
                     maxId = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION.Max(t => (int?)t.ID) ?? 0).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only
                     nextId = maxId + 1;
-                    _id = PrefixSettings.ISPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    _id =  DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
                     break;
                 case TransactionTypeSettings.PropertyTransfer:
                     maxId = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION.Max(t => (int?)t.ID) ?? 0).ConfigureAwait(false); //returns the maximum value in the sequence. note, read from identity type column only

@@ -14,5 +14,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<DataList<EamisServiceLogDTO>> ListServiceLogs(EamisServiceLogDTO filter, PageConfig config);
         Task<EamisServiceLogDTO> InsertServiceLog(EamisServiceLogDTO item);
         Task<EamisServiceLogDTO> UpdateServiceLog(EamisServiceLogDTO item);
+        //Task<EamisServiceLogDTO> getServiceLogItemById(int itemID);
+
     }
 }

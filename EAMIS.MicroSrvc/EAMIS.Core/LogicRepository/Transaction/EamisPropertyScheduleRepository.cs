@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Transaction;
+﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain;
 using EAMIS.Core.Domain.Entities;
@@ -56,6 +57,149 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             return query;
         }
+
+        private string GetPropertyItemLastDepartment(int propertyItemDetailsId, int maxId)
+        {
+            var latestId = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                               .Where(i => i.REFERENCE_ID == propertyItemDetailsId && i.ID != maxId)
+                               .GroupBy(g => g.ID)
+                               .Select(i => i.Max(x => x.ID))
+                               .FirstOrDefault();
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                             .Where(i => i.ID == latestId)
+                             .Select(v => v.DEPARTMENT)
+                             .FirstOrDefault();
+            return result;
+        }
+        private EamisServiceLogDetailsDTO GetPropertyItemServiceLogDetails(string propertyNumber)
+        {
+            var result = _ctx.EAMIS_SERVICE_LOG_DETAILS
+                               .Where(i => i.ID == (_ctx.EAMIS_SERVICE_LOG_DETAILS
+                                                        .Where(r => r.PROPERTY_NUMBER == propertyNumber)
+                                                        .GroupBy(g => g.ID)
+                                                        .Select(i => i.Max(x => x.ID))
+                                                    )
+                               .FirstOrDefault())
+                               .Select(s => new EamisServiceLogDetailsDTO
+                               {
+                                   ID = s.ID,
+                                   AssetCondition = s.ASSET_CONDITION,
+                                   AssessedValue = s.ASSESSED_VALUE,
+                                   AppraisedValue = s.APPRAISED_VALUE,
+                                   AppraisalIncrement = s.APPRAISAL_INCREMENT,
+                                   RealEstateTaxPayment = s.REAL_ESTATE_TAX_PAYMENT
+                               }).FirstOrDefault();
+            return result;
+        }
+        private decimal GetPropertyItemRevaluationLatestValue(string itemCode)
+        {
+            var result = _ctx.EAMIS_PROPERTY_REVALUATION_DETAILS
+                             .Where(i => i.ID == (_ctx.EAMIS_PROPERTY_REVALUATION_DETAILS
+                                                      .Where(i => i.ITEM_CODE == itemCode)
+                                                      .GroupBy(g => g.ITEM_CODE)
+                                                      .Select(i => i.Max(x => x.ID))
+                                                  )
+                             .FirstOrDefault())
+                             .Select(r => r.REVALUED_AMT).FirstOrDefault();
+            return result;
+        }
+
+        private EamisDeliveryReceiptDTO GetPropertyItemDeliveryLatestValue(string drNumber)
+        {
+            var result = _ctx.EAMIS_DELIVERY_RECEIPT
+                             .Where(d => d.TRANSACTION_TYPE == drNumber)
+                             .Select(d => new EamisDeliveryReceiptDTO
+                             {
+                                 Id = d.ID,
+                                 DRDate = d.DR_BY_SUPPLIER_DATE,
+                                 DRNumFrSupplier = d.DR_BY_SUPPLIER_NUMBER,
+                                 Supplier = _ctx.EAMIS_SUPPLIER.AsNoTracking().Select(s => new EamisSupplierDTO
+                                 {
+                                     Id = s.ID,
+                                     CompanyDescription = s.COMPANY_DESCRIPTION
+                                 }).Where(i => i.Id == d.SUPPLIER_ID).FirstOrDefault()
+                             }).FirstOrDefault();
+            return result;
+        }
+
+        private EamisPropertyItemsDTO GetPropertyItemLatestValue(string itemCode)
+        {
+            var result = _ctx.EAMIS_PROPERTYITEMS
+                             .Where(i => i.PROPERTY_NO == itemCode)
+                             .Select(item => new EamisPropertyItemsDTO
+                             {
+                                 Id = item.ID,
+                                 ItemCategory = _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().Select(cat => new EamisItemCategoryDTO
+                                 {
+                                     Id = cat.ID,
+                                     CategoryName = cat.CATEGORY_NAME,
+                                     ForDepreciation = cat.FOR_DEPRECIATION
+                                 }).Where(catId => catId.Id == item.CATEGORY_ID).FirstOrDefault(),
+                                 PropertyName = _ctx.EAMIS_ITEMS_SUB_CATEGORY.AsNoTracking()
+                                                    .Where(subCatId => subCatId.ID == item.SUBCATEGORY_ID)
+                                                    .Select(subCat => subCat.SUB_CATEGORY_NAME).FirstOrDefault()
+                             }).FirstOrDefault();
+            return result;
+        }
+        private EamisPropertyTransactionDetailsDTO GetPropertyTransactionDetailsLatestValue(int propertyTransactionId,
+                                                                                            string itemCode,
+                                                                                            string serialNumber)
+        {
+            var latestId = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                          .Where(refId => refId.REFERENCE_ID == propertyTransactionId &&
+                                                          refId.ITEM_CODE == itemCode &&
+                                                          refId.SERIAL_NUMBER == serialNumber)
+                                          .GroupBy(x => x.REFERENCE_ID)
+                                          .Select(i => i.Max(x => x.ID))
+                                          .FirstOrDefault();
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                             .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                             pd => pd.PROPERTY_TRANS_ID, //Property Transaction Details
+                             ph => ph.ID, //Property Transaction 
+                             (pd, ph) => new { pd, ph })
+                             .Where(i => i.pd.ID == (latestId == 0 ? propertyTransactionId : latestId))
+                             .Select(item => new EamisPropertyTransactionDetailsDTO
+                             {
+                                 Id = item.pd.ID,
+                                 PropertyTransactionID = item.pd.PROPERTY_TRANS_ID,
+                                 isDepreciation = item.pd.IS_DEPRECIATION,
+                                 Dr = item.pd.DR,
+                                 PropertyNumber = item.pd.PROPERTY_NUMBER,
+                                 ItemCode = item.pd.ITEM_CODE,
+                                 ItemDescription = item.pd.ITEM_DESCRIPTION,
+                                 SerialNumber = item.pd.SERIAL_NUMBER,
+                                 Po = item.pd.PO,
+                                 Pr = item.pd.PR,
+                                 AcquisitionDate = item.pd.ACQUISITION_DATE,
+                                 AssigneeCustodian = item.pd.ASSIGNEE_CUSTODIAN,
+                                 RequestedBy = item.pd.REQUESTED_BY,
+                                 Office = item.pd.OFFICE,
+                                 Department = item.pd.DEPARTMENT,
+                                 ResponsibilityCode = item.pd.RESPONSIBILITY_CODE,
+                                 UnitCost = item.pd.UNIT_COST,
+                                 Qty = item.pd.QTY,
+                                 IssuedQty = 0,
+                                 RemainingQty = 0,
+                                 SalvageValue = item.pd.SALVAGE_VALUE,
+                                 BookValue = item.pd.BOOK_VALUE,
+                                 EstLife = item.pd.ESTIMATED_LIFE,
+                                 Area = item.pd.AREA,
+                                 Semi = item.pd.SEMI_EXPANDABLE_AMOUNT,
+                                 UserStamp = item.pd.USER_STAMP,
+                                 TimeStamp = item.pd.TIME_STAMP,
+                                 WarrantyExpiry = item.pd.WARRANTY_EXPIRY,
+                                 Invoice = item.pd.INVOICE,
+                                 PropertyCondition = item.pd.PROPERTY_CONDITION,
+                                 transactionDetailId = item.pd.REFERENCE_ID,
+                                 PropertyTransactionGroup = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Select(h => new EamisPropertyTransactionDTO
+                                 {
+                                     Id = h.ID,
+                                     TransactionStatus = h.TRANSACTION_STATUS
+                                 }).Where(i => i.Id == item.pd.PROPERTY_TRANS_ID).FirstOrDefault()
+                             }).FirstOrDefault();
+            return result;
+        }
+
         public async Task<DataList<EamisPropertyScheduleDTO>> List(EamisPropertyScheduleDTO filter, PageConfig config)
         {
             IQueryable<EAMISPROPERTYSCHEDULE> query = FilteredEntites(filter);
@@ -67,11 +211,60 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
 
             var paged = PagedQuery(query, resolved_size, resolved_index);
-            return new DataList<EamisPropertyScheduleDTO>
+            var result = new DataList<EamisPropertyScheduleDTO>
             {
                 Count = await query.CountAsync(),
                 Items = await QueryToDTO(paged).ToListAsync()
             };
+            //display latest value
+            for (int intAsset = 0; intAsset < result.Items.Count(); intAsset++)
+            {
+                var propertyTransaction = GetPropertyTransactionDetailsLatestValue(result.Items[intAsset].ReferenceId,
+                                                                                   result.Items[intAsset].ItemCode,
+                                                                                   result.Items[intAsset].SerialNo);
+                var propertyDelivery = GetPropertyItemDeliveryLatestValue(propertyTransaction.Dr);
+                var propertyItem = GetPropertyItemLatestValue(propertyTransaction.ItemCode);
+                var serviceLogs = GetPropertyItemServiceLogDetails(propertyTransaction.PropertyNumber);
+
+                result.Items[intAsset].Status = propertyTransaction.PropertyTransactionGroup.TransactionStatus;
+                result.Items[intAsset].Category = propertyItem.ItemCategory.CategoryName;
+                result.Items[intAsset].SubCategory = propertyItem.PropertyName;
+                result.Items[intAsset].VendorName = propertyDelivery.Supplier.CompanyDescription;
+                result.Items[intAsset].RRDate = propertyDelivery.DRDate;
+
+                result.Items[intAsset].PropertyNumber = propertyTransaction.PropertyNumber;
+                result.Items[intAsset].ItemDescription = propertyTransaction.ItemDescription;
+                result.Items[intAsset].PropertyNumber = propertyTransaction.PropertyNumber;
+                result.Items[intAsset].AreaSQM = propertyTransaction.Area;
+                result.Items[intAsset].Location = _ctx.EAMIS_RESPONSIBILITY_CENTER.AsNoTracking()
+                                                      .Where(r => r.RESPONSIBILITY_CENTER == propertyTransaction.ResponsibilityCode)
+                                                      .Select(v => v.LOCATION_DESC).FirstOrDefault();
+                result.Items[intAsset].Department = propertyTransaction.Department;
+                result.Items[intAsset].LastDepartment = GetPropertyItemLastDepartment(result.Items[intAsset].ReferenceId, propertyTransaction.Id);
+                result.Items[intAsset].InvoiceNo = propertyTransaction.Invoice;
+                result.Items[intAsset].CostCenter = propertyTransaction.ResponsibilityCode;
+                result.Items[intAsset].WarrantyDate = propertyTransaction.AcquisitionDate.AddMonths(propertyTransaction.WarrantyExpiry);
+                result.Items[intAsset].PORef = propertyTransaction.Po;
+                result.Items[intAsset].RRRef = propertyDelivery.DRNumFrSupplier;
+                result.Items[intAsset].ItemCode = propertyTransaction.ItemCode;
+                result.Items[intAsset].Warranty = propertyTransaction.WarrantyExpiry;
+
+                if (serviceLogs != null)
+                {
+                    result.Items[intAsset].AssetCondition = serviceLogs.AssetCondition;
+                    result.Items[intAsset].AppraisedValue = serviceLogs.AppraisedValue;
+                    result.Items[intAsset].AssessedValue = serviceLogs.AssessedValue;
+                    result.Items[intAsset].DisposedAmount = serviceLogs.AssessedValue;
+                    result.Items[intAsset].AppraisalIncrement = serviceLogs.AppraisalIncrement;
+                    result.Items[intAsset].RealEstateTaxPayment = serviceLogs.RealEstateTaxPayment;
+                }
+
+                result.Items[intAsset].ForDepreciation = propertyItem.ItemCategory.ForDepreciation;
+                result.Items[intAsset].RevaluationCost = GetPropertyItemRevaluationLatestValue(propertyTransaction.ItemCode);
+            }
+
+
+            return result;
         }
 
 
@@ -107,7 +300,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 predicate = predicate.And(x => x.EST_LIFE == filter.ESTLife);
             if (filter.AreaSQM != null && filter.AreaSQM != 0)
                 predicate = predicate.And(x => x.AREA_SQM == filter.AreaSQM);
-            
+
+            predicate = predicate.And(x => x.ID == 42);
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_SCHEDULE;
             return query.Where(predicate);
         }
@@ -124,12 +318,13 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Id = d.ID,
                 AcquisitionCost = d.ACQUISITION_COST,
                 AcquisitionDate = d.ACQUISITION_DATE,
-                Appraisalincrement = d.APPRAISAL_INCREMENT,
+                AppraisalIncrement = d.APPRAISAL_INCREMENT,
                 AppraisedValue = d.APPRAISED_VALUE,
                 AreaSQM = d.AREA_SQM,
                 AssessedValue = d.ASSESSED_VALUE,
                 AssetCondition = d.ASSET_CONDITION,
                 AssetTag = d.ASSET_TAG,
+                DepreciableCost = d.DEPRECIABLE_COST,  //BookValue = d.BOOK_VALUE,
                 BookValue = d.BOOK_VALUE,
                 Category = d.CATEGORY,
                 CostCenter = d.COST_CENTER,
@@ -146,19 +341,23 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Location = d.LOCATION,
                 Names = d.NAMES,
                 PORef = d.POREF,
-                PropertyNumber = d.PROPERTY_NUMBER,
+                PropertyNumber = d.PROPERTY_NUMBER, //Get latest value from property transaction details
                 RealEstateTaxPayment = d.REAL_ESTATE_TAX_PAYMENT,
                 RevaluationCost = d.REVALUATION_COST,
                 RRDate = d.RRDATE,
                 RRRef = d.RRREF,
                 SalvageValue = d.SALVAGE_VALUE,
                 SerialNo = d.SERIAL_NO,
-                Status = d.STATUS,
+                Status = d.STATUS, //Get latest value from property transaction
                 SubCategory = d.SUB_CATEGORY,
                 SvcAgreementNo = d.SVC_AGREEMENT_NO,
                 VendorName = d.VENDORNAME,
                 Warranty = d.WARRANTY,
-                WarrantyDate = d.WARRANTY_DATE
+                WarrantyDate = d.WARRANTY_DATE,
+                ReferenceId = d.REFERENCE_ID,
+                AccumulatedDepreciationAmount = d.ACCUMULATED_DEPREC_AMT,
+                ItemCode = d.ITEM_CODE,
+                RemainingLife    = d.REMAINING_LIFE
             });
         }
 
@@ -169,10 +368,11 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ID = item.Id,
                 ACCUMULATED_DEPREC_AMT = item.AccumulatedDepreciationAmount,
                 REMAINING_LIFE = item.RemainingLife,
+                DEPRECIABLE_COST = item.DepreciableCost, //BOOK_VALUE = item.BookValue,
                 BOOK_VALUE = item.BookValue,
                 ACQUISITION_COST = item.AcquisitionCost,
                 ACQUISITION_DATE = item.AcquisitionDate,
-                APPRAISAL_INCREMENT = item.Appraisalincrement,
+                APPRAISAL_INCREMENT = item.AppraisalIncrement,
                 APPRAISED_VALUE = item.AppraisedValue,
                 AREA_SQM = item.AreaSQM,
                 ASSESSED_VALUE = item.AssessedValue,

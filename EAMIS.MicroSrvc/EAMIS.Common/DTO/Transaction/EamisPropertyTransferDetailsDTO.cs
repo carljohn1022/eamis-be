@@ -45,6 +45,7 @@ namespace EAMIS.Common.DTO.Transaction
         //public string TransactionType { get; set; }
 
         public string AssigneeCustodianName { get; set; }
+        public int transactionDetailId { get; set; }
         public EamisPropertyTransactionDTO PropertyTransactionGroup { get; set; }
     }
 }

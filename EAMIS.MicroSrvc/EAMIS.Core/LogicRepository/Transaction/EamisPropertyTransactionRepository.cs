@@ -191,7 +191,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DeliveryDate = x.DELIVERY_DATE,
                 UserStamp = x.USER_STAMP,
                 TimeStamp = x.TIMESTAMP,
-                TransactionStatus = x.TRANSACTION_STATUS
+                TransactionStatus = x.TRANSACTION_STATUS,
+                FundSource = x.FUND_SOURCE //added for Report
 
 });
         }
@@ -237,6 +238,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.TransactionStatus)) predicate = (strict)
                    ? predicate.And(x => x.TRANSACTION_STATUS.ToLower() == filter.TransactionStatus.ToLower())
                    : predicate.And(x => x.TRANSACTION_STATUS.Contains(filter.TransactionStatus.ToLower()));
+            if (!string.IsNullOrEmpty(filter.FundSource)) predicate = (strict)
+                    ? predicate.And(x => x.FUND_SOURCE.ToLower() == filter.FundSource.ToLower())
+                    : predicate.And(x => x.FUND_SOURCE.Contains(filter.FundSource.ToLower()));
             if (filter.IsProperty != null)
                 predicate = predicate.And(x => x.IS_PROPERTY == filter.IsProperty);
 

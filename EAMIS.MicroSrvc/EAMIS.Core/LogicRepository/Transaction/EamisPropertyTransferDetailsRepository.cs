@@ -141,7 +141,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TIME_STAMP = item.TimeStamp,
                 WARRANTY_EXPIRY = item.WarrantyExpiry,
                 INVOICE = item.Invoice,
-                PROPERTY_CONDITION = item.PropertyCondition
+                PROPERTY_CONDITION = item.PropertyCondition,
+                REFERENCE_ID = item.transactionDetailId
 
             };
         }

@@ -20,7 +20,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string Location { get; set; }
         public string Department { get; set; }
         public string LastDepartment { get; set; }
-        public string Warranty { get; set; }
+        public int Warranty { get; set; }
         public string InvoiceNo { get; set; } //to verify the correct data type with Justin
         public int SvcAgreementNo { get; set; }
         public string VendorName { get; set; }
@@ -35,16 +35,17 @@ namespace EAMIS.Common.DTO.Transaction
         public decimal DisposedAmount { get; set; }
         public DateTime AcquisitionDate { get; set; }
 
-        public int PORef { get; set; }
-        public int RRRef { get; set; }
+        public string PORef { get; set; }
+        public string RRRef { get; set; }
         public decimal AcquisitionCost { get; set; }
         public decimal SalvageValue { get; set; }
         public int ESTLife { get; set; }
         public decimal DeprecAmount { get; set; }
+        public decimal DepreciableCost { get; set; }        //public decimal BookValue { get; set; }
         public decimal BookValue { get; set; }
         public decimal AssessedValue { get; set; }
         public decimal AppraisedValue { get; set; }
-        public int Appraisalincrement { get; set; }
+        public decimal AppraisalIncrement { get; set; }
         public decimal RealEstateTaxPayment { get; set; }
         public DateTime LastPostedDate { get; set; }
         public string ItemCode { get; set; }
