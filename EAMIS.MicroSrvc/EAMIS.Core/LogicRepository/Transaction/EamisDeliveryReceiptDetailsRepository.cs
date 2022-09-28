@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Masterfiles;
+﻿using EAMIS.Common.DTO.LookUp;
+using EAMIS.Common.DTO.Masterfiles;
 using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain;
@@ -7,6 +8,7 @@ using EAMIS.Core.Response.DTO;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,6 +36,30 @@ namespace EAMIS.Core.LogicRepository.Transaction
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
             _eamisPropertyRevalutionRepository = eamisPropertyRevalutionRepository;
+        }
+
+
+
+        public async Task<List<EamisAssetConditionTypeDTO>> GetAssetCondition()
+            {
+            var result = await Task.Run(() => _ctx.EAMIS_ASSET_CONDITION_TYPE.AsNoTracking().Select(t =>
+                        new EamisAssetConditionTypeDTO
+                        {
+                            Id = t.ID,
+                           AssetConditionType = t.ASSET_CONDITION_DESC
+                        }).ToList()).ConfigureAwait(false);
+            return result;
+        }
+        public async Task<List<EamisTranTypeDTO>> GetTranTypeList()
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_TRAN_TYPE.AsNoTracking().Select(t =>
+                    new EamisTranTypeDTO
+                    {
+                        Id = t.ID,
+                        TranDesc = t.TRAN_DESC,
+                        TranType = t.TRAN_TYPE
+                    }).ToList()).ConfigureAwait(false);
+            return result;
         }
 
         public async Task<EamisDeliveryReceiptDetailsDTO> Delete(EamisDeliveryReceiptDetailsDTO item)

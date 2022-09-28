@@ -337,12 +337,15 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
                 int runningLife = ((filter.DepreciationYear - item.ACQUISITION_DATE.Year) * 12) + (filter.DepreciationMonth - item.ACQUISITION_DATE.Month);
                 GetEstimatedLife(item.ITEM_CODE);
-                DateTime nextDepreciationDate;
+                DateTime nextDepreciationDate = DateTime.Now;
                 if (runningLife == 0)
                 {
                     //1-15 current month -> subject for depreciation for the month -> 1st depreciation
-                    nextDepreciationDate = item.ACQUISITION_DATE;
-                    runningLife = 1;
+                    if (item.ACQUISITION_DATE.Day < PropertyItemStatus.CutOffDay)
+                    {
+                        nextDepreciationDate = item.ACQUISITION_DATE;
+                        runningLife = 1;
+                    }
                 }
                 else
                 {

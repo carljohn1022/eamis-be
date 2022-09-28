@@ -5,15 +5,20 @@ using EAMIS.Core.CommonSvc.Helper;
 using EAMIS.Core.CommonSvc.Utility;
 using EAMIS.Core.ContractRepository;
 using EAMIS.Core.ContractRepository.Ais;
+using EAMIS.Core.ContractRepository.Approval;
 using EAMIS.Core.ContractRepository.Classification;
 using EAMIS.Core.ContractRepository.Masterfiles;
+using EAMIS.Core.ContractRepository.Rolemanager;
 using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.LogicRepository;
 using EAMIS.Core.LogicRepository.Ais;
+using EAMIS.Core.LogicRepository.Approval;
 using EAMIS.Core.LogicRepository.Classification;
 using EAMIS.Core.LogicRepository.Masterfiles;
 using EAMIS.Core.LogicRepository.Masterfiles.EAMIS.Core.LogicRepository.Masterfiles;
+using EAMIS.Core.LogicRepository.Rolemanager;
 using EAMIS.Core.LogicRepository.Transaction;
 using EAMIS.Core.Response;
 using EAMIS.Core.Response.DTO;
@@ -128,6 +133,13 @@ namespace EAMIS.WebApi
             services.AddScoped<IAisOfficeRepository, AisOfficeRepository>();
             services.AddScoped<IAisCodeListValueRepository, AisCodeListValueRepository>();
 
+            //Approval
+            services.AddScoped<IEamisApprovalSetupDetailsRepository, EamisApprovalSetupDetailsRepository>();
+            services.AddScoped<IEamisApprovalSetupRepository, EamisApprovalSetupRepository>();
+
+            services.AddScoped<IEamisForApprovalRepository, EamisForApprovalRepository>();
+
+            services.AddScoped<IEamisModulesRepository, EamisModulesRepository>();
             services.AddDbContext<EAMISContext>(options =>
             {
                 options.UseSqlServer(_config.GetConnectionString("DenrEamis"));

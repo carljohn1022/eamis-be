@@ -82,6 +82,16 @@ namespace EAMIS.Core.Domain
         public DbSet<EAMISFACTORTYPE> EAMIS_FACTOR_TYPE { get; set; }
 
         public DbSet<EAMISREPORTREQUESTLISTENER> EAMIS_REPORT_REQUEST_LISTENER { get; set; }
+
+        //Approval Setup
+        public DbSet<EAMISAPPROVALSETUP> EAMIS_APPROVAL_SETUP { get; set; }
+        public DbSet<EAMISAPPROVALSETUPDETAILS> EAMIS_APPROVAL_SETUP_DETAILS { get; set; }
+        public DbSet<EAMISFORAPPROVAL> EAMIS_FOR_APPROVAL { get; set; }
+
+        public DbSet<EAMISMODULES> EAMIS_MODULES { get; set; }
+
+        //Lookup
+        public DbSet<EAMISTRANTYPE> EAMIS_TRAN_TYPE { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<EAMISATTACHMENTTYPE>()

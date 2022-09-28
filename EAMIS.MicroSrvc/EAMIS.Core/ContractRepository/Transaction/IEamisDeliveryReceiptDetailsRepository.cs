@@ -1,6 +1,8 @@
-﻿using EAMIS.Common.DTO.Transaction;
+﻿using EAMIS.Common.DTO.LookUp;
+using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EAMIS.Core.ContractRepository.Transaction
@@ -16,5 +18,8 @@ namespace EAMIS.Core.ContractRepository.Transaction
         bool HasError { get; set; }
         Task<DataList<EamisDeliveryReceiptDetailsDTO>> SearchDeliveryDetailsforReceiving(string type, string searchvalue);
         Task<EAMISSERIALTRAN> PostSerialTranByItem(EamisSerialTranDTO item);
+
+        Task<List<EamisTranTypeDTO>> GetTranTypeList();
+        Task<List<EamisAssetConditionTypeDTO>> GetAssetCondition();
     }
 }

@@ -36,6 +36,8 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return Ok(await _eamisServiceLogDetailsRepository.ListServiceLogDetails(filter, config));
         }
 
+       
+
         /// <summary>
         /// this method will returns the list of all property items for service log creation, only transaction_type wit value of Property Receiving
         /// and no service log created yet

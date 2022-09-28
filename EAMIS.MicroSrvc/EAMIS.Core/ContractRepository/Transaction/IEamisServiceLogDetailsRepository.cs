@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Transaction;
+﻿using EAMIS.Common.DTO.LookUp;
+using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.Response.DTO;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,9 @@ namespace EAMIS.Core.ContractRepository.Transaction
 
         string ErrorMessage { get; set; }
         bool HasError { get; set; }
+
+        Task<List<EamisTranTypeDTO>> GetTranTypeList();
+        Task<List<EamisAssetConditionTypeDTO>> GetAssetCondition();
         //Task<EamisServiceLogDetailsDTO> ListServiceLogDetailsByServiceLogId(int serviceLogId);
     }
 }
