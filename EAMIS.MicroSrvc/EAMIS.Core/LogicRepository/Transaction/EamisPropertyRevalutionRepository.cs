@@ -182,5 +182,37 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Items = await QueryToDTO(paged).ToListAsync()
             };
         }
+
+        public async Task<EamisPropertyRevaluationDTO> getAssetItemById(int itemID)
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_PROPERTY_REVALUATION.AsNoTracking().FirstOrDefaultAsync(x => x.ID == itemID)).ConfigureAwait(false);
+            return new EamisPropertyRevaluationDTO
+            {
+                Id = result.ID,
+                TransactionId = result.TRAN_ID,
+                TransactionDate = result.TRAN_DATE,
+                Particulars = result.PARTICULARS,
+                IsActive = result.IS_ACTIVE,
+                PropertyRevaluationDetails = _ctx.EAMIS_PROPERTY_REVALUATION_DETAILS.AsNoTracking().Select(x => new EamisPropertyRevaluationDetailsDTO
+                {
+                    Id = x.ID,
+                    PropertyRevaluationId = x.PROPERTY_REVALUATION_ID,
+                    ItemCode = x.ITEM_CODE,
+                    ItemDescription = x.ITEM_DESC,
+                    AcquisitionCost = x.ACQ_COST,
+                    Depreciation = x.DEPRECIATION,
+                    RemainingLife = x.REMAINING_LIFE,
+                    AccumulativeDepreciation = x.ACCUMULATIVE_DEPRECIATION,
+                    PrevRevaluation = x.PREV_REVALUATION,
+                    NetBookValue = x.NET_BOOK_VALUE,
+                    RevaluedAmount = x.REVALUED_AMT,
+                    FairValue = x.FAIR_VALUE,
+                    SalvageValue = x.SALVAGE_VALUE,
+                    DepPerMonth = x.DEP_PER_MONTH,
+                    NewDepPerMonth = x.NEW_DEP_PER_MONTH
+                }).Where(i => i.PropertyRevaluationId == result.ID).ToList()
+            };
+        }
+
     }
 }

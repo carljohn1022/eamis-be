@@ -13,6 +13,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<DataList<EamisPropertyTransactionDTO>> List(EamisPropertyTransactionDTO filter, PageConfig config);
         Task<EamisPropertyTransactionDTO> Insert(EamisPropertyTransactionDTO item);
         Task<EamisPropertyTransactionDTO> Update(EamisPropertyTransactionDTO item);
+        Task<EamisPropertyTransactionDTO> getPropertyItemById(int itemID);
         Task<string> GetNextSequenceNumber();
         string ErrorMessage { get; set; }
         bool HasError { get; set; }

@@ -22,6 +22,8 @@ namespace EAMIS.Core.Domain.Entities
         public decimal REVALUED_AMT { get; set; }
         public decimal FAIR_VALUE { get; set; }
         public DateTime NEW_DEP { get; set; }
+        public decimal NEW_DEP_PER_MONTH { get; set; }
+        public decimal DEP_PER_MONTH { get; set; }
 
     }
 }

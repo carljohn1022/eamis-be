@@ -64,5 +64,10 @@ namespace EAMIS.WebApi.Controllers.Transaction
         //{
         //    return Ok(await _eamisServiceLogRepository.getServiceLogItemById(itemID));
         //}
+        [HttpGet("editbyid")]
+        public async Task<ActionResult<EamisPropertyTransactionDTO>> getServiceItemById(int itemID)
+        {
+            return Ok(await _eamisServiceLogRepository.getServiceItemById(itemID));
+        }
     }
 }

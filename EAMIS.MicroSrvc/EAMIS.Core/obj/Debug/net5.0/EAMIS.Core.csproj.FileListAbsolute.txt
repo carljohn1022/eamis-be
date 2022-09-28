@@ -11,6 +11,7 @@ C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAM
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfoInputs.cache
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.AssemblyInfo.cs
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CoreCompileInputs.cache
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CopyComplete
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.dll
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\ref\EAMIS.Core.dll
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.pdb

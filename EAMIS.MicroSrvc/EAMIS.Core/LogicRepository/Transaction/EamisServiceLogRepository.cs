@@ -177,6 +177,38 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 SERVICE_LOG_TYPE = item.ServiceLogType
             };
         }
+        public async Task<EamisServiceLogDTO> getServiceItemById(int itemID)
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_SERVICE_LOG.AsNoTracking().FirstOrDefaultAsync(x => x.ID == itemID)).ConfigureAwait(false);
+            return new EamisServiceLogDTO
+            {
+
+                Id = result.ID,
+                TransactionDate = result.TRAN_DATE,
+                TransactionId = result.TRAN_ID,
+                ServiceLogType = result.SERVICE_LOG_TYPE,
+                ServiceLogDetails = _ctx.EAMIS_SERVICE_LOG_DETAILS.AsNoTracking().Select(x => new EamisServiceLogDetailsDTO
+                {
+                    ID = x.ID,
+                    ServiceLogId = x.SERVICE_LOG_ID,
+                    ReceivingTransactionId = x.RECEIVING_TRAN_ID,
+                    PropertyNumber = x.PROPERTY_NUMBER,
+                    PropertyDescription = x.PROPERTY_DESC,
+                    AssetCondition = x.ASSET_CONDITION,
+                    ReceivingAmount = x.RECEIVING_AMOUNT,
+                    SupplierId = x.SUPPLIER_ID,
+                    SupplierDescription = x.SUPPLIER_DESC,
+                    ServiceDate = x.SERVICE_DATE,
+                    DueDate = x.DUE_DATE,
+                    AssessedValue = x.ASSESSED_VALUE,
+                    AppraisedValue = x.APPRAISED_VALUE,
+                    AppraisalIncrement = x.APPRAISAL_INCREMENT,
+                    RealEstateTaxPayment = x.REAL_ESTATE_TAX_PAYMENT,
+                    AreaSQM = x.AREA_SQM,
+                    Notes = x.NOTES
+                }).Where(i => i.ServiceLogId == result.ID).ToList()
+            };
+        }
         //public async Task<EamisServiceLogDTO> getServiceLogItemById(int itemID)
         //{
         //    var result = await Task.Run(() => _ctx.EAMIS_SERVICE_LOG.AsNoTracking().FirstOrDefaultAsync(x => x.ID == itemID)).ConfigureAwait(false);
