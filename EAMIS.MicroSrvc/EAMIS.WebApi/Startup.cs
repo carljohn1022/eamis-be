@@ -8,6 +8,7 @@ using EAMIS.Core.ContractRepository.Ais;
 using EAMIS.Core.ContractRepository.Approval;
 using EAMIS.Core.ContractRepository.Classification;
 using EAMIS.Core.ContractRepository.Masterfiles;
+using EAMIS.Core.ContractRepository.Report_Catalog;
 using EAMIS.Core.ContractRepository.Rolemanager;
 using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain;
@@ -18,6 +19,7 @@ using EAMIS.Core.LogicRepository.Approval;
 using EAMIS.Core.LogicRepository.Classification;
 using EAMIS.Core.LogicRepository.Masterfiles;
 using EAMIS.Core.LogicRepository.Masterfiles.EAMIS.Core.LogicRepository.Masterfiles;
+using EAMIS.Core.LogicRepository.Report_Catalog;
 using EAMIS.Core.LogicRepository.Rolemanager;
 using EAMIS.Core.LogicRepository.Transaction;
 using EAMIS.Core.Response;
@@ -138,7 +140,8 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisApprovalSetupRepository, EamisApprovalSetupRepository>();
 
             services.AddScoped<IEamisForApprovalRepository, EamisForApprovalRepository>();
-
+            //Report Catalog
+            services.AddScoped<IEamisReportCatalogRepository, EamisReportCatalogRepository>();
             services.AddScoped<IEamisModulesRepository, EamisModulesRepository>();
             services.AddDbContext<EAMISContext>(options =>
             {

@@ -215,8 +215,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.FiscalPeriod)) predicate = (strict)
                     ? predicate.And(x => x.FISCALPERIOD.ToLower() == filter.FiscalPeriod.ToLower())
                     : predicate.And(x => x.FISCALPERIOD.Contains(filter.FiscalPeriod.ToLower()));
-            if (filter.TransactionType != null)
-                   predicate = predicate.And(x => x.TRANSACTION_TYPE == filter.TransactionType);
+            predicate = predicate.And(x => x.TRANSACTION_TYPE.Contains(filter.TransactionType.ToLower()));
             if (!string.IsNullOrEmpty(filter.Memo)) predicate = (strict)
                     ? predicate.And(x => x.MEMO.ToLower() == filter.Memo.ToLower())
                     : predicate.And(x => x.MEMO.Contains(filter.Memo.ToLower()));

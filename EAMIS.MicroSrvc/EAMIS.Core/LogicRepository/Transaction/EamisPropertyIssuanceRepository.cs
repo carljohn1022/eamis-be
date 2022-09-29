@@ -464,8 +464,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                                .Select(s => new { Count = s.Count() })
                                                                .FirstOrDefault();
                                     int totalCount = 0;
-                                    if (totalIssuedCount.Count > 0)
-                                        totalCount = totalIssuedCount.Count + 1;
+                                    if (totalIssuedCount != null)
+                                        if (totalIssuedCount.Count > 0)
+                                            totalCount = totalIssuedCount.Count + 1;
 
                                     //construct the property number
                                     //YEAR PURCHASED +
@@ -861,17 +862,17 @@ namespace EAMIS.Core.LogicRepository.Transaction
         public async Task<string> GetPropertyNumber(DateTime acquisitionDate, string responsibilityCode, string serialNumber)
         {
             string retValue = "";
-            var result = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.Where(s => s.RESPONSIBILITY_CENTER == responsibilityCode).AsNoTracking().ToList()).ConfigureAwait(false);     
-                retValue = acquisitionDate.Year.ToString() + "-" +
-                    serialNumber.ToString() + "-" +
-                    result[0].OFFICE_CODE.ToString();
+            var result = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.Where(s => s.RESPONSIBILITY_CENTER == responsibilityCode).AsNoTracking().ToList()).ConfigureAwait(false);
+            retValue = acquisitionDate.Year.ToString() + "-" +
+                serialNumber.ToString() + "-" +
+                result[0].OFFICE_CODE.ToString();
             return retValue;
         }
         public async Task<string> GetDRNumFrSupplier(string dr)
         {
             string retValue = "";
-            var result = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.Where(s => s.TRANSACTION_TYPE == dr).AsNoTracking().ToList()).ConfigureAwait(false); 
-            retValue = result[0].DR_BY_SUPPLIER_NUMBER.ToString();      
+            var result = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.Where(s => s.TRANSACTION_TYPE == dr).AsNoTracking().ToList()).ConfigureAwait(false);
+            retValue = result[0].DR_BY_SUPPLIER_NUMBER.ToString();
             return retValue;
         }
         public async Task<string> GetAPRNum(string dr)
