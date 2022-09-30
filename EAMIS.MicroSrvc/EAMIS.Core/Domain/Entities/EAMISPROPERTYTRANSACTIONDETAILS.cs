@@ -37,6 +37,7 @@ namespace EAMIS.Core.Domain.Entities
         public string PROPERTY_CONDITION { get; set; }
         public int REFERENCE_ID { get; set; }
         public string REMARKS { get; set; }
+        public string MODE_OF_DISPOSAL { get; set; }
         public EAMISPROPERTYTRANSACTION PROPERTY_TRANSACTION_GROUP { get; set; }
 
 

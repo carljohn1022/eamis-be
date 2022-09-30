@@ -9,7 +9,9 @@ namespace EAMIS.Core.Domain.Entities
     public class EAMISTRANTYPE
     {
         public int ID { get; set; }
+        public int ASSET_ID { get; set; }
         public string TRAN_TYPE { get; set; }
-        public string TRAN_DESC { get; set; }
+        public EAMISASSETCONDITIONTYPE ASSET_CONDITION_TYPE { get; set; }
+
     }
 }

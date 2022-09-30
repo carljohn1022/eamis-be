@@ -40,27 +40,27 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
 
 
-        public async Task<List<EamisAssetConditionTypeDTO>> GetAssetCondition()
-            {
-            var result = await Task.Run(() => _ctx.EAMIS_ASSET_CONDITION_TYPE.AsNoTracking().Select(t =>
-                        new EamisAssetConditionTypeDTO
-                        {
-                            Id = t.ID,
-                           AssetConditionType = t.ASSET_CONDITION_DESC
-                        }).ToList()).ConfigureAwait(false);
-            return result;
-        }
-        public async Task<List<EamisTranTypeDTO>> GetTranTypeList()
-        {
-            var result = await Task.Run(() => _ctx.EAMIS_TRAN_TYPE.AsNoTracking().Select(t =>
-                    new EamisTranTypeDTO
-                    {
-                        Id = t.ID,
-                        TranDesc = t.TRAN_DESC,
-                        TranType = t.TRAN_TYPE
-                    }).ToList()).ConfigureAwait(false);
-            return result;
-        }
+        //public async Task<List<EamisAssetConditionTypeDTO>> GetAssetCondition()
+        //    {
+        //    var result = await Task.Run(() => _ctx.EAMIS_ASSET_CONDITION_TYPE.AsNoTracking().Select(t =>
+        //                new EamisAssetConditionTypeDTO
+        //                {
+        //                    Id = t.ID,
+        //                   AssetConditionType = t.ASSET_CONDITION_DESC
+        //                }).ToList()).ConfigureAwait(false);
+        //    return result;
+        //}
+        //public async Task<List<EamisTranTypeDTO>> GetTranTypeList()
+        //{
+        //    var result = await Task.Run(() => _ctx.EAMIS_TRAN_TYPE.AsNoTracking().Select(t =>
+        //            new EamisTranTypeDTO
+        //            {
+        //                Id = t.ID,
+        //                TranDesc = t.TRAN_DESC,
+        //                TranType = t.TRAN_TYPE
+        //            }).ToList()).ConfigureAwait(false);
+        //    return result;
+        //}
 
         public async Task<EamisDeliveryReceiptDetailsDTO> Delete(EamisDeliveryReceiptDetailsDTO item)
         {

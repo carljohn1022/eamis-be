@@ -36,7 +36,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return Ok(await _eamisServiceLogDetailsRepository.ListServiceLogDetails(filter, config));
         }
 
-       
+
 
         /// <summary>
         /// this method will returns the list of all property items for service log creation, only transaction_type wit value of Property Receiving
@@ -85,16 +85,15 @@ namespace EAMIS.WebApi.Controllers.Transaction
 
             return Ok(result);
         }
-
         [HttpGet("getAssetConditionType")]
-        public async Task<ActionResult<EamisDeliveryReceiptDetailsDTO>> ListAssetCondition()
+        public async Task<ActionResult<EamisServiceLogDetailsDTO>> ListAssetCondition()
         {
 
             return Ok(await _eamisServiceLogDetailsRepository.GetAssetCondition());
         }
 
         [HttpGet("getTransactionType")]
-        public async Task<ActionResult<EamisDeliveryReceiptDetailsDTO>> ListTransactionType()
+        public async Task<ActionResult<EamisServiceLogDetailsDTO>> ListTransactionType()
         {
             return Ok(await _eamisServiceLogDetailsRepository.GetTranTypeList());
         }

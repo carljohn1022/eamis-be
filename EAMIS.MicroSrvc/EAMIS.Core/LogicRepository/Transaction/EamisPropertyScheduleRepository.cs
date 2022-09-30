@@ -291,7 +291,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.Department)) predicate = (strict)
                      ? predicate.And(x => x.DEPARTMENT.ToLower() == filter.Department.ToLower())
                      : predicate.And(x => x.DEPARTMENT.Contains(filter.Department.ToLower()));
-          
+
             if (filter.SalvageValue != null && filter.SalvageValue != 0)
                 predicate = predicate.And(x => x.SALVAGE_VALUE == filter.SalvageValue);
             if (filter.BookValue != null && filter.BookValue != 0)
@@ -336,6 +336,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ForDepreciation = d.FOR_DEPRECIATION,
                 InvoiceNo = d.INVOICE_NO,
                 ItemDescription = d.ITEM_DESCRIPTION,
+                ItemCode = d.ITEM_CODE,
                 LastDepartment = d.LAST_DEPARTMENT,
                 LastPostedDate = d.LAST_POSTED_DATE,
                 Location = d.LOCATION,
@@ -356,8 +357,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 WarrantyDate = d.WARRANTY_DATE,
                 ReferenceId = d.REFERENCE_ID,
                 AccumulatedDepreciationAmount = d.ACCUMULATED_DEPREC_AMT,
-                ItemCode = d.ITEM_CODE,
-                RemainingLife    = d.REMAINING_LIFE
+                RemainingLife = d.REMAINING_LIFE
             });
         }
 
@@ -388,6 +388,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 FOR_DEPRECIATION = item.ForDepreciation, //to do: include
                 INVOICE_NO = item.InvoiceNo,
                 ITEM_DESCRIPTION = item.ItemDescription,
+                ITEM_CODE = item.ItemCode,
                 LAST_DEPARTMENT = item.LastDepartment,
                 LAST_POSTED_DATE = item.LastPostedDate,
                 LOCATION = item.Location,
@@ -406,12 +407,100 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 VENDORNAME = item.VendorName,
                 WARRANTY = item.Warranty, //item.WarrantyExpiry?
                 WARRANTY_DATE = item.WarrantyDate,  //item.WarrantyExpiry?
-                ITEM_CODE = item.ItemCode,
                 REFERENCE_ID = item.ReferenceId
             };
             _ctx.Entry(schedule).State = EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;
+        }
+
+        public async Task<DataList<EamisPropertyScheduleDTO>> ListItemsForRevaluationCreation(EamisPropertyScheduleDTO filter, PageConfig config)
+        {
+            IQueryable<EAMISPROPERTYSCHEDULE> query = FilteredEntitesForRevaluationCreation(filter);
+            string resolved_sort = config.SortBy ?? "Id";
+            bool resolve_isAscending = (config.IsAscending) ? config.IsAscending : false;
+            int resolved_size = config.Size ?? _maxPageSize;
+            if (resolved_size > _maxPageSize) resolved_size = _maxPageSize;
+            int resolved_index = config.Index ?? 1;
+
+
+            var paged = PagedQueryForRevaluationCreation(query, resolved_size, resolved_index);
+            return new DataList<EamisPropertyScheduleDTO>
+            {
+                Count = await query.CountAsync(),
+                Items = await QueryToDTOForRevaluationCreation(paged).ToListAsync()
+            };
+        }
+
+        private IQueryable<EAMISPROPERTYSCHEDULE> FilteredEntitesForRevaluationCreation(EamisPropertyScheduleDTO filter, IQueryable<EAMISPROPERTYSCHEDULE> custom_query = null, bool strict = false)
+        {
+            var predicate = PredicateBuilder.New<EAMISPROPERTYSCHEDULE>(true);
+
+            var query = custom_query ?? _ctx.EAMIS_PROPERTY_SCHEDULE;
+            return query.Where(predicate);
+        }
+
+        private IQueryable<EAMISPROPERTYSCHEDULE> PagedQueryForRevaluationCreation(IQueryable<EAMISPROPERTYSCHEDULE> query, int resolved_size, int resolved_index)
+        {
+            return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+        }
+
+        private IQueryable<EamisPropertyScheduleDTO> QueryToDTOForRevaluationCreation(IQueryable<EAMISPROPERTYSCHEDULE> query)
+        {
+            return query.Select(d => new EamisPropertyScheduleDTO
+            {
+                Id = d.ID,
+                AcquisitionCost = d.ACQUISITION_COST,
+                AcquisitionDate = d.ACQUISITION_DATE,
+                AppraisalIncrement = d.APPRAISAL_INCREMENT,
+                AppraisedValue = d.APPRAISED_VALUE,
+                AreaSQM = d.AREA_SQM,
+                AssessedValue = d.ASSESSED_VALUE,
+                AssetCondition = d.ASSET_CONDITION,
+                AssetTag = d.ASSET_TAG,
+                BookValue = d.BOOK_VALUE,
+                Category = d.CATEGORY,
+                CostCenter = d.COST_CENTER,
+                Department = d.DEPARTMENT,
+                DeprecAmount = d.DEPREC_AMOUNT,
+                Details = d.DETAILS,
+                DisposedAmount = d.DISPOSED_AMOUNT,
+                ESTLife = d.EST_LIFE,
+                ForDepreciation = d.FOR_DEPRECIATION,
+                InvoiceNo = d.INVOICE_NO,
+                ItemDescription = d.ITEM_DESCRIPTION,
+                ItemCode = d.ITEM_CODE,
+                LastDepartment = d.LAST_DEPARTMENT,
+                LastPostedDate = d.LAST_POSTED_DATE,
+                Location = d.LOCATION,
+                Names = d.NAMES,
+                PORef = d.POREF,
+                PropertyNumber = d.PROPERTY_NUMBER,
+                RealEstateTaxPayment = d.REAL_ESTATE_TAX_PAYMENT,
+                RevaluationCost = d.REVALUATION_COST,
+                RRDate = d.RRDATE,
+                RRRef = d.RRREF,
+                SalvageValue = d.SALVAGE_VALUE,
+                SerialNo = d.SERIAL_NO,
+                Status = d.STATUS,
+                SubCategory = d.SUB_CATEGORY,
+                SvcAgreementNo = d.SVC_AGREEMENT_NO,
+                VendorName = d.VENDORNAME,
+                Warranty = d.WARRANTY,
+                WarrantyDate = d.WARRANTY_DATE
+            });
+        }
+
+        public async Task<string> GetEstimatedLife(string itemCode)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.Where(s => s.PROPERTY_NO == itemCode).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                var result1 = await Task.Run(() => _ctx.EAMIS_ITEM_CATEGORY.Where(s => s.ID == result[0].CATEGORY_ID).AsNoTracking().ToList()).ConfigureAwait(false);
+                retValue = result1[0].ESTIMATED_LIFE.ToString();
+            }
+            return retValue;
         }
     }
 }

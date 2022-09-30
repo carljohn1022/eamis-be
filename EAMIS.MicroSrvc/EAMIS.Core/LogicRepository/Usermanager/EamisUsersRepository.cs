@@ -45,6 +45,10 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
                 USERNAME = item.Username,
                 PASSWORD_HASH = item.Password_Hash,
                 PASSWORD_SALT = item.Password_Salt,
+                IS_ACTIVE = item.IsActive,
+                IS_DELETED = item.IsDeleted,
+                AGENCY_EMPLOYEE_NUMBER = item.AgencyEmployeeNumber,
+                IS_BLOCKED = item.IsBlocked,
             };
         }
 
@@ -257,11 +261,22 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
             return getUserName;
         }
 
-        public async Task<EamisUsersDTO> ChangePassword(EamisUsersDTO item)
+        public async Task<EamisUsersDTO> ChangePassword(EamisUsersDTO item, string newPassword)
         {
-            EAMISUSERS data = MapToEntity(item);
-            _ctx.Entry(data).State = EntityState.Modified;
-            await _ctx.SaveChangesAsync();
+            try
+            {
+                using var hmac = new HMACSHA256();
+
+                item.Password_Hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(newPassword));
+                item.Password_Salt = hmac.Key;
+                //PASSWORD_HASH = hmac.ComputeHash(Encoding.UTF8.GetBytes(item.Password)),
+                //PASSWORD_SALT = hmac.Key,
+
+                EAMISUSERS data = MapToEntity(item);
+                _ctx.Entry(data).State = EntityState.Modified;
+                await _ctx.SaveChangesAsync();
+            }
+            catch (Exception ex) { }
             return item;
         }
 

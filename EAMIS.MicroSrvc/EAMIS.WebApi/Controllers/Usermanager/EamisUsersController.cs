@@ -56,9 +56,10 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         }
 
         [HttpPut("ChangePassword")]
-        public async Task<ActionResult<EamisUsersDTO>> ChangePassword([FromBody] EamisUsersDTO item)
+        public async Task<ActionResult<EamisUsersDTO>> ChangePassword([FromBody] EamisUsersDTO item, string NewPassword)
         {
-            return Ok(await _applicationUsers.ChangePassword(item));
+
+            return Ok(await _applicationUsers.ChangePassword(item, NewPassword));
         }
         [HttpGet("AgencyName")]
         public async Task<string> GetAgencyName(string AgencyEmployeeNumber)

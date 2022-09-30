@@ -27,6 +27,7 @@ namespace EAMIS.Core.Domain.Entities
         public decimal REAL_ESTATE_TAX_PAYMENT { get; set; }
         public decimal AREA_SQM { get; set; }
         public string NOTES { get; set; }
+        public string TRAN_TYPE { get; set; }
         public EAMISSUPPLIER SUPPLIER_GROUP { get; set; }
         public EAMISPROPERTYTRANSACTION RECEIVING_GROUP { get; set; }
         public EAMISSERVICELOG SERVICE_LOG_GROUP { get; set; }

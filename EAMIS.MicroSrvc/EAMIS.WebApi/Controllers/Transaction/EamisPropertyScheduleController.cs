@@ -36,5 +36,23 @@ namespace EAMIS.WebApi.Controllers.Transaction
                 return BadRequest(_eamisPropertyScheduleRepository.ErrorMessage);
             return Ok(result);
         }
+
+        [HttpGet("ListItemsForRevaluationCreation")]
+        public async Task<ActionResult<EAMISPROPERTYSCHEDULE>> ListItemsForRevaluationCreation([FromQuery] EamisPropertyScheduleDTO filter, [FromQuery] PageConfig config)
+        {
+            if (filter == null)
+                filter = new EamisPropertyScheduleDTO();
+            var result = await _eamisPropertyScheduleRepository.ListItemsForRevaluationCreation(filter, config);
+            if (_eamisPropertyScheduleRepository.HasError)
+                return BadRequest(_eamisPropertyScheduleRepository.ErrorMessage);
+            return Ok(result);
+        }
+
+        [HttpGet("GetEstimatedLife")]
+        public async Task<string> GetPropertyNo(string itemCode)
+        {
+            var response = await _eamisPropertyScheduleRepository.GetEstimatedLife(itemCode);
+            return response;
+        }
     }
 }

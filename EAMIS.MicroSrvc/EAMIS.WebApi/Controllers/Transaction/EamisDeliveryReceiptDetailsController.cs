@@ -61,17 +61,17 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return Ok(result);
         }
 
-        [HttpGet("getAssetConditionType")]
-        public async Task<ActionResult<EamisDeliveryReceiptDetailsDTO>> ListAssetCondition()
-        {
+        //[HttpGet("getAssetConditionType")]
+        //public async Task<ActionResult<EamisDeliveryReceiptDetailsDTO>> ListAssetCondition()
+        //{
             
-            return Ok(await _eamisDeliveryReceiptDetailsRepository.GetAssetCondition());
-        }
+        //    return Ok(await _eamisDeliveryReceiptDetailsRepository.GetAssetCondition());
+        //}
 
-        [HttpGet("getTransactionType")]
-        public async Task<ActionResult<EamisDeliveryReceiptDetailsDTO>> ListTransactionType()
-        {
-            return Ok(await _eamisDeliveryReceiptDetailsRepository.GetTranTypeList());
-        }
+        //[HttpGet("getTransactionType")]
+        //public async Task<ActionResult<EamisDeliveryReceiptDetailsDTO>> ListTransactionType()
+        //{
+        //    return Ok(await _eamisDeliveryReceiptDetailsRepository.GetTranTypeList());
+        //}
     }
 }

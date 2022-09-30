@@ -184,6 +184,12 @@ namespace EAMIS.Core.Domain
                 .WithMany(x => x.SERIAL_TRAN)
                 .HasForeignKey(x => x.DELIVERY_RECEIPT_DETAILS_ID);
 
+            // LOOK ASSET AND TRANTYPE
+            modelBuilder.Entity<EAMISTRANTYPE>()
+               .HasOne(x => x.ASSET_CONDITION_TYPE)
+               .WithMany(x => x.TRANTYPE)
+               .HasForeignKey(x => x.ASSET_ID);
+
             //modelBuilder.Entity<EAMISPROPERTYREVALUATION>()
             //   .HasMany(x => );
 

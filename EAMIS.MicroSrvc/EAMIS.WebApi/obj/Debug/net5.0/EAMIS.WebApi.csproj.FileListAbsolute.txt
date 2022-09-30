@@ -1464,6 +1464,12 @@ C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAM
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\ref\EAMIS.WebApi.dll
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.pdb
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.genruntimeconfig.cache
+C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.AssemblyInfoInputs.cache
+C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.AssemblyInfo.cs
+C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.csproj.CoreCompileInputs.cache
+C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.csproj.AssemblyReference.cache
 C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\appsettings.json
 C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\aws-beanstalk-tools-defaults.json
@@ -1616,13 +1622,6 @@ C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroS
 C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\EAMIS.Core.dll
 C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\EAMIS.Core.pdb
 C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\bin\Debug\net5.0\EAMIS.Common.pdb
-C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.csproj.AssemblyReference.cache
-C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.AssemblyInfoInputs.cache
-C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.AssemblyInfo.cs
-C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.csproj.CoreCompileInputs.cache
-C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\staticwebassets\EAMIS.WebApi.StaticWebAssets.Manifest.cache
 C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\staticwebassets\EAMIS.WebApi.StaticWebAssets.xml
 C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\scopedcss\bundle\EAMIS.WebApi.styles.css

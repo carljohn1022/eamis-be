@@ -90,7 +90,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
         public EamisPropertyRevaluationDetailsDTO CalculateRevaluationDetails(EamisPropertyRevaluationDetailsDTO item, DateTime? newDepreciationDate)
         {
 
-            newDepreciationDate =  newDepreciationDate == null ? DateTime.Now : newDepreciationDate;
+            newDepreciationDate = newDepreciationDate == null ? DateTime.Now : newDepreciationDate;
             int runningLife = ((newDepreciationDate.Value.Year - item.Depreciation.Year) * 12) + (newDepreciationDate.Value.Month - item.Depreciation.Month);
 
             if (runningLife > 0) // if at least a month then calculate depreciation based on item's age
@@ -129,7 +129,10 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 PROPERTY_REVALUATION_ID = item.PropertyRevaluationId, //PropertyRevaluation.Id
                 REMAINING_LIFE = item.RemainingLife,
                 REVALUED_AMT = item.RevaluedAmount,
-                SALVAGE_VALUE = item.SalvageValue
+                SALVAGE_VALUE = item.SalvageValue,
+                DEP_PER_MONTH = item.DepPerMonth,
+                NEW_DEP_PER_MONTH = item.NewDepPerMonth
+
             };
         }
 
@@ -161,7 +164,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                           .Select(i => i.Max(x => x.ID))
                                           .ToList();
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_REVALUATION_DETAILS.Where(x => arrDistinctDetailID.Contains(x.ID));
-                                        
+
             return query.Where(predicate);
         }
         private IQueryable<EamisPropertyRevaluationDetailsDTO> QueryToDTO(IQueryable<EAMISPROPERTYREVALUATIONDETAILS> query)
@@ -172,6 +175,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 AccumulativeDepreciation = d.ACCUMULATIVE_DEPRECIATION,
                 AcquisitionCost = d.ACQ_COST,
                 Depreciation = d.DEPRECIATION,
+                DepPerMonth = d.DEP_PER_MONTH,
+                NewDepPerMonth = d.NEW_DEP_PER_MONTH,
                 FairValue = d.FAIR_VALUE,
                 ItemCode = d.ITEM_CODE,
                 ItemDescription = d.ITEM_DESC,
@@ -209,7 +214,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             EAMISPROPERTYREVALUATIONDETAILS data = MapToEntity(item);
             try
             {
-                _ctx.Entry(data).State = EntityState.Added;
+                _ctx.Entry(data).State = EntityState.Modified;
                 await _ctx.SaveChangesAsync();
             }
             catch (Exception ex)

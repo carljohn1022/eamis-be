@@ -13,6 +13,10 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<DataList<EamisPropertyScheduleDTO>> List(EamisPropertyScheduleDTO filter, PageConfig config);
         Task<DataList<EamisPropertyScheduleDTO>> Search(string type, string searchValue);
         Task<EamisPropertyScheduleDTO> Update(EamisPropertyScheduleDTO item);
+
+        Task<DataList<EamisPropertyScheduleDTO>> ListItemsForRevaluationCreation(EamisPropertyScheduleDTO filter, PageConfig config);
+
+        Task<string> GetEstimatedLife(string itemCode);
         string ErrorMessage { get; set; }
 
         bool HasError { get; set; }

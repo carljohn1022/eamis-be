@@ -32,3 +32,4 @@ C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroS
 C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.dll
 C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\ref\EAMIS.Common.dll
 C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.pdb
+C:\Users\revil\OneDrive\Desktop\Newest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.csproj.AssemblyReference.cache

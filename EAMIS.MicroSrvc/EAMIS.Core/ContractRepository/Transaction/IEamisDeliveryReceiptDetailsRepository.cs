@@ -19,7 +19,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<DataList<EamisDeliveryReceiptDetailsDTO>> SearchDeliveryDetailsforReceiving(string type, string searchvalue);
         Task<EAMISSERIALTRAN> PostSerialTranByItem(EamisSerialTranDTO item);
 
-        Task<List<EamisTranTypeDTO>> GetTranTypeList();
-        Task<List<EamisAssetConditionTypeDTO>> GetAssetCondition();
+        //Task<List<EamisTranTypeDTO>> GetTranTypeList();
+        //Task<List<EamisAssetConditionTypeDTO>> GetAssetCondition();
     }
 }

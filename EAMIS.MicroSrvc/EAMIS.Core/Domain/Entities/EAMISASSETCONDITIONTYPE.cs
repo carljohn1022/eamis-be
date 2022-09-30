@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace EAMIS.Core.Domain.Entities
 {
-   public class EAMISASSETCONDITIONTYPE
+    public class EAMISASSETCONDITIONTYPE
     {
         [Key]
         public int ID { get; set; }
         public string ASSET_CONDITION_DESC { get; set; }
+        public List<EAMISTRANTYPE> TRANTYPE { get; set; }
     }
 }

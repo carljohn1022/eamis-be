@@ -127,6 +127,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 RealEstateTaxPayment = x.REAL_ESTATE_TAX_PAYMENT,
                 ReceivingAmount = x.RECEIVING_AMOUNT,
                 ReceivingTransactionId = x.RECEIVING_TRAN_ID,
+                TranType = x.TRAN_TYPE,
                 ReceivingGroup = new EamisPropertyTransactionDTO
                 {
                     Id = x.RECEIVING_GROUP.ID,
@@ -171,6 +172,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
             if (string.IsNullOrEmpty(filter.PropertyDescription) && filter.PropertyDescription != null)
                 predicate = predicate.And(x => x.PROPERTY_DESC == filter.PropertyDescription);
+
+            predicate = predicate.And(x => x.ASSET_CONDITION == "UNSERVICEABLE");
 
             var query = custom_query ?? _ctx.EAMIS_SERVICE_LOG_DETAILS;
             return query.Where(predicate);
@@ -269,6 +272,13 @@ namespace EAMIS.Core.LogicRepository.Transaction
                         {
                             Id = t.ID,
                             AssetConditionType = t.ASSET_CONDITION_DESC
+                            //TranType = _ctx.EAMIS_TRAN_TYPE.AsNoTracking().Select(b =>
+                            //new EamisTranTypeDTO
+                            //{
+                            //    Id = b.ID,
+                            //    AssetID = b.ASSET_ID,
+                            //    TranType = b.TRAN_TYPE,
+                            //}).Where(c => c.AssetID == t.ID).ToList()
                         }).ToList()).ConfigureAwait(false);
             return result;
         }
@@ -278,8 +288,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     new EamisTranTypeDTO
                     {
                         Id = t.ID,
-                        TranDesc = t.TRAN_DESC,
-                        TranType = t.TRAN_TYPE
+                        AssetID = t.ASSET_ID,
+                        TranType = t.TRAN_TYPE,
+                        AssetConditionType = _ctx.EAMIS_ASSET_CONDITION_TYPE.AsNoTracking()
+                                                 .Select(a => new EamisAssetConditionTypeDTO
+                                                 {
+                                                     Id = a.ID,
+                                                     AssetConditionType = a.ASSET_CONDITION_DESC
+                                                 }).Where(i => i.Id == t.ASSET_ID).FirstOrDefault()
                     }).ToList()).ConfigureAwait(false);
             return result;
         }
@@ -311,7 +327,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             {
                 partialValue = result[0].CATEGORY_ID;
                 var result1 = await Task.Run(() => _ctx.EAMIS_ITEM_CATEGORY.Where(c => c.ID == partialValue).AsNoTracking().ToList()).ConfigureAwait(false);
-               
+
             }
             return retValue;
         }

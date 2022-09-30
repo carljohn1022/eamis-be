@@ -35,7 +35,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
         private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredDetailsForCondemn(EamisPropertyTransactionDetailsDTO filter, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, bool strict = false)
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
-            
+
             //retrieve all property items with For Condemn service log type
             var arrservicelogs = _ctx.EAMIS_SERVICE_LOG.AsNoTracking()
                                  .Join(_ctx.EAMIS_SERVICE_LOG_DETAILS,
@@ -207,6 +207,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 WarrantyExpiry = x.WARRANTY_EXPIRY,
                 Invoice = x.INVOICE,
                 PropertyCondition = x.PROPERTY_CONDITION,
+                ModeOfDisposal = x.MODE_OF_DISPOSAL,
                 PropertyTransactionGroup = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Select(x => new EamisPropertyTransactionDTO
                 {
                     Id = x.ID,
@@ -284,7 +285,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TIME_STAMP = item.TimeStamp,
                 WARRANTY_EXPIRY = item.WarrantyExpiry,
                 INVOICE = item.Invoice,
-                PROPERTY_CONDITION = item.PropertyCondition
+                PROPERTY_CONDITION = item.PropertyCondition,
+                MODE_OF_DISPOSAL = item.ModeOfDisposal
             };
         }
         #endregion Property transaction details
