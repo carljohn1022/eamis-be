@@ -26,6 +26,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
 
         Task<List<EamisTranTypeDTO>> GetTranTypeList();
         Task<List<EamisAssetConditionTypeDTO>> GetAssetCondition();
+        Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsIssued(EamisPropertyTransactionDetailsDTO filter, PageConfig config);
         //Task<EamisServiceLogDetailsDTO> ListServiceLogDetailsByServiceLogId(int serviceLogId);
     }
 }

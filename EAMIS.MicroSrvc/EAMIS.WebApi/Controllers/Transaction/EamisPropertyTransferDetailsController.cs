@@ -70,6 +70,10 @@ namespace EAMIS.WebApi.Controllers.Transaction
                 item = new EamisPropertyTransferDetailsDTO();
             return Ok(await _eamisPropertyTransferDetailsRepository.Update(item));
         }
-
+        [HttpGet("SearchIssuance")]
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> SearchIssuance(string type, string searchValue)
+        {
+            return Ok(await _eamisPropertyTransferDetailsRepository.SearchIssuance(type, searchValue));
+        }
     }
 }

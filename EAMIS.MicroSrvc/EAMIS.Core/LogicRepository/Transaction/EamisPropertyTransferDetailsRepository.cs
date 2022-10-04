@@ -174,6 +174,46 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return result;
         }
+        public async Task<DataList<EamisPropertyTransferDetailsDTO>> SearchIssuance(string type, string searchValue)
+        {
+            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = null;
+            if (type == "Item Code")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.ITEM_CODE.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Item Description")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.ITEM_DESCRIPTION.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Transaction Number")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+            }
+            else if (type == "Serial Number")
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.SERIAL_NUMBER.Contains(searchValue)).AsQueryable();
+            }
+            else
+            {
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving && x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+            }
+
+            var paged = PagedQueryForSearch(query);
+            var result = new DataList<EamisPropertyTransferDetailsDTO>
+            {
+                Count = await paged.CountAsync(),
+                Items = await QueryDetailsToDTOForTranserDetails(paged).ToListAsync()
+            };
+            foreach (var item in result.Items)
+            {
+                item.AssigneeCustodianName = _actx.Personnel.AsNoTracking().Where(p => p.Id == item.AssigneeCustodian).Select(x => x.FirstName + ' ' + x.LastName).FirstOrDefault();
+            }
+            return result;
+        }
+        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> PagedQueryForSearch(IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query)
+        {
+            return query;
+        }
         private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForTranserDetails(EamisPropertyTransferDetailsDTO filter, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, bool strict = false)
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);

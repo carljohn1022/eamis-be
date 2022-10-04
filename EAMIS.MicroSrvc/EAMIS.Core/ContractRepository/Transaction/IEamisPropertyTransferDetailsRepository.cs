@@ -16,5 +16,6 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<DataList<EamisPropertyTransferDetailsDTO>> ListItemsForTranser(EamisPropertyTransferDetailsDTO filter, PageConfig config);
         Task<EamisPropertyTransferDetailsDTO> Update(EamisPropertyTransferDetailsDTO item);
         Task<string> GetResponsibilityCenterByID(string newResponsibilityCode);
+        Task<DataList<EamisPropertyTransferDetailsDTO>> SearchIssuance(string type, string searchValue);
     }
 }
