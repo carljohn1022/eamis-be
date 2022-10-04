@@ -55,7 +55,7 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string SLPrefix = "SL"; //Service Log prefix. change according to the business rule.
         public const string PDPrefix = "PD"; //Property Disposal prefix. change according to the business rule.
         public const string ASPrefix = "AS"; //Asset Schedule prefix. change according to the business rule.
-        public const string PVPrefix = "PV"; //Property Revaluation prefix. change according to the business rule.
+        public const string PVPrefix = "RV"; //Property Revaluation prefix. change according to the business rule.
     }
 
     public static class WorkSheetTemplateNames
