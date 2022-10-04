@@ -1460,7 +1460,6 @@ C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAM
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\staticwebassets\EAMIS.WebApi.StaticWebAssets.xml
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\scopedcss\bundle\EAMIS.WebApi.styles.css
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.RazorTargetAssemblyInfo.cache
-C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.csproj.CopyComplete
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.dll
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\ref\EAMIS.WebApi.dll
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\obj\Debug\net5.0\EAMIS.WebApi.pdb
