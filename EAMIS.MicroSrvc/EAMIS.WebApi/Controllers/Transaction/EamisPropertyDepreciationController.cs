@@ -32,7 +32,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
         {
             if (filter == null)
                 filter = new EamisPropertyDepreciationDTO();
-            var result = await _depreciationRepository.ListForDepreciationCreation(filter, config);
+            var result = await _depreciationRepository.List(filter, config);
             if (_depreciationRepository.HasError)
                 return BadRequest(_depreciationRepository.ErrorMessage);
             return Ok(result);
