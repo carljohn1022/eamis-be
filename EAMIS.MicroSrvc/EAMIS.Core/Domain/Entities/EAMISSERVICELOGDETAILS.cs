@@ -28,6 +28,7 @@ namespace EAMIS.Core.Domain.Entities
         public decimal AREA_SQM { get; set; }
         public string NOTES { get; set; }
         public string TRAN_TYPE { get; set; }
+        public string SERIAL_NUMBER { get; set;}
         public EAMISSUPPLIER SUPPLIER_GROUP { get; set; }
         public EAMISPROPERTYTRANSACTION RECEIVING_GROUP { get; set; }
         public EAMISSERVICELOG SERVICE_LOG_GROUP { get; set; }

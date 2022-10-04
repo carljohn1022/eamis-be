@@ -199,6 +199,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     SupplierId = x.SUPPLIER_ID,
                     SupplierDescription = x.SUPPLIER_DESC,
                     ServiceDate = x.SERVICE_DATE,
+                    TranType = x.TRAN_TYPE,
                     DueDate = x.DUE_DATE,
                     AssessedValue = x.ASSESSED_VALUE,
                     AppraisedValue = x.APPRAISED_VALUE,

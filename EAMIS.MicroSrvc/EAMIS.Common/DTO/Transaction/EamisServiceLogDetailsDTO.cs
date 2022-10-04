@@ -27,6 +27,7 @@ namespace EAMIS.Common.DTO.Transaction
         public decimal AreaSQM { get; set; }
         public string Notes { get; set; }
         public string TranType { get; set; }
+        public string SerialNumber { get; set; }
         public EamisSupplierDTO SupplierGroup { get; set; } = new EamisSupplierDTO();
         public EamisPropertyTransactionDTO ReceivingGroup { get; set; } = new EamisPropertyTransactionDTO();
         public EamisServiceLogDTO ServiceLogGroup { get; set; } = new EamisServiceLogDTO();

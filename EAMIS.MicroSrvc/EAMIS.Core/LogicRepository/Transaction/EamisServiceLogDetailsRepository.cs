@@ -50,6 +50,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 AREA_SQM = item.AreaSQM,
                 ASSESSED_VALUE = item.AssessedValue,
                 ASSET_CONDITION = item.AssetCondition,
+                SERIAL_NUMBER = item.SerialNumber,
                 NOTES = item.Notes,
                 REAL_ESTATE_TAX_PAYMENT = item.RealEstateTaxPayment,
                 RECEIVING_AMOUNT = item.ReceivingAmount,
@@ -57,7 +58,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 SERVICE_DATE = item.ServiceDate, //Get from service log => Tran_Date, programatically assign it's value before calling the Insert/create method
                 SERVICE_LOG_ID = item.ServiceLogId, //Get from service log => ID, programatically assign it's value before calling the Insert/create method
                 SUPPLIER_ID = item.SupplierId,
-                SUPPLIER_DESC = item.SupplierDescription
+                SUPPLIER_DESC = item.SupplierDescription,
+                TRAN_TYPE = item.TranType
             };
         }
         public async Task<EamisServiceLogDetailsDTO> InsertServiceLogDetails(EamisServiceLogDetailsDTO item)
@@ -178,7 +180,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
             var query = custom_query ?? _ctx.EAMIS_SERVICE_LOG_DETAILS;
             return query.Where(predicate);
         }
-
         #region for creation of new service log
         private IQueryable<EAMISSERVICELOGDETAILS> FilteredEntitiesServiceLogDetailsForCreation(EamisPropertyTransactionDetailsDTO filter, IQueryable<EAMISSERVICELOGDETAILS> custom_query = null, bool strict = false)
         {
@@ -331,5 +332,137 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return retValue;
         }
+        public async Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsIssued(EamisPropertyTransactionDetailsDTO filter, PageConfig config)
+        {
+            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredItemsIssuedDetails(filter);
+
+            string resolved_sort = config.SortBy ?? "Id";
+            bool resolves_isAscending = (config.IsAscending) ? config.IsAscending : false;
+            int resolved_size = config.Size ?? _maxPageSize;
+            if (resolved_size > _maxPageSize) resolved_size = _maxPageSize;
+            int resolved_index = config.Index ?? 1;
+
+            var paged = PagedDetailsQuery(query, resolved_size, resolved_index);
+
+            return new DataList<EamisPropertyTransactionDetailsDTO>
+            {
+                Count = await query.CountAsync(),
+                Items = await QueryDetailsToDTOForIssuanceDetails(paged).ToListAsync(),
+
+            };
+
+
+        }
+
+        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> PagedDetailsQuery(IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query, int resolved_size, int resolved_index)
+        {
+            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+        }
+        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsIssuedDetails(EamisPropertyTransactionDetailsDTO filter, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, bool strict = false)
+        {
+            var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
+
+
+            var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                            .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                            d => d.PROPERTY_TRANS_ID,
+                                            h => h.ID,
+                                            (d, h) => new { d, h })
+                                            .Where(x =>
+                                                   (x.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance)
+                                                   //&& x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved --> to do: uncomment this line to get property items with Approved status only
+                                                   )
+                                            .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
+                                            {
+                                                ID = x.d.ID,
+                                                PROPERTY_TRANS_ID = x.d.PROPERTY_TRANS_ID,
+                                                IS_DEPRECIATION = x.d.IS_DEPRECIATION,
+                                                DR = x.d.DR,
+                                                PROPERTY_NUMBER = x.d.PROPERTY_NUMBER,
+                                                ITEM_CODE = x.d.ITEM_CODE,
+                                                ITEM_DESCRIPTION = x.d.ITEM_DESCRIPTION,
+                                                SERIAL_NUMBER = x.d.SERIAL_NUMBER,
+                                                PO = x.d.PO,
+                                                PR = x.d.PR,
+                                                ACQUISITION_DATE = x.d.ACQUISITION_DATE,
+                                                ASSIGNEE_CUSTODIAN = x.d.ASSIGNEE_CUSTODIAN,
+                                                REQUESTED_BY = x.d.REQUESTED_BY,
+                                                OFFICE = x.d.OFFICE,
+                                                DEPARTMENT = x.d.DEPARTMENT,
+                                                RESPONSIBILITY_CODE = x.d.RESPONSIBILITY_CODE,
+                                                UNIT_COST = x.d.UNIT_COST,
+                                                QTY = x.d.QTY,
+                                                SALVAGE_VALUE = x.d.SALVAGE_VALUE,
+                                                BOOK_VALUE = x.d.BOOK_VALUE,
+                                                ESTIMATED_LIFE = x.d.ESTIMATED_LIFE,
+                                                AREA = x.d.AREA,
+                                                SEMI_EXPANDABLE_AMOUNT = x.d.SEMI_EXPANDABLE_AMOUNT,
+                                                USER_STAMP = x.d.USER_STAMP,
+                                                TIME_STAMP = x.d.TIME_STAMP,
+                                                WARRANTY_EXPIRY = x.d.WARRANTY_EXPIRY,
+                                                INVOICE = x.d.INVOICE,
+                                                PROPERTY_CONDITION = x.d.PROPERTY_CONDITION,
+                                            });
+
+            //if (filter.PropertyTransactionID != 0)
+            //    predicate = predicate.And(x => x.PROPERTY_TRANS_ID == filter.PropertyTransactionID);
+            //var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS;
+            return query.Where(predicate);
+        }
+
+        private IQueryable<EamisPropertyTransactionDetailsDTO> QueryDetailsToDTOForIssuanceDetails(IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query)
+        {
+            return query.Select(x => new EamisPropertyTransactionDetailsDTO
+            {
+                Id = x.ID,
+                PropertyTransactionID = x.PROPERTY_TRANS_ID,
+                isDepreciation = x.IS_DEPRECIATION,
+                Dr = x.DR,
+                PropertyNumber = x.PROPERTY_NUMBER,
+                ItemCode = x.ITEM_CODE,
+                ItemDescription = x.ITEM_DESCRIPTION,
+                SerialNumber = x.SERIAL_NUMBER,
+                Po = x.PO,
+                Pr = x.PR,
+                AcquisitionDate = x.ACQUISITION_DATE,
+                AssigneeCustodian = x.ASSIGNEE_CUSTODIAN,
+                RequestedBy = x.REQUESTED_BY,
+                Office = x.OFFICE,
+                Department = x.DEPARTMENT,
+                ResponsibilityCode = x.RESPONSIBILITY_CODE,
+                UnitCost = x.UNIT_COST,
+                Qty = x.QTY,
+                SalvageValue = x.SALVAGE_VALUE,
+                BookValue = x.BOOK_VALUE,
+                EstLife = x.ESTIMATED_LIFE,
+                Area = x.AREA,
+                Semi = x.SEMI_EXPANDABLE_AMOUNT,
+                UserStamp = x.USER_STAMP,
+                TimeStamp = x.TIME_STAMP,
+                WarrantyExpiry = x.WARRANTY_EXPIRY,
+                Invoice = x.INVOICE,
+                PropertyCondition = x.PROPERTY_CONDITION,
+                //TransactionNumber = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(h => h.ID == x.PROPERTY_TRANS_ID).Select(t => t.TRANSACTION_NUMBER).FirstOrDefault(),
+                //TransactionType = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(h => h.ID == x.PROPERTY_TRANS_ID).Select(t => t.TRANSACTION_TYPE).FirstOrDefault(),
+                PropertyTransactionGroup = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(h => h.ID == x.PROPERTY_TRANS_ID)
+                                            .Select(h => new EamisPropertyTransactionDTO
+                                            {
+                                                Id = h.ID,
+                                                TransactionNumber = h.TRANSACTION_NUMBER,
+                                                TransactionDate = h.TRANSACTION_DATE,
+                                                FiscalPeriod = h.FISCALPERIOD,
+                                                TransactionType = h.TRANSACTION_TYPE,
+                                                Memo = h.MEMO,
+                                                ReceivedBy = h.RECEIVED_BY,
+                                                ApprovedBy = h.APPROVED_BY,
+                                                DeliveryDate = h.DELIVERY_DATE,
+                                                UserStamp = h.USER_STAMP,
+                                                TimeStamp = h.TIMESTAMP,
+                                                TransactionStatus = h.TRANSACTION_STATUS,
+                                                FundSource = h.FUND_SOURCE
+                                            }).FirstOrDefault()
+            });
+        }
+
     }
 }

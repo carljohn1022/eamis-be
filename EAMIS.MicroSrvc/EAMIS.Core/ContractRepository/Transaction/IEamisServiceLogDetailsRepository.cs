@@ -19,6 +19,8 @@ namespace EAMIS.Core.ContractRepository.Transaction
         string GetSupplierCompany(int supplierId);
         Task<string> GetGroupByLand(string itemCode);
 
+
+        Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsIssued(EamisPropertyTransactionDetailsDTO filter, PageConfig config);
         string ErrorMessage { get; set; }
         bool HasError { get; set; }
 

@@ -97,5 +97,12 @@ namespace EAMIS.WebApi.Controllers.Transaction
         {
             return Ok(await _eamisServiceLogDetailsRepository.GetTranTypeList());
         }
+        [HttpGet("listitemsIssued")]
+        public async Task<ActionResult<EamisPropertyTransactionDetailsDTO>> List([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config)
+        {
+            if (filter == null)
+                filter = new EamisPropertyTransactionDetailsDTO();
+            return Ok(await _eamisServiceLogDetailsRepository.ListItemsIssued(filter, config));
+        }
     }
 }
