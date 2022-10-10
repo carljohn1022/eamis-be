@@ -89,6 +89,7 @@ namespace EAMIS.Core.Domain
         public DbSet<EAMISFORAPPROVAL> EAMIS_FOR_APPROVAL { get; set; }
 
         public DbSet<EAMISMODULES> EAMIS_MODULES { get; set; }
+        public DbSet<EAMISROLEMODULELINK> EAMIS_ROLE_MODULE_LINK { get; set; }
 
         //Lookup
         public DbSet<EAMISTRANTYPE> EAMIS_TRAN_TYPE { get; set; }

@@ -21,24 +21,33 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
     {
         IEamisFileHelper _eamisFileHelper;
         IEamisItemCategoryRepository _eamisItemCategoryRepository;
+        IEamisAttachedFilesRepository _eamisAttachedFilesRepository;
         IEamisItemSubCategoryRepository _eamisItemSubCategoryRepository;
         IEamisWarehouseRepository _eamisWareHouseRepository;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
         private bool bolWithData = false;
+ 
 
         private bool TemplateWithData { get => bolWithData; set => value = bolWithData; }
 
         public EamisFileController(IEamisFileHelper eamisFileHelper, IEamisItemCategoryRepository eamisItemCategoryRepository,
                                     IEamisItemSubCategoryRepository eamisItemSubCategoryRepository,
                                     IEamisWarehouseRepository eamisWareHouseRepository,
-                                    IWebHostEnvironment hostingEnvironment)
+                                    IWebHostEnvironment hostingEnvironment, IEamisAttachedFilesRepository eamisAttachedFilesRepository)
         {
             _eamisFileHelper = eamisFileHelper;
             _eamisItemCategoryRepository = eamisItemCategoryRepository;
             _eamisItemSubCategoryRepository = eamisItemSubCategoryRepository;
+            _eamisAttachedFilesRepository = eamisAttachedFilesRepository;
             _eamisWareHouseRepository = eamisWareHouseRepository;
             _hostingEnvironment = hostingEnvironment;
+        }
+        [HttpGet("getFileName")]
+        public async Task<string> getFileName(string transactionNumber)
+        {
+            var response = await _eamisAttachedFilesRepository.GetTranFileName(transactionNumber);
+            return response;
         }
 
         [HttpGet("DownloadExcelWorkSheetTemplate")]

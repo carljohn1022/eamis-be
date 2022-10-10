@@ -26,6 +26,17 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string AssetSchedule = "Asset Schedule";
     }
 
+
+    public static class DocStatus
+    {
+        public const string Draft = "DRAFT";
+        public const string ForApproval = "FOR APPROVAL";
+        public const string Approved = "APPROVED";
+        public const string DisApproved = "DISAPPROVED";
+        public const string Cancelled = "CANCELLED";
+        public const string AllStatus = "ALL";
+    }
+
     public static class ReportStatus
     {
         public const string ErrorFound = "ERRORFOUND";

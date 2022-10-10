@@ -8,5 +8,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
     {
         Task<bool> Insert(List<EamisAttachedFilesDTO> files);
         Task<bool> Delete(EamisAttachedFilesDTO file);
+        Task<string> GetTranFileName(string transactionNumber);
+
     }
 }

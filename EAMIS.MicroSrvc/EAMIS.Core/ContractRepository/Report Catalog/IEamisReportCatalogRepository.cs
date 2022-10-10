@@ -1,4 +1,7 @@
-﻿using EAMIS.Common.DTO.Masterfiles;
+﻿using EAMIS.Common.DTO.LookUp;
+using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Transaction;
+using EAMIS.Core.Response.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +12,6 @@ namespace EAMIS.Core.ContractRepository.Report_Catalog
 {
     public interface IEamisReportCatalogRepository
     {
-        Task<List<EamisFundSourceDTO>> GetFundSourceList();
+        Task<List<LookupDTO>> FundSourceList();
     }
 }

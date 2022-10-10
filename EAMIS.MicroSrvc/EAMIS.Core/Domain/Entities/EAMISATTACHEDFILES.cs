@@ -1,4 +1,6 @@
-﻿namespace EAMIS.Core.Domain.Entities
+﻿using System;
+
+namespace EAMIS.Core.Domain.Entities
 {
     public class EAMISATTACHEDFILES
     {
@@ -7,6 +9,6 @@
         public string MODULE_NAME { get; set; }
         public string TRANID { get; set; }
         public string USERSTAMP { get; set; }
-        public string TIIMESTAMP { get; set; }
+        public DateTime TIIMESTAMP { get; set; }
     }
 }

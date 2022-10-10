@@ -93,6 +93,18 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var response = await _eamisDeliveryReceiptDetailsRepository.GetItemById(itemId);
             return response;
         }
+        [HttpGet("DownloadFile")]
+        public FileResult DownloadFile(string fileName)
+        {
+            //Build the File Path.
+            string path = Path.Combine(this._hostingEnvironment.WebRootPath, "StaticFiles/EAMIS_Attached_Files/Delivery_Receipt/") + fileName;
+
+            //Read the File data into Byte Array.
+            byte[] bytes = System.IO.File.ReadAllBytes(path);
+
+            //Send the File to Download.
+            return File(bytes, "application/octet-stream", fileName);
+        }
 
         /// <summary>
         /// Call the UploadImages method only after calling the Add/Edit method, to ensure that images/attachments will only be saved 
@@ -116,8 +128,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var targetPath = Path.Combine(_hostingEnvironment.WebRootPath,
                                           FolderName.StaticFolderLocation + @"\" +
                                           FolderName.EAMISAttachmentLocation + @"\" +
-                                          ModuleName.DeliveryReceiptName + @"\" +
-                                          DateTime.Now.Date.ToString("MMddyyyy") + @"\");  // determine the destination for file storage
+                                          ModuleName.DeliveryReceiptName + @"\" );  // determine the destination for file storage
 
             if (!Directory.Exists(targetPath))
                 Directory.CreateDirectory(targetPath); //create the target path if not yet exist

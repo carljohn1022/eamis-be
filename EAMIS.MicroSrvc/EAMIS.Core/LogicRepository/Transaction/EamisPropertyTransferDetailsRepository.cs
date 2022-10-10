@@ -231,7 +231,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             (d, h) => new { d, h })
                                             .Where(x => arrDistinctDetailID.Contains(x.d.ID) &&
                                                    (x.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance ||
-                                                    x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer)
+                                                    x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer )
+                                                    //&& x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                    //&& x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved --> to do: uncomment this line to get property items with Approved status only
                                                    )
                                             .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS

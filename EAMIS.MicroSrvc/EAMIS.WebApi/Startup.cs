@@ -140,9 +140,11 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisApprovalSetupRepository, EamisApprovalSetupRepository>();
 
             services.AddScoped<IEamisForApprovalRepository, EamisForApprovalRepository>();
+            services.AddScoped<IEamisRoleModuleLinkRepository, EamisRoleModuleLinkRepository>();
             //Report Catalog
             services.AddScoped<IEamisReportCatalogRepository, EamisReportCatalogRepository>();
             services.AddScoped<IEamisModulesRepository, EamisModulesRepository>();
+
             services.AddDbContext<EAMISContext>(options =>
             {
                 options.UseSqlServer(_config.GetConnectionString("DenrEamis"));
