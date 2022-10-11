@@ -27,6 +27,44 @@ namespace EAMIS.WebApi.Controllers.Report_Catalog
 
             return Ok(await _eamisReportCatalogRepository.FundSourceList());
         }
-       
+
+        [HttpGet("GetTransactionNumberICS")]
+        public async Task<ActionResult<LookupDTO>> TranNumberICS()
+        {
+
+            return Ok(await _eamisReportCatalogRepository.TransactionNumberICS());
+        }
+
+        [HttpGet("GetTransactionNumberPAR")]
+        public async Task<ActionResult<LookupDTO>> TranNumberPAR()
+        {
+
+            return Ok(await _eamisReportCatalogRepository.TransactionNumberPAR());
+        }
+        [HttpGet("GetTransactionNumberForIssuance")]
+        public async Task<ActionResult<LookupDTO>> TranNumIssuance()
+        {
+
+            return Ok(await _eamisReportCatalogRepository.TransactionNumberIssuance());
+        }
+        [HttpGet("GetPropertyNumber")]
+        public async Task<ActionResult<LookupDTO>> PropertyNumberList()
+        {
+
+            return Ok(await _eamisReportCatalogRepository.PropertyNumberList());
+        }
+        [HttpGet("ItemCodeList")]
+        public async Task<ActionResult<LookupDTO>> ItemCodeList()
+        {
+
+            return Ok(await _eamisReportCatalogRepository.ItemCodeList());
+        }
+        [HttpGet("OfficeList")]
+        public async Task<ActionResult<LookupDTO>> OfficeList()
+        {
+
+            return Ok(await _eamisReportCatalogRepository.OfficeList());
+        }
+
     }
 }

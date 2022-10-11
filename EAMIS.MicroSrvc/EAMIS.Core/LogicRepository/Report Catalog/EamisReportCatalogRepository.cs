@@ -44,6 +44,84 @@ namespace EAMIS.Core.LogicRepository.Report_Catalog
 
             return result;
         }
+        public async Task<List<LookupDTO>> TransactionNumberICS()
+        {
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION
+                                          .Where(f => f.TRAN_TYPE == "ICS")
+                                          .GroupBy(x => x.TRANSACTION_NUMBER)
+                                          .Select(i => new LookupDTO
+                                          {
+                                              LookUpValue = i.Key
+                                          })
+                                          .ToList();
 
+            return result;
+        }
+
+        public async Task<List<LookupDTO>> TransactionNumberPAR()
+        {
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION
+                                          .Where(f => f.TRAN_TYPE == "PAR")
+                                          .GroupBy(x => x.TRANSACTION_NUMBER)
+                                          .Select(i => new LookupDTO
+                                          {
+                                              LookUpValue = i.Key
+                                          })
+                                          .ToList();
+
+            return result;
+        }
+        public async Task<List<LookupDTO>> TransactionNumberIssuance()
+        {
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION
+                                          .Where(f => f.TRANSACTION_TYPE == "Issuance/Releasing")
+                                          .GroupBy(x => x.TRANSACTION_NUMBER)
+                                          .Select(i => new LookupDTO
+                                          {
+                                              LookUpValue = i.Key
+                                          })
+                                          .ToList();
+
+            return result;
+        }
+        public async Task<List<LookupDTO>> PropertyNumberList()
+        {
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                          .Where(f => !(f.PROPERTY_NUMBER == null || f.PROPERTY_NUMBER == string.Empty))
+                                          .GroupBy(x => x.PROPERTY_NUMBER)
+                                          .Select(i => new LookupDTO
+                                          {
+                                              LookUpValue = i.Key
+                                          })
+                                          .ToList();
+
+            return result;
+        }
+        public async Task<List<LookupDTO>> ItemCodeList()
+        {
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                          .Where(f => !(f.ITEM_CODE == null || f.ITEM_CODE == string.Empty))
+                                          .GroupBy(x => x.ITEM_CODE)
+                                          .Select(i => new LookupDTO
+                                          {
+                                              LookUpValue = i.Key
+                                          })
+                                          .ToList();
+
+            return result;
+        }
+        public async Task<List<LookupDTO>> OfficeList()
+        {
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                          .Where(f => !(f.OFFICE == null || f.OFFICE == string.Empty))
+                                          .GroupBy(x => x.OFFICE)
+                                          .Select(i => new LookupDTO
+                                          {
+                                              LookUpValue = i.Key
+                                          })
+                                          .ToList();
+
+            return result;
+        }
     }
 }

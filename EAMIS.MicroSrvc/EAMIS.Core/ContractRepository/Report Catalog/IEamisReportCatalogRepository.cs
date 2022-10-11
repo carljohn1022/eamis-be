@@ -13,5 +13,12 @@ namespace EAMIS.Core.ContractRepository.Report_Catalog
     public interface IEamisReportCatalogRepository
     {
         Task<List<LookupDTO>> FundSourceList();
+        Task<List<LookupDTO>> TransactionNumberICS();
+        Task<List<LookupDTO>> TransactionNumberPAR();
+        Task<List<LookupDTO>> PropertyNumberList();
+        Task<List<LookupDTO>> ItemCodeList();
+        Task<List<LookupDTO>> TransactionNumberIssuance();
+        Task<List<LookupDTO>> OfficeList();
+
     }
 }
