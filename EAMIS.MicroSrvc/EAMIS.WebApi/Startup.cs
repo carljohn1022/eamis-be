@@ -145,6 +145,9 @@ namespace EAMIS.WebApi
             services.AddScoped<IEamisReportCatalogRepository, EamisReportCatalogRepository>();
             services.AddScoped<IEamisModulesRepository, EamisModulesRepository>();
 
+            //Property Ledger
+            services.AddScoped<IEamisPropertyLedgerRepository, EamisPropertyLedgerRepository>();
+
             services.AddDbContext<EAMISContext>(options =>
             {
                 options.UseSqlServer(_config.GetConnectionString("DenrEamis"));

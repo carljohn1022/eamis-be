@@ -33,3 +33,4 @@ C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAM
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.dll
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\ref\EAMIS.Common.dll
 C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.pdb
+C:\Users\npala\Desktop\Latest Checkout 1\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.csproj.AssemblyReference.cache

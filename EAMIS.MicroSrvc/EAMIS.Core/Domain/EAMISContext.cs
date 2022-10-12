@@ -93,6 +93,9 @@ namespace EAMIS.Core.Domain
 
         //Lookup
         public DbSet<EAMISTRANTYPE> EAMIS_TRAN_TYPE { get; set; }
+
+        //Property Ledger
+        public DbSet<EAMISPROPERTYLEDGER> EAMIS_PROPERTY_LEDGER { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<EAMISATTACHMENTTYPE>()
