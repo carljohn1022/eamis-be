@@ -34,6 +34,7 @@ namespace EAMIS.Common.DTO.Transaction
         public DateTime AprDate { get; set; }
         public EamisWarehouseDTO Warehouse { get; set; }
         public EamisSupplierDTO Supplier { get; set; }
+        public List<EamisAttachedFilesDTO> DeliveryImages { get; set; } = new List<EamisAttachedFilesDTO>();
         public List<EamisDeliveryReceiptDetailsDTO> DeliveryReceiptDetails { get; set; } = new List<EamisDeliveryReceiptDetailsDTO>();
         //public List<EamisDeliveryReceiptDetailsDTO> DeliveryReceiptDetailsList { get; set; } = new List<EamisDeliveryReceiptDetailsDTO>();
     }

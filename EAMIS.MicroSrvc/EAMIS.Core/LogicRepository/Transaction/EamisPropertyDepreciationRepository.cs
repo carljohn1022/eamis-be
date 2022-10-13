@@ -395,7 +395,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             {
                                                 ID = 0,
                                                 PROPERTY_SCHEDULE_ID = d.ID,
-                                                DEPRECIATION_AMOUNT = 0,
+                                                DEPRECIATION_AMOUNT = d.DEPREC_AMOUNT,
                                                 DEPRECIATION_MONTH = filter.DepreciationMonth,
                                                 DEPRECIATION_YEAR = filter.DepreciationYear,
                                                 POSTING_DATE = DateTime.Now

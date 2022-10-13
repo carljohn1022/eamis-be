@@ -182,7 +182,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 {
                     Id = x.SUPPLIER_GROUP.ID,
                     CompanyName = x.SUPPLIER_GROUP.COMPANY_NAME
-                }
+                },
+                DeliveryImages = _ctx.EAMIS_ATTACHED_FILES.AsNoTracking().Select(v => new EamisAttachedFilesDTO
+                {
+                    Id = v.ID,
+                    FileName = v.ATTACHED_FILENAME,
+                    ModuleName = v.MODULE_NAME,
+                    TransactionNumber = v.TRANID
+                }).Where(i => i.TransactionNumber == x.TRANSACTION_TYPE).ToList()
             });
         }
 
@@ -286,7 +293,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
                         PropertyName = p.PROPERTY_NAME,
                         Id = p.ID
                     }).FirstOrDefault(x => x.Id == d.ITEM_ID)
-                }).Where(drId => drId.DeliveryReceiptId == result.ID).ToList()
+                }).Where(drId => drId.DeliveryReceiptId == result.ID).ToList(),
+                DeliveryImages = _ctx.EAMIS_ATTACHED_FILES.AsNoTracking().Select(v => new EamisAttachedFilesDTO
+                {
+                    Id = v.ID,
+                    FileName = v.ATTACHED_FILENAME,
+                    ModuleName = v.MODULE_NAME,
+                    TransactionNumber = v.TRANID
+                }).Where(i => i.TransactionNumber == result.TRANSACTION_TYPE).ToList()
             };
         }
 

@@ -93,6 +93,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var response = await _eamisDeliveryReceiptDetailsRepository.GetItemById(itemId);
             return response;
         }
+
         [HttpGet("DownloadFile")]
         public FileResult DownloadFile(string fileName)
         {

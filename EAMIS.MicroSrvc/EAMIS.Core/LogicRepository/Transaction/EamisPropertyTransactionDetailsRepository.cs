@@ -120,7 +120,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 CATEGORY = CategoryName, //get from category, link to property item
                 COST_CENTER = item.ResponsibilityCode,
                 DEPARTMENT = item.Department,
-                DEPREC_AMOUNT = 0, //Depreciable cost divided by estimated life
+                DEPREC_AMOUNT = (item.UnitCost - (item.UnitCost * salvageValue)), //Depreciable cost divided by estimated life
                 DETAILS = string.Empty,
                 DISPOSED_AMOUNT = 0,
                 EST_LIFE = item.EstLife,

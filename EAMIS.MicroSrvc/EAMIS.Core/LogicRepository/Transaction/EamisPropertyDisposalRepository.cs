@@ -177,6 +177,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     PropertyNumber = x.PROPERTY_NUMBER,
                     ItemCode = x.ITEM_CODE,
                     ItemDescription = x.ITEM_DESCRIPTION,
+                    ModeOfDisposal = x.MODE_OF_DISPOSAL,
                     SerialNumber = x.SERIAL_NUMBER,
                     Po = x.PO,
                     Pr = x.PR,
