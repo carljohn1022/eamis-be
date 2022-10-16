@@ -19,6 +19,7 @@ using EAMIS.Core.LogicRepository.Approval;
 using EAMIS.Core.LogicRepository.Classification;
 using EAMIS.Core.LogicRepository.Masterfiles;
 using EAMIS.Core.LogicRepository.Masterfiles.EAMIS.Core.LogicRepository.Masterfiles;
+using EAMIS.Core.LogicRepository.Report;
 using EAMIS.Core.LogicRepository.Report_Catalog;
 using EAMIS.Core.LogicRepository.Rolemanager;
 using EAMIS.Core.LogicRepository.Transaction;
@@ -144,6 +145,7 @@ namespace EAMIS.WebApi
             //Report Catalog
             services.AddScoped<IEamisReportCatalogRepository, EamisReportCatalogRepository>();
             services.AddScoped<IEamisModulesRepository, EamisModulesRepository>();
+            services.AddScoped<IEamisReportLinkRepository, EamisReportLinkRepository>();
 
             //Property Ledger
             services.AddScoped<IEamisPropertyLedgerRepository, EamisPropertyLedgerRepository>();

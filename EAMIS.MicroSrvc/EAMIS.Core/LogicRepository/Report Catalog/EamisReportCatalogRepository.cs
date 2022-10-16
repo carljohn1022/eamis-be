@@ -1,5 +1,6 @@
 ﻿using EAMIS.Common.DTO.LookUp;
 using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Report_Catalog;
 using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.ContractRepository.Report_Catalog;
 using EAMIS.Core.Domain;
@@ -18,19 +19,19 @@ namespace EAMIS.Core.LogicRepository.Report_Catalog
 {
     public class EamisReportCatalogRepository : IEamisReportCatalogRepository
     {
-
-
         private readonly EAMISContext _ctx;
         private readonly int _maxPageSize;
+        private string _errorMessage = "";
+        public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
 
+        private bool bolerror = false;
+        public bool HasError { get => bolerror; set => value = bolerror; }
         public EamisReportCatalogRepository(EAMISContext ctx)
         {
-
             _ctx = ctx;
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
-                : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
+               : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
-
 
         public async Task<List<LookupDTO>> FundSourceList()
         {
@@ -123,5 +124,119 @@ namespace EAMIS.Core.LogicRepository.Report_Catalog
 
             return result;
         }
+      
+
+        public async Task<EamisReportCatalogDTO> Delete(EamisReportCatalogDTO item)
+        {
+            try
+            {
+                EAMISREPORTCATALOG data = MapToEntity(item);
+                _ctx.Entry(data).State = EntityState.Deleted;
+                await _ctx.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.Message;
+            }
+            return item;
+        }
+
+        public async Task<EamisReportCatalogDTO> Insert(EamisReportCatalogDTO item)
+        {
+            try
+            {
+                EAMISREPORTCATALOG data = MapToEntity(item);
+                _ctx.Entry(data).State = EntityState.Added;
+                await _ctx.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.Message;
+            }
+            return item;
+        }
+
+        public async Task<DataList<EamisReportCatalogDTO>> List(EamisReportCatalogDTO filter, PageConfig config)
+        {
+            IQueryable<EAMISREPORTCATALOG> query = FilteredEntities(filter);
+
+            bool resolves_isAscending = (config.IsAscending) ? config.IsAscending : false;
+            int resolved_size = config.Size ?? _maxPageSize;
+            if (resolved_size > _maxPageSize) resolved_size = _maxPageSize;
+            int resolved_index = config.Index ?? 1;
+            var paged = PagedQuery(query, resolved_size, resolved_index);
+            return new DataList<EamisReportCatalogDTO>
+            {
+                Count = await query.CountAsync(),
+                Items = await QueryToDTO(paged).ToListAsync(),
+
+            };
+        }
+
+        public IQueryable<EAMISREPORTCATALOG> PagedQuery(IQueryable<EAMISREPORTCATALOG> query, int resolved_size, int resolved_index)
+        {
+            return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+        }
+
+        public async Task<EamisReportCatalogDTO> Update(EamisReportCatalogDTO item)
+        {
+            try
+            {
+                EAMISREPORTCATALOG data = MapToEntity(item);
+                _ctx.Entry(data).State = EntityState.Modified;
+                await _ctx.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.Message;
+            }
+            return item;
+        }
+        private EamisReportCatalogDTO MapToDTO(EAMISREPORTCATALOG item)
+        {
+            if (item == null) return new EamisReportCatalogDTO();
+            return new EamisReportCatalogDTO
+            {
+                Id = item.ID,
+                ReportName = item.REPORT_NAME,
+                ReportDescription = item.REPORT_DESCRIPTION
+            };
+
+        }
+        private EAMISREPORTCATALOG MapToEntity(EamisReportCatalogDTO item)
+        {
+            if (item == null) return new EAMISREPORTCATALOG();
+            return new EAMISREPORTCATALOG
+            {
+                ID = item.Id,
+                REPORT_DESCRIPTION = item.ReportDescription,
+                REPORT_NAME = item.ReportName
+            };
+        }
+        private IQueryable<EamisReportCatalogDTO> QueryToDTO(IQueryable<EAMISREPORTCATALOG> query)
+        {
+            return query.Select(x => new EamisReportCatalogDTO
+            {
+                Id = x.ID,
+                ReportName = x.REPORT_NAME,
+                ReportDescription = x.REPORT_DESCRIPTION
+            });
+        }
+        private IQueryable<EAMISREPORTCATALOG> FilteredEntities(EamisReportCatalogDTO filter, IQueryable<EAMISREPORTCATALOG> custom_query = null, bool strict = false)
+        {
+            var predicate = PredicateBuilder.New<EAMISREPORTCATALOG>(true);
+            if (filter.Id != 0)
+                predicate = predicate.And(x => x.ID == filter.Id);
+            if (!string.IsNullOrEmpty(filter.ReportName))
+                predicate.And(x => x.REPORT_NAME.Contains(filter.ReportName.ToLower()));
+            if (!string.IsNullOrEmpty(filter.ReportDescription))
+                predicate.And(x => x.REPORT_DESCRIPTION.Contains(filter.ReportDescription.ToLower()));
+            var query = custom_query ?? _ctx.EAMIS_REPORT_CATALOG;
+            return query.Where(predicate);
+        }
+
     }
 }

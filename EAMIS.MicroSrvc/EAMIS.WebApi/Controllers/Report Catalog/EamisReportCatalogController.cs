@@ -1,7 +1,9 @@
 ﻿using EAMIS.Common.DTO.LookUp;
 using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Report_Catalog;
 using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.ContractRepository.Report_Catalog;
+using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -64,6 +66,45 @@ namespace EAMIS.WebApi.Controllers.Report_Catalog
         {
 
             return Ok(await _eamisReportCatalogRepository.OfficeList());
+        }
+
+        [HttpGet("list")]
+        public async Task<ActionResult<EAMISREPORTCATALOG>> List([FromQuery] EamisReportCatalogDTO filter, [FromQuery] PageConfig config)
+        {
+            if (filter == null)
+                filter = new EamisReportCatalogDTO();
+            return Ok(await _eamisReportCatalogRepository.List(filter, config));
+        }
+
+        [HttpPost("Add")]
+        public async Task<ActionResult<EamisReportCatalogDTO>> Add([FromBody] EamisReportCatalogDTO item)
+        {
+            if (item == null)
+                item = new EamisReportCatalogDTO();
+            var result = await _eamisReportCatalogRepository.Insert(item);
+            if (_eamisReportCatalogRepository.HasError)
+                return BadRequest(_eamisReportCatalogRepository.ErrorMessage);
+            return Ok(result);
+        }
+        [HttpPut("Edit")]
+        public async Task<ActionResult<EamisReportCatalogDTO>> Edit([FromBody] EamisReportCatalogDTO item)
+        {
+            if (item == null)
+                item = new EamisReportCatalogDTO();
+            var result = await _eamisReportCatalogRepository.Update(item);
+            if (_eamisReportCatalogRepository.HasError)
+                return BadRequest(_eamisReportCatalogRepository.ErrorMessage);
+            return Ok(result);
+        }
+        [HttpPost("Delete")]
+        public async Task<ActionResult<EamisReportCatalogDTO>> Delete([FromBody] EamisReportCatalogDTO item)
+        {
+            if (item == null)
+                item = new EamisReportCatalogDTO();
+            var result = await _eamisReportCatalogRepository.Delete(item);
+            if (_eamisReportCatalogRepository.HasError)
+                return BadRequest(_eamisReportCatalogRepository.ErrorMessage);
+            return Ok(result);
         }
 
     }

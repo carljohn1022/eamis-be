@@ -96,6 +96,10 @@ namespace EAMIS.Core.Domain
 
         //Property Ledger
         public DbSet<EAMISPROPERTYLEDGER> EAMIS_PROPERTY_LEDGER { get; set; }
+
+        //Report
+        public DbSet<EAMISREPORTCATALOG> EAMIS_REPORT_CATALOG { get; set; }
+        public DbSet<EAMISUSERREPORTLINK> EAMIS_USER_REPORT_LINK { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<EAMISATTACHMENTTYPE>()
