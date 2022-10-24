@@ -51,7 +51,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TOTAL_VALUE_VAR = item.TotalValueVar,
                 UNIT_COST = item.UnitCost,
                 UOM = item.UOM,
-                VARIANCE = item.Variance
+                VARIANCE = item.Variance,
+                TRANSACTION_DATE = item.TransactionDate
             };
         }
 
@@ -60,7 +61,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             try
             {
                 EAMISPROPERTYLEDGER data = MapToEntity(item);
-                _ctx.Entry(data).State = EntityState.Modified;
+                _ctx.Entry(data).State = EntityState.Added;
                 await _ctx.SaveChangesAsync();
                 item.Id = data.ID;
             }
@@ -103,7 +104,22 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return item;
         }
+        private int GetTotalOnHand(string itemCode, DateTime asOfDate)
+        {
+            var itemId = _ctx.EAMIS_PROPERTYITEMS.Where(i => i.PROPERTY_NO == itemCode).AsNoTracking().Select(i => i.ID).FirstOrDefault();
 
+            var result = _ctx.EAMIS_DELIVERY_RECEIPT_DETAILS
+                             .Join(_ctx.EAMIS_DELIVERY_RECEIPT,
+                             d => d.DELIVERY_RECEIPT_ID,
+                             h => h.ID,
+                             (d, h) => new { d, h })
+                             .Where(d => d.h.DATE_RECEIVED <= asOfDate &&
+                                         d.d.ITEM_ID == itemId)
+                             .GroupBy(g => g.d.ITEM_ID)
+                             .Select(v => v.Sum(t => t.d.QTY_RECEIVED))
+                             .FirstOrDefault();
+            return result;
+        }
         private int GetTotalReceived(string itemCode, DateTime asOfDate)
         {
             var total = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
@@ -183,6 +199,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
             {
                 result.Items[intRow].TotalReceived = GetTotalReceived(result.Items[intRow].ItemCode, result.Items[intRow].AsOfDate);
                 result.Items[intRow].TotalIssued = GetTotalIssued(result.Items[intRow].ItemCode, result.Items[intRow].AsOfDate);
+                result.Items[intRow].UOM = GetUnitOfMeasure(result.Items[intRow].ItemCode);
+                result.Items[intRow].TotalOnHandDR = GetTotalOnHand(result.Items[intRow].ItemCode, result.Items[intRow].AsOfDate);
             }
 
             return result;
@@ -209,28 +227,49 @@ namespace EAMIS.Core.LogicRepository.Transaction
                             h => h.ID,
                             (d, h) => new { d, h })
                             .Where(s => s.h.TRANSACTION_STATUS == DocStatus.Approved &&
-                                        s.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving &&
+                                        s.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance &&
                                         s.d.TIME_STAMP <= filter.AsOfDate)
+                            .GroupBy(g => new {
+                                g.d.ITEM_CODE,
+                                g.d.TIME_STAMP,
+                                g.d.ITEM_DESCRIPTION,
+                                g.d.RESPONSIBILITY_CODE,
+                                g.d.UNIT_COST
+                            })
                             .Select(i => new EAMISPROPERTYLEDGER
                             {
-                                ID = i.d.ID,
-                                ITEM_CODE = i.d.ITEM_CODE,
-                                ITEM_DESC = i.d.ITEM_DESCRIPTION,
+                                ID = 0,
+                                ITEM_CODE = i.Key.ITEM_CODE,
+                                ITEM_DESC = i.Key.ITEM_DESCRIPTION,
                                 PHYSICAL_COUNT = 0,//User input
                                 REMARKS = string.Empty,//user input
-                                RESPONSIBILITY_CODE = i.d.RESPONSIBILITY_CODE,//item responsibility center
+                                RESPONSIBILITY_CODE = i.Key.RESPONSIBILITY_CODE,//item responsibility center
                                 TOTAL_ISSUED = 0,
                                 TOTAL_ON_HAND_DR = 0,
                                 TOTAL_RECEIVED = 0,
                                 TOTAL_VALUE_OH = 0,
                                 TOTAL_VALUE_PC = 0,
                                 TOTAL_VALUE_VAR = 0,
-                                UNIT_COST = i.d.UNIT_COST,
+                                UNIT_COST = i.Key.UNIT_COST,
                                 UOM = string.Empty,
                                 VARIANCE = 0,
-                                AS_OF_DATE = filter.AsOfDate
+                                AS_OF_DATE = filter.AsOfDate,
+                                TRANSACTION_DATE = i.Key.TIME_STAMP
                             });
             return query.Where(predicate);
+        }
+        private string GetUnitOfMeasure(string itemCode)
+        {
+            var unit = _ctx.EAMIS_PROPERTYITEMS
+                           .Join(_ctx.EAMIS_UNITOFMEASURE,
+                           p => p.UOM_ID,
+                           m => m.ID,
+                           (p, m) => new { p, m })
+                           .Where(i => i.p.PROPERTY_NO == itemCode)
+                           .Select(v => v.m.UOM_DESCRIPTION)
+                           .FirstOrDefault();
+            return unit;
+
         }
 
         private IQueryable<EAMISPROPERTYLEDGER> PagedQuery(IQueryable<EAMISPROPERTYLEDGER> query, int resolved_size, int resolved_index)
@@ -256,8 +295,10 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TotalValueVar = x.TOTAL_VALUE_VAR,
                 UnitCost = x.UNIT_COST,
                 UOM = x.UOM,
-                Variance = x.VARIANCE
+                Variance = x.VARIANCE,
+                TransactionDate = x.TRANSACTION_DATE
             });
         }
+
     }
 }

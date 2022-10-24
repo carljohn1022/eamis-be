@@ -174,28 +174,28 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return result;
         }
-        public async Task<DataList<EamisPropertyTransferDetailsDTO>> SearchIssuance(string type, string searchValue)
+        public async Task<DataList<EamisPropertyTransferDetailsDTO>> SearchIssuance(string type, string searchValue, int assigneeCustodian)
         {
             IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = null;
             if (type == "Item Code")
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.ITEM_CODE.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.ITEM_CODE.Contains(searchValue) && x.ASSIGNEE_CUSTODIAN == assigneeCustodian).AsQueryable();
             }
             else if (type == "Item Description")
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.ITEM_DESCRIPTION.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.ITEM_DESCRIPTION.Contains(searchValue) && x.ASSIGNEE_CUSTODIAN == assigneeCustodian).AsQueryable();
             }
             else if (type == "Transaction Number")
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue) && x.ASSIGNEE_CUSTODIAN == assigneeCustodian).AsQueryable();
             }
             else if (type == "Serial Number")
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.SERIAL_NUMBER.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.SERIAL_NUMBER.Contains(searchValue) && x.ASSIGNEE_CUSTODIAN == assigneeCustodian).AsQueryable();
             }
             else
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving && x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Where(x => x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving && x.PROPERTY_TRANSACTION_GROUP.TRANSACTION_NUMBER.Contains(searchValue) && x.ASSIGNEE_CUSTODIAN == assigneeCustodian).AsQueryable();
             }
 
             var paged = PagedQueryForSearch(query);
@@ -232,7 +232,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             .Where(x => arrDistinctDetailID.Contains(x.d.ID) &&
                                                    (x.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance ||
                                                     x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer )
-                                                    //&& x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
+                                                    && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                    //&& x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved --> to do: uncomment this line to get property items with Approved status only
                                                    )
                                             .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS

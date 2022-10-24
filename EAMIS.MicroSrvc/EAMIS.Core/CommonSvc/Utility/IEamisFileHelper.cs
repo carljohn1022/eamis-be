@@ -26,6 +26,8 @@ namespace EAMIS.Core.CommonSvc.Utility
 
         Task<List<EAMISPROCUREMENTCATEGORY>> DownloadProcurements();
 
+        Task<List<EAMISWAREHOUSE>> DownloadWarehouse();
+
         Task<List<EAMISRESPONSIBILITYCENTER>> DownloadResponsibilityCenters();
 
         Task<List<EAMISUNITOFMEASURE>> DownloadUOM();

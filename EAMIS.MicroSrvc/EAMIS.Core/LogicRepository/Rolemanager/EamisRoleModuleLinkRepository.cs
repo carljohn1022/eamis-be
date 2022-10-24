@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Rolemanager;
+﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Rolemanager;
 using EAMIS.Core.ContractRepository.Masterfiles;
 using EAMIS.Core.Domain;
 using EAMIS.Core.Domain.Entities;
@@ -144,7 +145,13 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 InsertRight = x.INSERT_RIGHT,
                 ModuleId = x.MODULE_ID,
                 PrintRight = x.PRINT_RIGHT,
-                IsActive = x.IS_ACTIVE
+                IsActive = x.IS_ACTIVE,
+                Roles = _ctx.EAMIS_ROLES.Select(r => new EamisRolesDTO
+                {
+                    Id = r.ID,
+                    Role_Name = r.ROLE_NAME,
+                    IsDeleted = r.IS_DELETED
+                }).Where(i => i.Id == x.ROLE_ID).FirstOrDefault()
             });
         }
         private IQueryable<EAMISROLEMODULELINK> FilteredEntities(EamisRoleModuleLinkDTO filter, IQueryable<EAMISROLEMODULELINK> custom_query = null, bool strict = false)

@@ -265,6 +265,12 @@ namespace EAMIS.Core.CommonSvc.Utility
             return result;
         }
 
+        public async Task<List<EAMISWAREHOUSE>> DownloadWarehouse()
+        {
+            var result = await _eamisWarehouseRepository.ListAllWarehouse();
+            return result;
+        }
+
         public async Task<List<EAMISPROCUREMENTCATEGORY>> DownloadProcurements()
         {
             var result = await _eamisProcurementCategoryRepository.ListAllProcurements();
@@ -407,7 +413,7 @@ namespace EAMIS.Core.CommonSvc.Utility
                 Warehouse = new EamisWarehouseDTO { Warehouse_Description = rowValues[0].ToString() },
                 UnitOfMeasure = new EamisUnitofMeasureDTO { Uom_Description = rowValues[5].ToString() },
                 Supplier = new EamisSupplierDTO { CompanyName = rowValues[6].ToString() },
-                ItemCategory = new EamisItemCategoryDTO { CategoryName = rowValues[9].ToString() , ShortDesc = rowValues[12].ToString() }
+                ItemCategory = new EamisItemCategoryDTO { CategoryName = rowValues[9].ToString(), ShortDesc = rowValues[12].ToString() }
             };
         }
 
@@ -464,6 +470,23 @@ namespace EAMIS.Core.CommonSvc.Utility
                 IsActive = Convert.ToBoolean(rowValues[2])
             };
             return eamisSubCategoryDTO;
+        }
+
+        private static EamisWarehouseDTO GetCSVWarehouseValue(string csvLine)
+        {
+            string[] rowValues = csvLine.Split(FileFormat.Separator);
+            EamisWarehouseDTO eamisWarehouseDTO = new EamisWarehouseDTO
+            {
+                Id = 0,
+                Warehouse_Description = rowValues[0].ToString(),
+                Street_Name = rowValues[1].ToString(),
+                Region_Code = Convert.ToInt32(rowValues[2]),
+                Municipality_Code = Convert.ToInt32(rowValues[3]),
+                Province_Code = Convert.ToInt32(rowValues[4]),
+                Barangay_Code = Convert.ToInt32(rowValues[5]),
+                IsActive = Convert.ToBoolean(rowValues[6])
+            };
+            return eamisWarehouseDTO;
         }
 
         private static EamisChartofAccountsDTO GetCSVCOAValue(string csvLine)
@@ -770,7 +793,24 @@ namespace EAMIS.Core.CommonSvc.Utility
                             return HasError;
                         }
                         break;
-                        #endregion Responsibility Center
+                    #endregion Responsibility Center
+
+                    #region Warehouse
+                    case WorkSheetTemplateNames.Warehouse:
+                        List<EamisWarehouseDTO> lsteamisWarehouse = File.ReadAllLines(CSVFilePath)
+                                          .Skip(1) //skip header
+                                          .Select(csvRow => GetCSVWarehouseValue(csvRow))
+                                          .ToList();
+
+                        var warehouseResult = await _eamisWarehouseRepository.InsertFromExcel(lsteamisWarehouse);
+                        if (_eamisResponsibilityCenterRepository.HasError)
+                        {
+                            _errorMessage = _eamisWarehouseRepository.ErrorMessage;
+                            bolerror = true;
+                            return HasError;
+                        }
+                        break;
+                        #endregion Warehouse
                 }
                 bolerror = false;
             }
@@ -781,7 +821,6 @@ namespace EAMIS.Core.CommonSvc.Utility
             }
             return HasError;
         }
-
         private async Task<bool> UploadExcelToDB(string ExcelFilePath, string TemplateName)
         {
             try
@@ -1103,7 +1142,30 @@ namespace EAMIS.Core.CommonSvc.Utility
                                 row = worksheet.Row(rowCtr);
                             }
                             break;
-                            #endregion Responsibility Center
+                        #endregion Responsibility Center
+
+                        #region Warehouse
+                        case WorkSheetTemplateNames.Warehouse:
+                            rowCtr += 1;
+                            row = worksheet.Row(rowCtr);
+
+                            while (!row.IsEmpty())
+                            {
+                                EamisWarehouseDTO eamisWarehouseDTO1 = new EamisWarehouseDTO();
+
+                                eamisWarehouseDTO1.Warehouse_Description = row.Cell(0).Value.ToString();
+                                eamisWarehouseDTO1.Street_Name = row.Cell(1).Value.ToString();
+                                eamisWarehouseDTO1.Region_Code = Convert.ToInt32(row.Cell(2).Value);
+                                eamisWarehouseDTO1.Municipality_Code = Convert.ToInt32(row.Cell(3).Value);
+                                eamisWarehouseDTO1.Province_Code = Convert.ToInt32(row.Cell(4).Value);
+                                eamisWarehouseDTO1.Barangay_Code = Convert.ToInt32(row.Cell(5).Value);
+                                eamisWarehouseDTO1.IsActive = Convert.ToBoolean(row.Cell(6).Value);
+                                rowCtr += 1;
+                                var result = await _eamisWarehouseRepository.InsertFromExcel(eamisWarehouseDTO1);
+                                row = worksheet.Row(rowCtr);
+                            }
+                            break;
+                            #endregion Warehouse
                     }
 
                 }

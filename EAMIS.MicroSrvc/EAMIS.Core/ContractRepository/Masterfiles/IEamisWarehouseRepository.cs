@@ -16,5 +16,10 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> ValidateExistingWarehouse(string warehouseDesc);
         Task<bool> EditValidationWarehouse(int id, string warehouseDesc);
         Task<List<EAMISWAREHOUSE>> ListAllWarehouse();
+
+        Task<EamisWarehouseDTO> InsertFromExcel(EamisWarehouseDTO item);
+
+        Task<bool> InsertFromExcel(List<EamisWarehouseDTO> Items);
+        string ErrorMessage { get; set; }
     }
 }

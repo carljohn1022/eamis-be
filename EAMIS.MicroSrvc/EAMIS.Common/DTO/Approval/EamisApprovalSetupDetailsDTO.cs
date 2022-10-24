@@ -1,4 +1,6 @@
-﻿namespace EAMIS.Common.DTO.Approval
+﻿using EAMIS.Common.DTO.Masterfiles;
+
+namespace EAMIS.Common.DTO.Approval
 {
     public class EamisApprovalSetupDetailsDTO
     {
@@ -9,5 +11,6 @@
         public decimal MinAmount { get; set; }
         public decimal MaxAmount { get; set; }
         public EamisApprovalSetupDTO ApprovalSetup { get; set; }
+        public EamisUsersDTO User { get; set; }
     }
 }

@@ -75,12 +75,12 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string Suppliers = "Suppliers";
         public const string Category = "Category";
         public const string SubCategory = "SubCategory";
-        public const string Warehouse = "Warehouse";
+        public const string Warehouse = "Stockroom";
         public const string ChartOfAccount = "ChartOfAccount";
         public const string Funds = "Funds";
         public const string ProcurementCategory = "ProcurementCategory";
         public const string UnitofMeasurement = "UnitofMeasurement";
-        public const string ResponsibilityCenter = "Responsibility Center";
+        public const string ResponsibilityCenter = "ResponsibilityCenter";
     }
     public static class WorkSheetNames
     {

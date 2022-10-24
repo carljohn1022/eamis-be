@@ -71,9 +71,9 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return Ok(await _eamisPropertyTransferDetailsRepository.Update(item));
         }
         [HttpGet("SearchIssuance")]
-        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> SearchIssuance(string type, string searchValue)
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> SearchIssuance(string type, string searchValue, int assigneeCustodian)
         {
-            return Ok(await _eamisPropertyTransferDetailsRepository.SearchIssuance(type, searchValue));
+            return Ok(await _eamisPropertyTransferDetailsRepository.SearchIssuance(type, searchValue, assigneeCustodian));
         }
     }
 }

@@ -27,7 +27,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         private readonly IWebHostEnvironment _hostingEnvironment;
 
         private bool bolWithData = false;
- 
+
 
         private bool TemplateWithData { get => bolWithData; set => value = bolWithData; }
 
@@ -297,25 +297,70 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             }
         }
 
+        //private async Task<ActionResult> Warehouse()
+        //{
+        //    string filename = WorkSheetTemplateNames.Warehouse + ".xlsx";
+        //    using (var workbook = new XLWorkbook())
+        //    {
+
+        //        workbook.Worksheets.Add(WorkSheetNames.WarehouseList);
+
+        //        IXLWorksheet warehouse =
+        //        workbook.Worksheet(WorkSheetNames.WarehouseList);
+        //        warehouse.Cell(1, 1).Value = "ID"; // ID
+        //        warehouse.Cell(1, 2).Value = "Warehouse Description";//Warehouse Description
+        //        warehouse.Cell(1, 3).Value = "Street Name";//street name
+        //        warehouse.Cell(1, 4).Value = "Region Code";//Region code
+        //        warehouse.Cell(1, 5).Value = "Municipality Code";//Municipality code
+        //        warehouse.Cell(1, 6).Value = "Province Code";//Province code
+        //        warehouse.Cell(1, 7).Value = "Barangay Code";//Barangay code
+        //        warehouse.Cell(1, 8).Value = "IsActive";//IsActive?
+
+        //        //required using System.IO;
+        //        using (var stream = new MemoryStream())
+        //        {
+        //            workbook.SaveAs(stream);
+        //            var content = stream.ToArray();
+        //            return await Task.Run(() => File(
+        //               content,
+        //               FileType.SpreadSheetType,
+        //               filename)).ConfigureAwait(false);
+        //        }
+        //    }
+        //}
+
         private async Task<ActionResult> Warehouse()
         {
             string filename = WorkSheetTemplateNames.Warehouse + ".xlsx";
             using (var workbook = new XLWorkbook())
             {
 
-                workbook.Worksheets.Add(WorkSheetNames.WarehouseList);
+                workbook.Worksheets.Add(WorkSheetTemplateNames.Warehouse);
 
-                IXLWorksheet warehouse =
-                workbook.Worksheet(WorkSheetNames.WarehouseList);
-                warehouse.Cell(1, 1).Value = "ID"; // ID
-                warehouse.Cell(1, 2).Value = "Warehouse Description";//Warehouse Description
-                warehouse.Cell(1, 3).Value = "Street Name";//street name
-                warehouse.Cell(1, 4).Value = "Region Code";//Region code
-                warehouse.Cell(1, 5).Value = "Municipality Code";//Municipality code
-                warehouse.Cell(1, 6).Value = "Province Code";//Province code
-                warehouse.Cell(1, 7).Value = "Barangay Code";//Barangay code
-                warehouse.Cell(1, 8).Value = "IsActive";//IsActive?
-
+                IXLWorksheet coa = workbook.Worksheet(WorkSheetTemplateNames.Warehouse);
+                coa.Cell(1, 1).Value = "WAREHOUSE DESCRIPTION";
+                coa.Cell(1, 2).Value = "STREET NAME";
+                coa.Cell(1, 3).Value = "REGION CODE";
+                coa.Cell(1, 4).Value = "MUNICIPALITY CODE";
+                coa.Cell(1, 5).Value = "PROVINCE CODE";
+                coa.Cell(1, 6).Value = "BARANGAY CODE";
+                coa.Cell(1, 7).Value = "IS ACTIVE";
+                if (TemplateWithData)
+                {
+                    List<EAMISWAREHOUSE> coas = await _eamisFileHelper.DownloadWarehouse();
+                    int rowCtr = 2;
+                    foreach (var item in coas)
+                    {
+                        coa.Cell(rowCtr, 1).Value = item.WAREHOUSE_DESCRIPTION;
+                        coa.Cell(rowCtr, 2).Value = item.STREET_NAME;
+                        coa.Cell(rowCtr, 3).Value = item.REGION_CODE;
+                        coa.Cell(rowCtr, 4).Value = item.MUNICIPALITY_CODE;
+                        coa.Cell(rowCtr, 5).Value = item.PROVINCE_CODE;
+                        coa.Cell(rowCtr, 6).Value = item.BARANGAY_CODE;
+                        coa.Cell(rowCtr, 7).Value = item.IS_ACTIVE;
+                        rowCtr++;
+                    }
+                }
                 //required using System.IO;
                 using (var stream = new MemoryStream())
                 {
@@ -545,7 +590,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         [HttpPost("UploadFile")]
         public ActionResult UploadExcel(IFormFile file, string TemplateName = WorkSheetTemplateNames.Items)
         {
-            if(file == null)
+            if (file == null)
                 return BadRequest("File not found.");
 
             string fileName = string.Empty;

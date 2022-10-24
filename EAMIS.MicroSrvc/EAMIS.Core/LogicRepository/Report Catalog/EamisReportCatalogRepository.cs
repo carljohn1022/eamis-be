@@ -124,7 +124,19 @@ namespace EAMIS.Core.LogicRepository.Report_Catalog
 
             return result;
         }
-      
+        public async Task<List<LookupDTO>> ResponsibilityCodeList()
+        {
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                          .Where(f => !(f.RESPONSIBILITY_CODE == null || f.RESPONSIBILITY_CODE == string.Empty))
+                                          .GroupBy(x => x.RESPONSIBILITY_CODE)
+                                          .Select(i => new LookupDTO
+                                          {
+                                              LookUpValue = i.Key,
+                                          })
+                                          .ToList();
+            return result;
+        }
+
 
         public async Task<EamisReportCatalogDTO> Delete(EamisReportCatalogDTO item)
         {

@@ -482,14 +482,15 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                     string serialNumber = "";
                                     string propertyNumber = "";
 
-                                    int locStart = loc.LOCATION_CODE.Length - (loc.LOCATION_CODE.Length - 3);
+                                    //int locStart = loc.LOCATION_CODE.Length - (loc.LOCATION_CODE.Length - 3
+                                    int locStart = loc.LOCATION_CODE.Length - 3;
                                     if (itemCategory.CATEGORY_ID.ToString().Length < 3)
                                         serialNumber = itemCategory.CATEGORY_ID.ToString().PadLeft(3, '0');
                                     else
                                         serialNumber = itemCategory.CATEGORY_ID.ToString().Substring(0, 3);
 
-                                    serialNumber += "-" + totalCount.ToString().PadLeft(4, '0') + "-" +
-                                                       loc.LOCATION_CODE.Substring(locStart + 1);
+                                    serialNumber +=  totalCount.ToString().PadLeft(4, '0') +
+                                                       loc.LOCATION_CODE.Substring(locStart);
 
                                     propertyNumber = yearPurchased + "-" +
                                                      coa.PPE_SUB_MAJOR_ACCT_GRP.ToString() + "-" +

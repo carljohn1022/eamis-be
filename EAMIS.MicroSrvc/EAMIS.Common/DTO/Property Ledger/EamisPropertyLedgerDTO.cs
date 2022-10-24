@@ -24,5 +24,7 @@ namespace EAMIS.Common.DTO.Transaction
         public decimal TotalValueVar { get; set; }
         public string Remarks { get; set; }
         public DateTime AsOfDate { get; set; }
+
+        public DateTime TransactionDate { get; set; }
     }
 }

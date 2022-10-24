@@ -43,6 +43,48 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             }
             return retValue;
         }
+        public async Task<string> GetTranFileName(string transactionNumber, string fileName)
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_ATTACHED_FILES
+                                                  .Where(s => s.TRANID == transactionNumber && s.ATTACHED_FILENAME == fileName)
+                                                  .AsNoTracking()
+                                                  .Select(v => v.ATTACHED_FILENAME)
+                                                  .FirstOrDefault())
+                                                  .ConfigureAwait(false);
+
+            return result;
+        }
+
+        public async Task<bool> DeleteImageFileName(string transactionNumber, string fileName)
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_ATTACHED_FILES
+                                                  .Where(s => s.TRANID == transactionNumber && s.ATTACHED_FILENAME == fileName)
+                                                  .AsNoTracking()
+                                                  .Select(v => v.ID)
+                                                  .FirstOrDefault())
+                                                  .ConfigureAwait(false);
+
+            if (result != 0)
+            {
+                try
+                {
+                    EamisAttachedFilesDTO file = new EamisAttachedFilesDTO
+                    {
+                        Id = result
+                    };
+                    EAMISATTACHEDFILES data = MapToEntity(file);
+                    _ctx.Entry(data).State = EntityState.Deleted;
+                    await _ctx.SaveChangesAsync();
+
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                    throw ex;
+                }
+            }
+            return true;
+        }
         public async Task<bool> Delete(EamisAttachedFilesDTO file)
         {
             try

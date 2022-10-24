@@ -27,6 +27,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
         public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
 
         private bool bolerror = false;
+        private int RunningLife = 0;
         public bool HasError { get => bolerror; set => value = bolerror; }
 
         private int _estimatedLife;
@@ -205,6 +206,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     AcquisitionDate = d.ACQUISITION_DATE,
                     AppraisalIncrement = d.APPRAISAL_INCREMENT,
                     AppraisedValue = d.APPRAISED_VALUE,
+                    AccumulatedDepreciationAmount = d.ACCUMULATED_DEPREC_AMT * RunningLife,
                     AreaSQM = d.AREA_SQM,
                     AssessedValue = d.ASSESSED_VALUE,
                     AssetCondition = d.ASSET_CONDITION,
@@ -356,7 +358,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     if (item.ACQUISITION_DATE.Day < PropertyItemStatus.CutOffDay)
                         runningLife += 1; //always add 1 to running life when items acquired day  between 1 and 15
                 }
-
+                RunningLife = runningLife;
                 if ((runningLife >= 0) && (EstimatedLife > runningLife))
                 {
                     //Check next depreciation month and year is matched with the given year and month
@@ -372,7 +374,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                         decimal monthlyDepreciation = bookValue / EstimatedLife; //Estimated life source is Item_Category
 
                         TempScheduleDTO tempScheduleDTO = new TempScheduleDTO();
-                        decimal newDepreciationAmount = Convert.ToDecimal(monthlyDepreciation.ToString("#0.00")) * runningLife;
+                        decimal newDepreciationAmount = Convert.ToDecimal(monthlyDepreciation.ToString("#0.00"));// * runningLife;
                         tempScheduleDTO.ID = item.ID;
                         //tempScheduleDTO.DEPRECIATION_AMOUNT = monthlyDepreciation * runningLife;
                         tempScheduleDTO.AcquisitionDate = item.ACQUISITION_DATE;
@@ -389,7 +391,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
 
             //get the final list from database based on the above filter
-            
+
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_SCHEDULE.Where(x => arrItemsForDepreciation.Contains(x.ID))
                                             .Select(d => new EAMISPROPERTYDEPRECIATION
                                             {
@@ -400,7 +402,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                 DEPRECIATION_YEAR = filter.DepreciationYear,
                                                 POSTING_DATE = DateTime.Now
                                             });
-            
+
             return query.Where(predicate);
         }
 
@@ -419,6 +421,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     Id = d.ID,
                     AcquisitionCost = d.ACQUISITION_COST,
                     AcquisitionDate = d.ACQUISITION_DATE,
+                    AccumulatedDepreciationAmount = d.ACCUMULATED_DEPREC_AMT,
                     AppraisalIncrement = d.APPRAISAL_INCREMENT,
                     AppraisedValue = d.APPRAISED_VALUE,
                     AreaSQM = d.AREA_SQM,

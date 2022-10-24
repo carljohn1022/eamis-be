@@ -184,6 +184,11 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     PropertyNo = x.ITEMS_GROUP.PROPERTY_NO,
                     PropertyName = x.ITEMS_GROUP.PROPERTY_NAME,
                     UomId = x.ITEMS_GROUP.UOM_ID,
+                    ItemCategory = new EamisItemCategoryDTO
+                    {
+                        Id = x.ITEMS_GROUP.ITEM_CATEGORY.ID,
+                        ForDepreciation = x.ITEMS_GROUP.ITEM_CATEGORY.FOR_DEPRECIATION
+                    }
                 },
                 DeliveryReceipt = new EamisDeliveryReceiptDTO
                 {
@@ -267,9 +272,15 @@ namespace EAMIS.Core.LogicRepository.Transaction
             EAMISSERIALTRAN serialTran = MapToEntity(item);
             try
             {
+                if (item.SerialNumber == "")
+                {
+                    _ctx.Entry(serialTran).State = EntityState.Deleted;
+                }
+                else { 
                 _ctx.Entry(serialTran).State = EntityState.Added;
                 _ctx.SaveChangesAsync().GetAwaiter().GetResult();
                 bolerror = false;
+                }
             }
             catch (Exception ex)
             {

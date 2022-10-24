@@ -350,7 +350,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 SalvageValue = d.SALVAGE_VALUE,
                 SerialNo = d.SERIAL_NO,
                 Status = d.STATUS, //Get latest value from property transaction
-                SubCategory = d.SUB_CATEGORY,
+                SubCategory = d.SUB_CATEGORY,  
                 SvcAgreementNo = d.SVC_AGREEMENT_NO,
                 VendorName = d.VENDORNAME,
                 Warranty = d.WARRANTY,

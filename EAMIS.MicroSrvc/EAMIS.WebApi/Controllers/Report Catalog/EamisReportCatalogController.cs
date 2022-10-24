@@ -67,6 +67,12 @@ namespace EAMIS.WebApi.Controllers.Report_Catalog
 
             return Ok(await _eamisReportCatalogRepository.OfficeList());
         }
+        [HttpGet("ResponsibilityCodeList")]
+        public async Task<ActionResult<LookupDTO>> ResponsibilityCodeList()
+        {
+
+            return Ok(await _eamisReportCatalogRepository.ResponsibilityCodeList());
+        }
 
         [HttpGet("list")]
         public async Task<ActionResult<EAMISREPORTCATALOG>> List([FromQuery] EamisReportCatalogDTO filter, [FromQuery] PageConfig config)

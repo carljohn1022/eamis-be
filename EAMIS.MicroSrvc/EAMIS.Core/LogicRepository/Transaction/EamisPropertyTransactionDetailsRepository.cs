@@ -120,10 +120,10 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 CATEGORY = CategoryName, //get from category, link to property item
                 COST_CENTER = item.ResponsibilityCode,
                 DEPARTMENT = item.Department,
-                DEPREC_AMOUNT = (item.UnitCost - (item.UnitCost * salvageValue)), //Depreciable cost divided by estimated life
+                DEPREC_AMOUNT = (item.UnitCost - (item.UnitCost * salvageValue)) / EstimatedLife, //Depreciable cost divided by estimated life
                 DETAILS = string.Empty,
                 DISPOSED_AMOUNT = 0,
-                EST_LIFE = item.EstLife,
+                EST_LIFE = EstimatedLife,//item.EstLife,
                 FOR_DEPRECIATION = item.isDepreciation, //itemCategory.For_Depreciation
                 INVOICE_NO = item.Invoice,
                 ITEM_DESCRIPTION = item.ItemDescription,
@@ -149,7 +149,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 WARRANTY_DATE = item.AcquisitionDate.AddMonths(item.WarrantyExpiry),  //item.WarrantyExpiry?
                 ITEM_CODE = item.ItemCode,
                 REFERENCE_ID = item.Id,
-                REMAINING_LIFE = item.EstLife,
+                REMAINING_LIFE = EstimatedLife, // item.EstLife,
                 ACCUMULATED_DEPREC_AMT = 0 //Deprecition amount multiplied by running life(property item's age)
             };
         }

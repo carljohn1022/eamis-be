@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Approval;
+using EAMIS.Common.DTO.Masterfiles;
 using EAMIS.Core.ContractRepository.Approval;
 using EAMIS.Core.Domain;
 using EAMIS.Core.Domain.Entities;
@@ -59,7 +60,12 @@ namespace EAMIS.Core.LogicRepository.Approval
                     Id = s.ID,
                     ModuleName = s.MODULE_NAME,
                     MaxLevel = s.MAX_LEVEL
-                }).Where(i => i.Id == x.APPROVALSETUP_ID).FirstOrDefault()
+                }).Where(i => i.Id == x.APPROVALSETUP_ID).FirstOrDefault(),
+                User = _ctx.EAMIS_USERS.AsNoTracking().Select(u => new EamisUsersDTO
+                {
+                    User_Id = u.USER_ID,
+                    Username = u.USERNAME
+                }).Where(i => i.User_Id == x.SIGNATORY_ID).FirstOrDefault()
             });
         }
 

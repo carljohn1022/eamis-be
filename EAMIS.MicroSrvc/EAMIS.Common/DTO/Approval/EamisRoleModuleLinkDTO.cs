@@ -1,4 +1,6 @@
-﻿namespace EAMIS.Common.DTO.Rolemanager
+﻿using EAMIS.Common.DTO.Masterfiles;
+
+namespace EAMIS.Common.DTO.Rolemanager
 {
     public class EamisRoleModuleLinkDTO
     {
@@ -11,5 +13,6 @@
         public bool DeactivateRight { get; set; }
         public bool PrintRight { get; set; }
         public bool IsActive { get; set; }
+        public EamisRolesDTO Roles { get; set; }
     }
 }

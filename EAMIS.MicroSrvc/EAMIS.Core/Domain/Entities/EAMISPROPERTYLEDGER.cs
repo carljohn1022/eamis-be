@@ -24,5 +24,6 @@ namespace EAMIS.Core.Domain.Entities
         public decimal TOTAL_VALUE_VAR { get; set; }
         public string REMARKS { get; set; }
         public DateTime AS_OF_DATE { get; set; }
+        public DateTime TRANSACTION_DATE { get; set; }
     }
 }
