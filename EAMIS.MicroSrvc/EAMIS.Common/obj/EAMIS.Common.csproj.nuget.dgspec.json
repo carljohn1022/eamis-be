@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj": {}
+    "C:\\Users\\npala\\Downloads\\EAMIS DENR - Latest\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj": {}
   },
   "projects": {
-    "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj": {
+    "C:\\Users\\npala\\Downloads\\EAMIS DENR - Latest\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj",
+        "projectUniqueName": "C:\\Users\\npala\\Downloads\\EAMIS DENR - Latest\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj",
         "projectName": "EAMIS.Common",
-        "projectPath": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj",
+        "projectPath": "C:\\Users\\npala\\Downloads\\EAMIS DENR - Latest\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\EAMIS.Common.csproj",
         "packagesPath": "C:\\Users\\npala\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\obj\\",
+        "outputPath": "C:\\Users\\npala\\Downloads\\EAMIS DENR - Latest\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

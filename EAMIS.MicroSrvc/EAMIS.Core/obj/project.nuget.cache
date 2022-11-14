@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "eDavYnhClq61D4/c3n4WUG1lfkLP5+2ZnHSWk3uS9veo/RwCcXdvjCMsogiPNsfvN1H1NaVVaY3s7NOjbDZ8Ag==",
+  "dgSpecHash": "oSrebADb82AeLWXwJpFz3SztoQYqaH26wqWMf2hjTjfbFwSHzY1QAtswxvkOaK+ZrBG72nSnTEBpsnZ/OrOiwg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj",
+  "projectFilePath": "C:\\Users\\npala\\Downloads\\EAMIS DENR - Latest\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.Core\\EAMIS.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\npala\\.nuget\\packages\\closedxml\\0.96.0\\closedxml.0.96.0.nupkg.sha512",
     "C:\\Users\\npala\\.nuget\\packages\\documentformat.openxml\\2.16.0\\documentformat.openxml.2.16.0.nupkg.sha512",

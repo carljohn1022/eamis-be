@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Approval;
+﻿using EAMIS.Common.DTO.Ais;
+using EAMIS.Common.DTO.Approval;
 using EAMIS.Common.DTO.Masterfiles;
 using EAMIS.Core.ContractRepository.Approval;
 using EAMIS.Core.Domain;
@@ -16,15 +17,17 @@ namespace EAMIS.Core.LogicRepository.Approval
     public class EamisApprovalSetupDetailsRepository : IEamisApprovalSetupDetailsRepository
     {
         private EAMISContext _ctx;
+        private AISContext _aisctx;
         private readonly int _maxPageSize;
         private string _errorMessage = "";
         public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
 
         private bool bolerror = false;
         public bool HasError { get => bolerror; set => value = bolerror; }
-        public EamisApprovalSetupDetailsRepository(EAMISContext ctx)
+        public EamisApprovalSetupDetailsRepository(EAMISContext ctx, AISContext aisctx)
         {
             _ctx = ctx;
+            _aisctx = aisctx;
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
               : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
@@ -38,11 +41,23 @@ namespace EAMIS.Core.LogicRepository.Approval
             if (resolved_size > _maxPageSize) resolved_size = _maxPageSize;
             int resolved_index = config.Index ?? 1;
             var paged = PagedQuery(query, resolved_size, resolved_index);
-            return new DataList<EamisApprovalSetupDetailsDTO>
+            var result = new DataList<EamisApprovalSetupDetailsDTO>
             {
                 Count = await query.CountAsync(),
                 Items = await QueryToDTO(paged).ToListAsync(),
             };
+            var personnelInfo = _aisctx.Personnel.AsNoTracking().ToList();
+
+            foreach (var item in result.Items)
+            {
+                item.User.PersonnelInfo = new AisPersonnelDTO
+                {
+                    LastName = personnelInfo.FirstOrDefault(i => i.Id == item.User.PersonnelId).LastName,
+                    FirstName = personnelInfo.FirstOrDefault(i => i.Id == item.User.PersonnelId).FirstName,
+                    MiddleName = personnelInfo.FirstOrDefault(i => i.Id == item.User.PersonnelId).MiddleName
+                };
+            }
+            return result;
         }
 
         private IQueryable<EamisApprovalSetupDetailsDTO> QueryToDTO(IQueryable<EAMISAPPROVALSETUPDETAILS> query)
@@ -64,7 +79,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                 User = _ctx.EAMIS_USERS.AsNoTracking().Select(u => new EamisUsersDTO
                 {
                     User_Id = u.USER_ID,
-                    Username = u.USERNAME
+                    Username = u.USERNAME,
+                    PersonnelId = u.USER_INFO_ID
                 }).Where(i => i.User_Id == x.SIGNATORY_ID).FirstOrDefault()
             });
         }

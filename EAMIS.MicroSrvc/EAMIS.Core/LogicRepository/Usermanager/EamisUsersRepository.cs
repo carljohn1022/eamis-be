@@ -45,6 +45,7 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
                 USERNAME = item.Username,
                 PASSWORD_HASH = item.Password_Hash,
                 PASSWORD_SALT = item.Password_Salt,
+                USER_INFO_ID = item.UserInfoId,
                 IS_ACTIVE = item.IsActive,
                 IS_DELETED = item.IsDeleted,
                 AGENCY_EMPLOYEE_NUMBER = item.AgencyEmployeeNumber,
@@ -69,6 +70,7 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
                 IS_DELETED = false,
                 IS_ACTIVE = true,
                 IS_BLOCKED = false,
+                USER_INFO_ID = item.UserInfoId,
                 PASSWORD_HASH = hmac.ComputeHash(Encoding.UTF8.GetBytes(item.Password)),
                 PASSWORD_SALT = hmac.Key,
 
@@ -127,6 +129,7 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
             {
                 User_Id = x.USER_ID,
                 Username = x.USERNAME,
+                UserInfoId = x.USER_INFO_ID,
                 Password_Hash = x.PASSWORD_HASH,
                 Password_Salt = x.PASSWORD_SALT,
                 IsActive = x.IS_ACTIVE,
@@ -134,6 +137,7 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
                 IsBlocked = x.IS_BLOCKED,
                 AgencyEmployeeNumber = x.AGENCY_EMPLOYEE_NUMBER,
                 UserRoles = x.USER_ROLES.Select(y => new EamisUserRolesDTO { Id = y.ID, RoleId = y.ROLE_ID, Roles = new EamisRolesDTO { Role_Name = y.ROLES.ROLE_NAME } }).ToList(),
+                
                 PersonnelInfo  = new AisPersonnelDTO
                 {
                     //AgencyEmployeeNumber = x.PERSONNEL.AgencyEmployeeNumber,
@@ -157,6 +161,7 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
             {
                 User_Id = item.USER_ID,
                 Username = item.USERNAME,
+                UserInfoId = item.USER_INFO_ID,
                 Password_Hash = item.PASSWORD_HASH,
                 Password_Salt = item.PASSWORD_SALT,
                 IsActive = item.IS_ACTIVE,
@@ -218,7 +223,7 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
         //}
         public async Task<DataList<EamisUsersDTO>> List(EamisUsersDTO filter, PageConfig config)
         {
-           
+
 
             //string resolved_sort = config.SortBy ?? "ApplicationId";
             //bool resolved_isAscending = (config.IsAscending) ? config.IsAscending : false;
@@ -238,14 +243,27 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
             int resolved_index = config.Index ?? 1;
 
             var paged = PagedQuery(query, resolved_size, resolved_index);
-            return new DataList<EamisUsersDTO> 
+            var result = new DataList<EamisUsersDTO>
             {
                 Count = await QueryToDTO(paged).CountAsync(),
-                Items =  await QueryToDTO(paged).ToListAsync(),
-           
+                Items = await QueryToDTO(paged).ToListAsync(),
+
             };
-           
+            var personnelInfo = _aisctx.Personnel.AsNoTracking().ToList();
+
+            foreach (var item in result.Items)
+            {
+                item.PersonnelInfo = new AisPersonnelDTO
+                {
+                    LastName = personnelInfo.FirstOrDefault(i => i.Id == item.UserInfoId).LastName,
+                    FirstName = personnelInfo.FirstOrDefault(i => i.Id == item.UserInfoId).FirstName,
+                    MiddleName = personnelInfo.FirstOrDefault(i => i.Id == item.UserInfoId).MiddleName
+                };
+            }
+            return result;
+
         }
+
         public IQueryable<EAMISUSERS> PagedQuery(IQueryable<EAMISUSERS> query, int resolved_size, int resolved_index)
         {
             return query.Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
@@ -289,7 +307,17 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
         {
             return _ctx.EAMIS_USERS.AsNoTracking().AnyAsync(x => x.AGENCY_EMPLOYEE_NUMBER == EmployeeAgencyNumber);
         }
+        public async Task<string> GetId(string AgencyEmployeeNumber)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _aisctx.Personnel.Where(s => s.AgencyEmployeeNumber == AgencyEmployeeNumber).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                retValue = result[0].Id.ToString(); ;
+            }
+            return retValue;
 
+        }
         public async Task<string> GetAgencyName(string AgencyEmployeeNumber)
         {
             string retValue = "";

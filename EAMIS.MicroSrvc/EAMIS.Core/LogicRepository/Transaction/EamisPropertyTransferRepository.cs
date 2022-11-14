@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Transaction;
+﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.CommonSvc.Constant;
 using EAMIS.Core.CommonSvc.Utility;
 using EAMIS.Core.ContractRepository.Transaction;
@@ -143,6 +144,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                     Invoice = d.INVOICE,
                                     PropertyCondition = d.PROPERTY_CONDITION,
                                 }).ToList()
+                                ,
+                DeliveryImages = _ctx.EAMIS_ATTACHED_FILES.AsNoTracking().Select(v => new EamisAttachedFilesDTO
+                {
+                    Id = v.ID,
+                    FileName = v.ATTACHED_FILENAME,
+                    ModuleName = v.MODULE_NAME,
+                    TransactionNumber = v.TRANID
+                }).Where(i => i.TransactionNumber == x.TRANSACTION_NUMBER).ToList()
             });
         }
         public async Task<EamisPropertyTransactionDTO> Insert(EamisPropertyTransactionDTO item)
@@ -247,6 +256,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     PropertyCondition = x.PROPERTY_CONDITION,
                     transactionDetailId = x.REFERENCE_ID
                 }).Where(i => i.PropertyTransactionID == result.ID).ToList()
+                ,
+                DeliveryImages = _ctx.EAMIS_ATTACHED_FILES.AsNoTracking().Select(v => new EamisAttachedFilesDTO
+                {
+                    Id = v.ID,
+                    FileName = v.ATTACHED_FILENAME,
+                    ModuleName = v.MODULE_NAME,
+                    TransactionNumber = v.TRANID
+                }).Where(i => i.TransactionNumber == result.TRANSACTION_NUMBER).ToList()
             };
         }
         #endregion property transaction

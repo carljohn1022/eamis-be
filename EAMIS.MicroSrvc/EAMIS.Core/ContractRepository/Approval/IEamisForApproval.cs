@@ -19,5 +19,6 @@ namespace EAMIS.Core.ContractRepository.Approval
         Task<List<EamisForApprovalDTO>> ThirdApproverList(int userId, string transactionType);
 
         Task<List<MyApprovalListDTO>> MyApprovalList(int userId, string transactionType);
+        Task<EamisForApprovalDTO> getForApprovalStatus(string transactionNumber);
     }
 }

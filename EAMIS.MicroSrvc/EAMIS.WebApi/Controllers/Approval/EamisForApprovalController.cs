@@ -115,5 +115,10 @@ namespace EAMIS.WebApi.Controllers.Approval
                 return BadRequest(_eamisForApprovalRepository.ErrorMessage);
             return Ok(result);
         }
+        [HttpGet("getForApprovalStatus")]
+        public async Task<ActionResult<EamisForApprovalDTO>> getForApprovalStatus(string transactionNumber)
+        {
+            return Ok(await _eamisForApprovalRepository.getForApprovalStatus(transactionNumber));
+        }
     }
 }

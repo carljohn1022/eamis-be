@@ -67,6 +67,12 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             var response = await _applicationUsers.GetAgencyName(AgencyEmployeeNumber);
             return response;
         }
+        [HttpGet("UserInfoId")]
+        public async Task<string> UserInfoId(string AgencyEmployeeNumber)
+        {
+            var response = await _applicationUsers.GetId(AgencyEmployeeNumber);
+            return response;
+        }
 
     }
 }

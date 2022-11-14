@@ -11,6 +11,7 @@ namespace EAMIS.Common.DTO.Masterfiles
     {
         public int User_Id { get; set; }
         public int PersonnelId { get; set; }
+        public int UserInfoId { get; set; }
         public string Username { get; set; }
         public byte[] Password_Hash { get; set; }
         public byte[] Password_Salt { get; set; }
@@ -27,6 +28,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public string Username { get; set; }
         public string Password { get; set; }
         public string AgencyEmployeeNumber { get; set; }
+        public int UserInfoId { get; set; }
     }
    
 }

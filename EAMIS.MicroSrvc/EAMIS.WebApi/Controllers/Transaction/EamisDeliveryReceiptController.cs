@@ -93,7 +93,6 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var response = await _eamisDeliveryReceiptDetailsRepository.GetItemById(itemId);
             return response;
         }
-
         [HttpGet("DownloadFile")]
         public FileResult DownloadFile(string fileName)
         {
@@ -119,8 +118,8 @@ namespace EAMIS.WebApi.Controllers.Transaction
         public async Task<ActionResult> UploadImages(List<IFormFile> imgFiles, string TransactionNumber)
         {
 
-            if (imgFiles == null || imgFiles.Count == 0)
-                return BadRequest("No file is uploaded.");
+            //if (imgFiles == null || imgFiles.Count == 0)
+            //    return BadRequest("No file is uploaded.");
 
             if (imgFiles.Count > 5)
                 return BadRequest("You can only upload up to five files.");
@@ -181,6 +180,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
 
             return Ok();
         }
+
         [HttpDelete("deleteImage")]
         public async Task<ActionResult> DeleteImage(string transactionNumber, string fileName)
         {

@@ -711,6 +711,35 @@ namespace EAMIS.Core.LogicRepository.Approval
             }
             return item;
         }
+        public async Task<EamisForApprovalDTO> getForApprovalStatus(string transactionNumber)
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_FOR_APPROVAL.AsNoTracking().FirstOrDefaultAsync(x => x.TRANSACTION_NUMBER == transactionNumber)).ConfigureAwait(false);
+            if (result != null)
+            {
+                return new EamisForApprovalDTO
+                {
+                    Id = result.ID,
+                    TransactionType = result.TRANSACTION_TYPE,
+                    TransactionNumber = result.TRANSACTION_NUMBER,
+                    Approver1Id = result.APPROVER1_ID,
+                    Approver1Status = result.APPROVER1_STATUS,
+                    Approver1RejectedReason = result.APPROVER1_REJECTEDREASON,
+                    Approver2Id = result.APPROVER2_ID,
+                    Approver2Status = result.APPROVER2_STATUS,
+                    Approver2RejectedReason = result.APPROVER2_REJECTEDREASON,
+                    Approver3Id = result.APPROVER3_ID,
+                    Approver3Status = result.APPROVER3_STATUS,
+                    Approver3RejectedReason = result.APPROVER3_REJECTEDREASON,
+                    //Approver4Id = result.APPROVER4_ID,
+                    //Approver4Status = result.APPROVER4_STATUS,
+                    //Approver4RejectedReason = result.APPROVER4_REJECTEDREASON,
+                    Approver1Trandate = result.APPROVER1_TRANDATE,
+                    Approver2Trandate = result.APPROVER2_TRANDATE,
+                    Approver3Trandate = result.APPROVER3_TRANDATE,
+                };
+            }
+            return null;
+        }
 
     }
 }

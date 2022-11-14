@@ -46,12 +46,66 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 query = _ctx.EAMIS_PROPERTY_SCHEDULE.AsNoTracking().Where(x => x.CATEGORY.Contains(searchValue)).AsQueryable();
             }
 
+            //var paged = PagedQueryForSearch(query);
+            //return new DataList<EamisPropertyScheduleDTO>
+            //{
+            //    Count = await paged.CountAsync(),
+            //    Items = await QueryToDTO(paged).ToListAsync()
+            //};
             var paged = PagedQueryForSearch(query);
-            return new DataList<EamisPropertyScheduleDTO>
+            var result = new DataList<EamisPropertyScheduleDTO>
             {
-                Count = await paged.CountAsync(),
+                Count = await query.CountAsync(),
                 Items = await QueryToDTO(paged).ToListAsync()
             };
+            //display latest value
+            for (int intAsset = 0; intAsset < result.Items.Count(); intAsset++)
+            {
+                var propertyTransaction = GetPropertyTransactionDetailsLatestValue(result.Items[intAsset].ReferenceId,
+                                                                                   result.Items[intAsset].ItemCode,
+                                                                                   result.Items[intAsset].SerialNo);
+                var propertyDelivery = GetPropertyItemDeliveryLatestValue(propertyTransaction.Dr);
+                var propertyItem = GetPropertyItemLatestValue(propertyTransaction.ItemCode);
+                var serviceLogs = GetPropertyItemServiceLogDetails(propertyTransaction.PropertyNumber);
+
+                result.Items[intAsset].Status = propertyTransaction.PropertyTransactionGroup.TransactionStatus;
+                result.Items[intAsset].Category = propertyItem.ItemCategory.CategoryName;
+                result.Items[intAsset].SubCategory = propertyItem.PropertyName;
+                result.Items[intAsset].VendorName = propertyDelivery.Supplier.CompanyDescription;
+                result.Items[intAsset].RRDate = propertyDelivery.DRDate;
+
+                result.Items[intAsset].PropertyNumber = propertyTransaction.PropertyNumber;
+                result.Items[intAsset].ItemDescription = propertyTransaction.ItemDescription;
+                result.Items[intAsset].AreaSQM = propertyTransaction.Area;
+                result.Items[intAsset].Location = _ctx.EAMIS_RESPONSIBILITY_CENTER.AsNoTracking()
+                                                      .Where(r => r.RESPONSIBILITY_CENTER == propertyTransaction.ResponsibilityCode)
+                                                      .Select(v => v.LOCATION_DESC).FirstOrDefault();
+                result.Items[intAsset].Department = propertyTransaction.Department;
+                result.Items[intAsset].LastDepartment = GetPropertyItemLastDepartment(result.Items[intAsset].ReferenceId, propertyTransaction.Id);
+                result.Items[intAsset].InvoiceNo = propertyTransaction.Invoice;
+                result.Items[intAsset].CostCenter = propertyTransaction.ResponsibilityCode;
+                result.Items[intAsset].WarrantyDate = propertyTransaction.AcquisitionDate.AddMonths(propertyTransaction.WarrantyExpiry);
+                result.Items[intAsset].PORef = propertyTransaction.Po;
+                result.Items[intAsset].RRRef = propertyDelivery.DRNumFrSupplier;
+                result.Items[intAsset].ItemCode = propertyTransaction.ItemCode;
+                result.Items[intAsset].Warranty = propertyTransaction.WarrantyExpiry;
+
+                if (serviceLogs != null)
+                {
+                    result.Items[intAsset].AssetCondition = serviceLogs.AssetCondition;
+                    result.Items[intAsset].AppraisedValue = serviceLogs.AppraisedValue;
+                    result.Items[intAsset].AssessedValue = serviceLogs.AssessedValue;
+                    result.Items[intAsset].DisposedAmount = serviceLogs.AssessedValue;
+                    result.Items[intAsset].AppraisalIncrement = serviceLogs.AppraisalIncrement;
+                    result.Items[intAsset].RealEstateTaxPayment = serviceLogs.RealEstateTaxPayment;
+                }
+
+                result.Items[intAsset].ForDepreciation = propertyItem.ItemCategory.ForDepreciation;
+                result.Items[intAsset].RevaluationCost = GetPropertyItemRevaluationLatestValue(propertyTransaction.ItemCode);
+            }
+
+
+            return result;
         }
         private IQueryable<EAMISPROPERTYSCHEDULE> PagedQueryForSearch(IQueryable<EAMISPROPERTYSCHEDULE> query)
         {
@@ -234,7 +288,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
                 result.Items[intAsset].PropertyNumber = propertyTransaction.PropertyNumber;
                 result.Items[intAsset].ItemDescription = propertyTransaction.ItemDescription;
-                result.Items[intAsset].PropertyNumber = propertyTransaction.PropertyNumber;
                 result.Items[intAsset].AreaSQM = propertyTransaction.Area;
                 result.Items[intAsset].Location = _ctx.EAMIS_RESPONSIBILITY_CENTER.AsNoTracking()
                                                       .Where(r => r.RESPONSIBILITY_CENTER == propertyTransaction.ResponsibilityCode)
@@ -301,7 +354,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (filter.AreaSQM != null && filter.AreaSQM != 0)
                 predicate = predicate.And(x => x.AREA_SQM == filter.AreaSQM);
 
-            predicate = predicate.And(x => x.ID == 42);
+            //predicate = predicate.And(x => x.ID == 42);
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_SCHEDULE;
             return query.Where(predicate);
         }

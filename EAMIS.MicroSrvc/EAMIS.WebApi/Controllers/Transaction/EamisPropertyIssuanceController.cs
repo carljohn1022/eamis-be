@@ -164,12 +164,24 @@ namespace EAMIS.WebApi.Controllers.Transaction
         //        item = new EamisPropertyTransactionDetailsDTO();
         //    return Ok(await _eamisPropertyIssuanceRepository.Delete(item));
         //}
+        [HttpGet("DownloadFile")]
+        public FileResult DownloadFile(string fileName)
+        {
+            //Build the File Path.
+            string path = Path.Combine(this._hostingEnvironment.WebRootPath, "StaticFiles/EAMIS_Attached_Files/Property_Issuance/") + fileName;
+
+            //Read the File data into Byte Array.
+            byte[] bytes = System.IO.File.ReadAllBytes(path);
+
+            //Send the File to Download.
+            return File(bytes, "application/octet-stream", fileName);
+        }
         [HttpPost("UploadImages")]
         public async Task<ActionResult> UploadImages(List<IFormFile> imgFiles, string TransactionNumber)
         {
 
-            if (imgFiles == null || imgFiles.Count == 0)
-                return BadRequest("No file is uploaded.");
+            //if (imgFiles == null || imgFiles.Count == 0)
+            //    return BadRequest("No file is uploaded.");
 
             if (imgFiles.Count > 5)
                 return BadRequest("You can only upload up to five files.");
@@ -178,8 +190,8 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var targetPath = Path.Combine(_hostingEnvironment.WebRootPath,
                                           FolderName.StaticFolderLocation + @"\" +
                                           FolderName.EAMISAttachmentLocation + @"\" +
-                                          ModuleName.PropertyIssuanceName + @"\" +
-                                          DateTime.Now.Date.ToString("MMddyyyy") + @"\");  // determine the destination for file storage
+                                          ModuleName.PropertyIssuanceName + @"\");
+            /*DateTime.Now.Date.ToString("MMddyyyy") + @"\");*/  // determine the destination for file storage
 
             if (!Directory.Exists(targetPath))
                 Directory.CreateDirectory(targetPath); //create the target path if not yet exist
@@ -194,27 +206,31 @@ namespace EAMIS.WebApi.Controllers.Transaction
 
                 var fileExist = Directory.Exists(targetPath + curFileName);
 
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(img.FileName); // if we want to use the uploaded file name, replace this line with >> string fileName = img.FileName; 
+                if (!fileExist)
+                {
 
-                string filePath = Path.Combine(targetPath, fileName);
-                try
-                {
-                    await using (var stream = new FileStream(filePath, FileMode.Create))
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(img.FileName); // if we want to use the uploaded file name, replace this line with >> string fileName = img.FileName; 
+
+                    string filePath = Path.Combine(targetPath, fileName);
+                    try
                     {
-                        img.CopyTo(stream);
+                        await using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            img.CopyTo(stream);
+                        }
+                        EamisAttachedFilesDTO objeamisAttachedFilesDTO = new EamisAttachedFilesDTO();
+                        objeamisAttachedFilesDTO.Id = 0;
+                        objeamisAttachedFilesDTO.FileName = fileName;
+                        objeamisAttachedFilesDTO.ModuleName = ModuleName.PropertyIssuanceName;
+                        objeamisAttachedFilesDTO.TransactionNumber = TransactionNumber;
+                        objeamisAttachedFilesDTO.UserStamp = "user"; //please change this to the actual/global variable used (where we store the user name?)
+                        objeamisAttachedFilesDTO.TimeStamp = DateTime.Now;
+                        lstattachedFiles.Add(objeamisAttachedFilesDTO);
                     }
-                    EamisAttachedFilesDTO objeamisAttachedFilesDTO = new EamisAttachedFilesDTO();
-                    objeamisAttachedFilesDTO.Id = 0;
-                    objeamisAttachedFilesDTO.FileName = fileName;
-                    objeamisAttachedFilesDTO.ModuleName = ModuleName.PropertyIssuanceName;
-                    objeamisAttachedFilesDTO.TransactionNumber = TransactionNumber;
-                    objeamisAttachedFilesDTO.UserStamp = "user"; //please change this to the actual/global variable used (where we store the user name?)
-                    objeamisAttachedFilesDTO.TimeStamp = DateTime.Now;
-                    lstattachedFiles.Add(objeamisAttachedFilesDTO);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
+                    catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
                 }
             }
 
@@ -225,6 +241,33 @@ namespace EAMIS.WebApi.Controllers.Transaction
             }
 
             return Ok();
+        }
+
+        [HttpDelete("deleteImage")]
+        public async Task<ActionResult> DeleteImage(string transactionNumber, string fileName)
+        {
+            if (transactionNumber != string.Empty)
+            {
+                string filePath;
+                string targetPath;
+
+                //get the image file name from DB
+                string imageInDB = await _eamisAttachedFilesRepository.GetTranFileName(transactionNumber, fileName);
+                if (imageInDB != null)
+                    if (imageInDB != "")
+                    {
+                        targetPath = Path.Combine(_hostingEnvironment.WebRootPath, FolderName.StaticFolderLocation + @"\" + FolderName.EAMISAttachmentLocation + @"\" + ModuleName.PropertyIssuanceName);
+                        filePath = Path.Combine(targetPath, imageInDB);
+                        FileInfo file = new FileInfo(filePath);
+                        if (file.Exists) //check the file if it exist in the image repository
+                        {
+                            file.Delete(); //if file found/exist then delete it
+                            await _eamisAttachedFilesRepository.DeleteImageFileName(transactionNumber, fileName); //delete record in DB
+                        }
+                        return Ok();
+                    }
+            }
+            return BadRequest("Required parameter is missing.");
         }
         [HttpGet("getResponsibilityCenter")]
         public async Task<string> GetResponsibilityCenterByID(string responsibilityCode)

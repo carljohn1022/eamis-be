@@ -216,7 +216,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     PropertyCondition = x.PROPERTY_CONDITION,
                     transactionDetailId = x.REFERENCE_ID,
                     Remarks = x.REMARKS
-                }).Where(i => i.PropertyTransactionID == result.ID).ToList()
+                }).Where(i => i.PropertyTransactionID == result.ID).ToList(),
+                DeliveryImages = _ctx.EAMIS_ATTACHED_FILES.AsNoTracking().Select(v => new EamisAttachedFilesDTO
+                {
+                    Id = v.ID,
+                    FileName = v.ATTACHED_FILENAME,
+                    ModuleName = v.MODULE_NAME,
+                    TransactionNumber = v.TRANID
+                }).Where(i => i.TransactionNumber == result.TRANSACTION_NUMBER).ToList()
             };
         }
 
@@ -266,6 +273,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 IS_PROPERTY = item.IsProperty
 
             };
+
         }
 
         public async Task<EamisPropertyTransactionDetailsDTO> InsertPropertyTransaction(EamisPropertyTransactionDetailsDTO item)
@@ -661,6 +669,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 }).Where(i => i.Id == x.PROPERTY_TRANS_ID).FirstOrDefault()
 
             }
+
             );
         }
 

@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Transaction;
+﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.CommonSvc.Constant;
 using EAMIS.Core.CommonSvc.Utility;
 using EAMIS.Core.ContractRepository.Transaction;
@@ -193,8 +194,15 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TimeStamp = x.TIMESTAMP,
                 TransactionStatus = x.TRANSACTION_STATUS,
                 FundSource = x.FUND_SOURCE //added for Report
-
-});
+                ,
+                DeliveryImages = _ctx.EAMIS_ATTACHED_FILES.AsNoTracking().Select(v => new EamisAttachedFilesDTO
+                {
+                    Id = v.ID,
+                    FileName = v.ATTACHED_FILENAME,
+                    ModuleName = v.MODULE_NAME,
+                    TransactionNumber = v.TRANID
+                }).Where(i => i.TransactionNumber == x.TRANSACTION_NUMBER).ToList()
+            });
         }
 
         private IQueryable<EAMISPROPERTYTRANSACTION> PagedQuery(IQueryable<EAMISPROPERTYTRANSACTION> query, int resolved_size, int resolved_index)
@@ -303,9 +311,18 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     UserStamp = x.USER_STAMP,
                     TimeStamp = x.TIME_STAMP,
                     WarrantyExpiry = x.WARRANTY_EXPIRY,
+
                     Invoice = x.INVOICE,
                     PropertyCondition = x.PROPERTY_CONDITION
                 }).Where(i => i.PropertyTransactionID == result.ID).ToList()
+                ,
+                DeliveryImages = _ctx.EAMIS_ATTACHED_FILES.AsNoTracking().Select(v => new EamisAttachedFilesDTO
+                {
+                    Id = v.ID,
+                    FileName = v.ATTACHED_FILENAME,
+                    ModuleName = v.MODULE_NAME,
+                    TransactionNumber = v.TRANID
+                }).Where(i => i.TransactionNumber == result.TRANSACTION_NUMBER).ToList()
             };
         }
 

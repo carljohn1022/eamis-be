@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "B/YxewsBtlXntqU97macs1zEnSKxjyaHktSyg8P1gnOpr6aYo88hmI+VNi8xZqEZaQ9e7ySY5jh17Rm1Rq8WTw==",
+  "dgSpecHash": "KP3wvZmjQvA21KNq2ya+sWvO24iYhfBYyEBpfjcGSsvzI5Br98dENFRD7mxqgYiXtlI5119klNy+5tRS6zuWww==",
   "success": true,
-  "projectFilePath": "C:\\Users\\npala\\Desktop\\Latest Checkout 1\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.WebApi\\EAMIS.WebApi.csproj",
+  "projectFilePath": "C:\\Users\\npala\\Downloads\\EAMIS DENR - Latest\\DENR-EAMIS_MicroSvc\\EAMIS.MicroSrvc\\EAMIS.WebApi\\EAMIS.WebApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\npala\\.nuget\\packages\\amazon.lambda.apigatewayevents\\2.4.0\\amazon.lambda.apigatewayevents.2.4.0.nupkg.sha512",
     "C:\\Users\\npala\\.nuget\\packages\\amazon.lambda.applicationloadbalancerevents\\2.1.0\\amazon.lambda.applicationloadbalancerevents.2.1.0.nupkg.sha512",

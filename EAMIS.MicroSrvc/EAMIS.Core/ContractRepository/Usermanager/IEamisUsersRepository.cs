@@ -20,6 +20,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> ValidateExistAgency(string EmployeeAgencyNumber);
         Task<string> GetAgencyName(string AgencyEmployeeNumber);
         //Task<EamisUsersDTO> ChangePassword(EamisUsersDTO item);
+        Task<string> GetId(string AgencyEmployeeNumber);
         Task<EamisUsersDTO> ChangePassword(EamisUsersDTO item, string newPassword);
 
 
