@@ -24,6 +24,7 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string PropertyDisposal = "Property Disposal";
         public const string PropertyRevaluation = "Property Revaluation";
         public const string AssetSchedule = "Asset Schedule";
+        public const string IssuanceMaterial = "Issuance Material";
     }
 
 
@@ -67,6 +68,7 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string PDPrefix = "PD"; //Property Disposal prefix. change according to the business rule.
         public const string ASPrefix = "AS"; //Asset Schedule prefix. change according to the business rule.
         public const string PVPrefix = "RV"; //Property Revaluation prefix. change according to the business rule.
+        public const string IMPrefix = "RIS"; //Issuance Material
     }
 
     public static class WorkSheetTemplateNames

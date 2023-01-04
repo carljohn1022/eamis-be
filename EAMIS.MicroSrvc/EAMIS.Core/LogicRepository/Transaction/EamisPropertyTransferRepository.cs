@@ -112,6 +112,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DeliveryDate = x.DELIVERY_DATE,
                 UserStamp = x.USER_STAMP,
                 TimeStamp = x.TIMESTAMP,
+                TranType = x.TRAN_TYPE,
                 TransactionStatus = x.TRANSACTION_STATUS,
                 PropertyTransactionDetails = x.PROPERTY_TRANSACTION_DETAILS.Select
                                 (d => new EamisPropertyTransactionDetailsDTO
@@ -163,7 +164,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             //ensure that recently added record has the correct transaction type number
             item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
 
-            string _drType = PrefixSettings.PTPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
+            string _drType = item.TranType + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
 
             //check if the forecasted transaction type matches with the actual transaction type (saved/created in DB)
             //forecasted transaction type = item.TransactionType
@@ -203,7 +204,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DELIVERY_DATE = item.DeliveryDate,
                 USER_STAMP = item.UserStamp,
                 TIMESTAMP = item.TimeStamp,
-                TRANSACTION_STATUS = item.TransactionStatus
+                TRANSACTION_STATUS = item.TransactionStatus,
+                TRAN_TYPE = item.TranType.Trim()
             };
         }
 
@@ -223,6 +225,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DeliveryDate = result.DELIVERY_DATE,
                 UserStamp = result.USER_STAMP,
                 TimeStamp = result.TIMESTAMP,
+                TranType = result.TRAN_TYPE.Trim(),
                 TransactionStatus = result.TRANSACTION_STATUS,
                 PropertyTransactionDetails = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Select(x => new EamisPropertyTransactionDetailsDTO
                 {

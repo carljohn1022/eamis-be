@@ -73,6 +73,11 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             var response = await _applicationUsers.GetId(AgencyEmployeeNumber);
             return response;
         }
-
+        [HttpGet("getOfficeName")]
+        public async Task<string> GetOfficeName(int officeId)
+        {
+            var response = await _applicationUsers.GetOfficeName(officeId);
+            return response;
+        }
     }
 }

@@ -19,10 +19,21 @@ namespace EAMIS.Common.DTO.Approval
         public string Approver2Status { get; set; }
         public DateTime? Approver2Trandate { get; set; }
         public string Approver2RejectedReason { get; set; }
+       
         public int Approver3Id { get; set; }
         public string Approver3Status { get; set; }
         public DateTime? Approver3Trandate { get; set; }
         public string Approver3RejectedReason { get; set; }
+
+        public int Approver4Id { get; set; }
+        public string Approver4Status { get; set; }
+        public DateTime? Approver4Trandate { get; set; }
+        public string Approver4RejectedReason { get; set; }
+
+        public int Approver5Id { get; set; }
+        public string Approver5Status { get; set; }
+        public DateTime? Approver5Trandate { get; set; }
+        public string Approver5RejectedReason { get; set; }
 
 
     }

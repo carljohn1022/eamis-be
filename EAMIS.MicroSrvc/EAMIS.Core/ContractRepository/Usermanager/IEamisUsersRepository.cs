@@ -22,6 +22,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         //Task<EamisUsersDTO> ChangePassword(EamisUsersDTO item);
         Task<string> GetId(string AgencyEmployeeNumber);
         Task<EamisUsersDTO> ChangePassword(EamisUsersDTO item, string newPassword);
+        Task<string> GetOfficeName(int officeId);
 
 
     }

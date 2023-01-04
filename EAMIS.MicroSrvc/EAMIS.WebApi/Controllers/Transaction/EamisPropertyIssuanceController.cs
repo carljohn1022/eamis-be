@@ -39,10 +39,16 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var nextId = await _eamisPropertyIssuanceRepository.GetNextSequenceNumber();
             return nextId;
         }
-        [HttpGet("Search")]
-        public async Task<ActionResult<EAMISPROPERTYTRANSACTION>> Search(string type, string searchValue)
+        [HttpGet("getNextSequenceForMaterialIssuance")]
+        public async Task<string> GetNextSequenceForMaterialIssuanceAsync()
         {
-            return Ok(await _eamisPropertyTransactionRepository.SearchReceivingforIssuance(type, searchValue));
+            var nextId = await _eamisPropertyIssuanceRepository.GetNextSequenceNumberForMaterialIssuance();
+            return nextId;
+        }
+        [HttpGet("Search")]
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTION>> Search(string type, string searchValue, bool isProperty)
+        {
+            return Ok(await _eamisPropertyTransactionRepository.SearchReceivingforIssuance(type, searchValue, isProperty));
         }
         //[HttpGet("list")]
         //public async Task<ActionResult<EAMISPROPERTYDETAILS>> List([FromQuery] EamisPropertyItemsDTO filter, [FromQuery] PageConfig config)
@@ -51,7 +57,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
         //        filter = new EamisPropertyItemsDTO();
         //    return Ok(await _eamisPropertyIssuanceRepository.List(filter, config));
         //}
-
+        
         //[HttpGet("list")]
         //public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> List([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config)
         //{
@@ -73,7 +79,18 @@ namespace EAMIS.WebApi.Controllers.Transaction
             //3. Update Property Items In Stock Quantity
             return Ok(result); //return the item with ID, needed in constructing the payload of the Property Transaction details
         }
-
+        [HttpPost("AddPropertyTransactionForMaterial")]
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTION>> AddPropertyTransactionIssuanceMaterial([FromBody] EamisPropertyTransactionDTO eamisPropertyTransactionDTO)
+        {
+            //Steps
+            //1. Create Property Transaction
+            var result = await _eamisPropertyIssuanceRepository.InsertPropertyForMaterialIssuance(eamisPropertyTransactionDTO);
+            if (result == null)
+                return BadRequest();
+            //2. Create Property Transaction Details
+            //3. Update Property Items In Stock Quantity
+            return Ok(result); //return the item with ID, needed in constructing the payload of the Property Transaction details
+        }
         [HttpPost("UpdatePropertyTransaction")]
         public async Task<ActionResult<EamisPropertyTransactionDTO>> Edit([FromBody] EamisPropertyTransactionDTO item)
         {
@@ -132,31 +149,47 @@ namespace EAMIS.WebApi.Controllers.Transaction
         //    return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceivingItems());
         //}
         [HttpGet("listitemsforreceiving")]
-        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> ListItemsForReceiving([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config, bool bolIsProperty)
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> ListItemsForReceiving([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config, bool bolIsProperty, string tranType, int assigneeCustodian)
         {
             if (filter == null)
                 filter = new EamisPropertyTransactionDetailsDTO();
             if (bolIsProperty)
-                return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceiving(filter, config));
+                return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceiving(filter, config, tranType, assigneeCustodian));
             else
-                return Ok(await _eamisPropertyIssuanceRepository.ListSupplyItemsForReceiving(filter, config));
+                return Ok(await _eamisPropertyIssuanceRepository.ListSupplyItemsForReceiving(filter, config, tranType, assigneeCustodian));
         }
         [HttpGet("SearchReceiving")]
         public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> SearchReceiving(string type, string searchValue)
         {
             return Ok(await _eamisPropertyIssuanceRepository.SearchReceiving(type, searchValue));
         }
-
-        [HttpGet("GeneratePropertyNumber")]
-        public async Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode, string responsibilityCode)
+        [HttpGet("SearchDRForIssuanceMaterial")]
+        public async Task<ActionResult<EAMISDELIVERYRECEIPTDETAILS>> SearchDRForIssuanceMaterial(string type, string searchValue)
         {
-            var result = await _eamisPropertyIssuanceRepository.GeneratePropertyNumber(transactionDetailId, itemCode, responsibilityCode);
+            return Ok(await _eamisPropertyIssuanceRepository.SearchDRForMaterialIssuance(type, searchValue));
+        }
+        
+        [HttpGet("GeneratePropertyNumber")]
+        public async Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode)
+        {
+            var result = await _eamisPropertyIssuanceRepository.GeneratePropertyNumber(acquisitionDate, itemCode, responsibilityCode);
 
             if (_eamisPropertyIssuanceRepository.HasError)
                 return _eamisPropertyIssuanceRepository.ErrorMessage;
 
             return result;
         }
+        //[HttpGet("GeneratePropertyNumber")]
+        //public async Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode, string responsibilityCode)
+        //{
+        //    var result = await _eamisPropertyIssuanceRepository.GeneratePropertyNumber(transactionDetailId, itemCode, responsibilityCode);
+
+        //    if (_eamisPropertyIssuanceRepository.HasError)
+        //        return _eamisPropertyIssuanceRepository.ErrorMessage;
+
+        //    return result;
+        //}
+
         //[HttpDelete("Delete")]
         //public async Task<ActionResult<EamisPropertyTransactionDetailsDTO>> Delete([FromBody] EamisPropertyTransactionDetailsDTO item)
         //{
@@ -293,5 +326,13 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var response = await _eamisPropertyIssuanceRepository.GetDRNumFrSupplier(dr);
             return response;
         }
+        [HttpGet("DRListForIssuanceSupplies")]
+        public async Task<ActionResult<EamisDeliveryReceiptDetailsDTO>> List([FromQuery] EamisDeliveryReceiptDetailsDTO filter, [FromQuery] PageConfig config)
+        {
+            if (filter == null)
+                filter = new EamisDeliveryReceiptDetailsDTO();
+            return Ok(await _eamisPropertyIssuanceRepository.ListSuppliesDRForIssuance(filter, config));
+        }
+        
     }
 }

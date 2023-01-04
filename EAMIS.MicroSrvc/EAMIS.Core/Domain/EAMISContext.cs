@@ -186,6 +186,7 @@ namespace EAMIS.Core.Domain
                 .WithMany(x => x.SERVICE_LOG_DETAILS)
                 .HasForeignKey(x => x.SERVICE_LOG_ID);
 
+
             // SERIAL TRAN
             modelBuilder.Entity<EAMISSERIALTRAN>()
                 .HasOne(x => x.DELIVERY_RECEIPT_DETAILS_GROUP)

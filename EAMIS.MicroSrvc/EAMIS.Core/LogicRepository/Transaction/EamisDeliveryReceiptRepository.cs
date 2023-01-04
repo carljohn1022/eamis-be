@@ -292,7 +292,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
                         PropertyNo = p.PROPERTY_NO,
                         PropertyName = p.PROPERTY_NAME,
                         Id = p.ID
-                    }).FirstOrDefault(x => x.Id == d.ITEM_ID)
+                    }).FirstOrDefault(x => x.Id == d.ITEM_ID),
+                    PropertySerialTran = _ctx.EAMIS_SERIAL_TRAN.AsNoTracking().Select(s => new EamisSerialTranDTO
+                    {
+                        Id = s.ID,
+                        SerialNumber = s.SERIAL_NO,
+                        WarrantyExpiryDate = s.WARRANTY_EXPIRY_DATE,
+                        DeliveryReceiptDetailsId = s.DELIVERY_RECEIPT_DETAILS_ID
+                    }).Where(i => i.DeliveryReceiptDetailsId == d.ID).ToList()
                 }).Where(drId => drId.DeliveryReceiptId == result.ID).ToList(),
                 DeliveryImages = _ctx.EAMIS_ATTACHED_FILES.AsNoTracking().Select(v => new EamisAttachedFilesDTO
                 {

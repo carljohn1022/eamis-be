@@ -19,10 +19,21 @@ namespace EAMIS.Core.Domain.Entities
         public string APPROVER2_STATUS { get; set; }
         public DateTime? APPROVER2_TRANDATE { get; set; }
         public string APPROVER2_REJECTEDREASON { get; set; }
+
         public int APPROVER3_ID { get; set; }
         public string APPROVER3_STATUS { get; set; }
         public DateTime? APPROVER3_TRANDATE { get; set; }
         public string APPROVER3_REJECTEDREASON { get; set; }
+
+        public int APPROVER4_ID { get; set; }
+        public string APPROVER4_STATUS { get; set; }
+        public DateTime? APPROVER4_TRANDATE { get; set; }
+        public string APPROVER4_REJECTEDREASON { get; set; }
+
+        public int APPROVER5_ID { get; set; }
+        public string APPROVER5_STATUS { get; set; }
+        public DateTime? APPROVER5_TRANDATE { get; set; }
+        public string APPROVER5_REJECTEDREASON { get; set; }
 
 
     }

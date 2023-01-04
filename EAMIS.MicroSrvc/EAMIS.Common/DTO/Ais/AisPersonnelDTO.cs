@@ -21,5 +21,6 @@ namespace EAMIS.Common.DTO.Ais
         public bool isDeleted { get; set; }
         public string CurrentPosition { get; set; }
         public AisCodeListValueDTO CodeValue { get; set; }
+        public AisOfficeDTO OfficeInfo { get; set; }
     }
 }

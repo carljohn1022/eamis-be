@@ -9,7 +9,7 @@ namespace EAMIS.Common.DTO.Transaction
     public class EamisPropertyScheduleDTO
     {
         public int Id { get; set; }
-        public string PropertyNumber { get; set; } //to verify the correct data type with Justin
+        public string PropertyNumber { get; set; } //to verify the correct data type
         public string Status { get; set; }
         public string ItemDescription { get; set; }
         public string Category { get; set; }
@@ -21,7 +21,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string Department { get; set; }
         public string LastDepartment { get; set; }
         public int Warranty { get; set; }
-        public string InvoiceNo { get; set; } //to verify the correct data type with Justin
+        public string InvoiceNo { get; set; } //to verify the correct data type
         public int SvcAgreementNo { get; set; }
         public string VendorName { get; set; }
         public string AssetTag { get; set; }

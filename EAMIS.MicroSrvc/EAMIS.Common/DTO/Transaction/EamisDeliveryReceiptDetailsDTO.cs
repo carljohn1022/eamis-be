@@ -9,8 +9,8 @@ namespace EAMIS.Common.DTO.Transaction
         public int Id { get; set; }
         public int DeliveryReceiptId  { get; set; }
         public int ItemId { get; set; }
-        public string ItemCode { get; set; }
-        public string ItemDescription { get; set; }
+        //public string ItemCode { get; set; }
+        //public string ItemDescription { get; set; }
         public int QtyOrder  { get; set; }
         public int QtyDelivered  { get; set; }
         public int QtyRejected  { get; set; }
@@ -22,7 +22,11 @@ namespace EAMIS.Common.DTO.Transaction
         //public DateTime WarrantyExpiryDate  { get; set; }
         public Masterfiles.EamisPropertyItemsDTO PropertyItem { get; set; }
         public EamisDeliveryReceiptDTO DeliveryReceipt { get; set; }
+        public EamisSerialTranDTO SerialTran { get; set; }
         public List<EamisSerialTranDTO> PropertySerialTran { get; set; }
+        public List<EamisDeliveryReceiptDTO> DeliveryReceiptGroup { get; set; }
+        public int IssuedQty { get; set; }
+        public int RemainingQty { get; set; }
 
     }
 }

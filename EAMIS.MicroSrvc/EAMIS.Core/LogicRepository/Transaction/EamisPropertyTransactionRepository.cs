@@ -28,20 +28,20 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
 
-        public async Task<DataList<EamisPropertyTransactionDTO>> SearchReceivingforIssuance(string type, string searchValue)
+        public async Task<DataList<EamisPropertyTransactionDTO>> SearchReceivingforIssuance(string type, string searchValue, bool isProperty)
         {
             IQueryable<EAMISPROPERTYTRANSACTION> query = null;
             if (type == "Transaction #")
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == TransactionTypeSettings.Issuance && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == TransactionTypeSettings.Issuance && x.IS_PROPERTY == isProperty && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
             }
             else if (type == "Received by")
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == TransactionTypeSettings.Issuance && x.RECEIVED_BY.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == TransactionTypeSettings.Issuance && x.IS_PROPERTY == isProperty && x.RECEIVED_BY.Contains(searchValue)).AsQueryable();
             }
             else
             {
-                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == TransactionTypeSettings.Issuance && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
+                query = _ctx.EAMIS_PROPERTY_TRANSACTION.AsNoTracking().Where(x => x.TRANSACTION_TYPE == TransactionTypeSettings.Issuance && x.IS_PROPERTY == isProperty && x.TRANSACTION_NUMBER.Contains(searchValue)).AsQueryable();
             }
             var paged = PagedQueryForSearch(query);
             return new DataList<EamisPropertyTransactionDTO>

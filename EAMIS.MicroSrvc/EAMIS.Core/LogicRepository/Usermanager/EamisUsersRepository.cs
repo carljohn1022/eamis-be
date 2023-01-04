@@ -327,7 +327,16 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
                 retValue = result[0].FirstName + " " + result[0].MiddleName + " " + result[0].LastName;
             }
             return retValue;
-
+        }
+        public async Task<string> GetOfficeName(int officeId)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _aisctx.Office.Where(o => o.Id == officeId).AsNoTracking().ToList()).ConfigureAwait(false);
+            if(result != null)
+            {
+                retValue = result[0].LongName;
+            }
+            return retValue;
         }
     }
 }

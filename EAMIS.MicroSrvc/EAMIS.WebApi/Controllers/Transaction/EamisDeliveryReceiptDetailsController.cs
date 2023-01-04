@@ -61,10 +61,16 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return Ok(result);
         }
 
+        //[HttpGet("GetSerialTran")]
+        //public async Task<ActionResult<EamisDeliveryReceiptDTO>> getSerialTran(int deliveryReceiptDetailID)
+        //{
+        //    return Ok(await _eamisDeliveryReceiptDetailsRepository.getSerialNumber(deliveryReceiptDetailID));
+        //}
+
         //[HttpGet("getAssetConditionType")]
         //public async Task<ActionResult<EamisDeliveryReceiptDetailsDTO>> ListAssetCondition()
         //{
-            
+
         //    return Ok(await _eamisDeliveryReceiptDetailsRepository.GetAssetCondition());
         //}
 

@@ -571,7 +571,15 @@ namespace EAMIS.Core.LogicRepository.Approval
                 Approver3Id = x.APPROVER3_ID,
                 Approver3Status = x.APPROVER3_STATUS,
                 Approver3Trandate = x.APPROVER3_TRANDATE,
-                Approver3RejectedReason = x.APPROVER3_REJECTEDREASON
+                Approver3RejectedReason = x.APPROVER3_REJECTEDREASON,
+                Approver4Id = x.APPROVER4_ID,
+                Approver4Status = x.APPROVER4_STATUS,
+                Approver4Trandate = x.APPROVER4_TRANDATE,
+                Approver4RejectedReason = x.APPROVER4_REJECTEDREASON,
+                Approver5Id = x.APPROVER5_ID,
+                Approver5Status = x.APPROVER5_STATUS,
+                Approver5Trandate = x.APPROVER5_TRANDATE,
+                Approver5RejectedReason = x.APPROVER5_REJECTEDREASON
             });
         }
 
@@ -676,7 +684,15 @@ namespace EAMIS.Core.LogicRepository.Approval
                 APPROVER3_ID = item.Approver3Id,
                 APPROVER3_STATUS = item.Approver3Status,
                 APPROVER3_TRANDATE = item.Approver3Trandate,
-                APPROVER3_REJECTEDREASON = item.Approver3RejectedReason
+                APPROVER3_REJECTEDREASON = item.Approver3RejectedReason,
+                APPROVER4_ID = item.Approver4Id,
+                APPROVER4_STATUS = item.Approver4Status,
+                APPROVER4_TRANDATE = item.Approver4Trandate,
+                APPROVER4_REJECTEDREASON = item.Approver4RejectedReason,
+                APPROVER5_ID = item.Approver5Id,
+                APPROVER5_STATUS = item.Approver5Status,
+                APPROVER5_TRANDATE = item.Approver5Trandate,
+                APPROVER5_REJECTEDREASON = item.Approver5RejectedReason,
             };
         }
 
@@ -730,12 +746,17 @@ namespace EAMIS.Core.LogicRepository.Approval
                     Approver3Id = result.APPROVER3_ID,
                     Approver3Status = result.APPROVER3_STATUS,
                     Approver3RejectedReason = result.APPROVER3_REJECTEDREASON,
-                    //Approver4Id = result.APPROVER4_ID,
-                    //Approver4Status = result.APPROVER4_STATUS,
-                    //Approver4RejectedReason = result.APPROVER4_REJECTEDREASON,
+                    Approver4Id = result.APPROVER4_ID,
+                    Approver4Status = result.APPROVER4_STATUS,
+                    Approver4RejectedReason = result.APPROVER4_REJECTEDREASON,
+                    Approver5Id = result.APPROVER5_ID,
+                    Approver5Status = result.APPROVER5_STATUS,
+                    Approver5RejectedReason = result.APPROVER5_REJECTEDREASON,
                     Approver1Trandate = result.APPROVER1_TRANDATE,
                     Approver2Trandate = result.APPROVER2_TRANDATE,
                     Approver3Trandate = result.APPROVER3_TRANDATE,
+                    Approver4Trandate = result.APPROVER4_TRANDATE,
+                    Approver5Trandate = result.APPROVER5_TRANDATE,
                 };
             }
             return null;

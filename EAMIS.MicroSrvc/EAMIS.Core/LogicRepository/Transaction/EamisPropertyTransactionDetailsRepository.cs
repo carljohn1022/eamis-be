@@ -657,6 +657,264 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return strResult;
         }
+        public async Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode)
+        {
+            //check item's category
+
+            string yearPurchased = acquisitionDate.Year.ToString();
+            //get property item's category
+            var itemCategory = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.AsNoTracking()
+                                                        .Where(i => i.PROPERTY_NO == itemCode)
+                                                        .Select(i => new { i.CATEGORY_ID })
+                                                        .FirstOrDefault()).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(itemCategory.CATEGORY_ID.ToString()))
+            {
+                bolerror = true;
+                _errorMessage = "Property item's is either empty or invalid.";
+            }
+            else
+            {
+                var cat = await Task.Run(() => _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking()
+                                                   .Where(c => c.ID == itemCategory.CATEGORY_ID)
+                                                   .Select(c => new { c.CHART_OF_ACCOUNT_ID, c.CATEGORY_NAME })
+                                                   .FirstOrDefault()).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(cat.CHART_OF_ACCOUNT_ID.ToString()))
+                {
+                    bolerror = true;
+                    _errorMessage = "Item's category could not be found.";
+                }
+                else
+                {
+                    //get responsibility center office and location
+                    var loc = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.AsNoTracking()
+                                                       .Where(r => r.RESPONSIBILITY_CENTER == responsibilityCode)
+                                                       .Select(s => new { s.OFFICE_CODE, s.LOCATION_CODE })
+                                                       .FirstOrDefault()).ConfigureAwait(false);
+
+                    if (string.IsNullOrEmpty(loc.OFFICE_CODE) || string.IsNullOrEmpty(loc.LOCATION_CODE))
+                    {
+                        bolerror = true;
+                        _errorMessage = "Responsibility center office/location code is either empty or invalid.";
+                    }
+                    else if (loc.LOCATION_CODE.Length < 3)
+                    {
+                        bolerror = true;
+                        _errorMessage = "Responsibility center location code is either empty or invalid.";
+                    }
+                    else
+                    {
+                        //obtain group id and general ledger
+                        var coa = await Task.Run(() => _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking()
+                                                           .Join(_ctx.EAMIS_GROUP_CLASSIFICATION,
+                                                           c => c.GROUP_ID,
+                                                           g => g.ID,
+                                                           (c, g) => new { c, g })
+                                                           .Where(c => c.c.ID == cat.CHART_OF_ACCOUNT_ID)
+                                                           .Select(c => new
+                                                           {
+                                                               c.c.GROUP_ID,
+                                                               c.c.GENERAL_LEDGER_ACCOUNT,
+                                                               c.g.PPE_SUB_MAJOR_ACCT_GRP
+                                                           })
+                                                           .FirstOrDefault()).ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(coa.GROUP_ID.ToString()))
+                        {
+                            bolerror = true;
+                            _errorMessage = "Item's group is either empty or invalid.";
+                        }
+                        else
+                        {
+                            if (string.IsNullOrEmpty(coa.GENERAL_LEDGER_ACCOUNT))
+                            {
+                                bolerror = true;
+                                _errorMessage = "Item's general ledger account is either empty or invalid.";
+                            }
+                            else
+                            {
+                                //When all validation is passed
+                                //Get total count issued for the underlying item category
+                                var totalIssuedCount = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                                           .Join(_ctx.EAMIS_PROPERTYITEMS,
+                                                           d => d.ITEM_CODE,
+                                                           p => p.PROPERTY_NO,
+                                                           (d, p) => new { d, p })
+                                                           .Join(_ctx.EAMIS_ITEM_CATEGORY,
+                                                           pi => pi.p.CATEGORY_ID,
+                                                           c => c.ID,
+                                                           (pi, c) => new { pi, c })
+                                                           .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                                           di => di.pi.d.PROPERTY_TRANS_ID,
+                                                           h => h.ID,
+                                                           (di, h) => new { di, h })
+                                                           .Where(i => i.di.c.ID == itemCategory.CATEGORY_ID &&
+                                                                       !(i.di.pi.d.PROPERTY_NUMBER == null || i.di.pi.d.PROPERTY_NUMBER == string.Empty) &&
+                                                                       i.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance)
+                                                           .GroupBy(g => new { g.di.c.ID })
+                                                           .Select(s => new { Count = s.Count() })
+                                                           .FirstOrDefault();
+                                int totalCount = 0;
+                                if (totalIssuedCount != null)
+                                    if (totalIssuedCount.Count > 0)
+                                        totalCount = totalIssuedCount.Count + 1;
+
+                                //construct the property number
+                                //YEAR PURCHASED +
+                                //PPE SUB-MAJOR ACCOUNT GROUP +
+                                //GEN.LEDGER ACCOUNT +
+                                //"SERIAL NUMBER (first three digit - category type, next four digit - series per category type, last three digit - location)" +
+                                //OFFICE
+
+                                //- first 3 digits of category type - Get from Eamis_Item_Category, ID column. if length is less than 3, pad zero(0)
+                                //-next four digit-series per category type - count no if issuance/issued item then increment by 1
+                                //- last three digit-location
+
+                                string serialNumber = "";
+                                string propertyNumber = "";
+
+                                //int locStart = loc.LOCATION_CODE.Length - (loc.LOCATION_CODE.Length - 3
+                                int locStart = loc.LOCATION_CODE.Length - 3;
+                                if (itemCategory.CATEGORY_ID.ToString().Length < 3)
+                                    serialNumber = itemCategory.CATEGORY_ID.ToString().PadLeft(3, '0');
+                                else
+                                    serialNumber = itemCategory.CATEGORY_ID.ToString().Substring(0, 3);
+
+                                serialNumber += totalCount.ToString().PadLeft(4, '0') +
+                                                   loc.LOCATION_CODE.Substring(locStart);
+
+                                propertyNumber = yearPurchased + "-" +
+                                                 coa.PPE_SUB_MAJOR_ACCT_GRP.ToString() + "-" +
+                                                 coa.GENERAL_LEDGER_ACCOUNT.ToString() + "-" +
+                                                 serialNumber + "-" +
+                                                 loc.OFFICE_CODE.ToString();
+                                return propertyNumber;
+
+                            }
+                        }
+                    }
+                }
+            }
+            return string.Empty;
+        }
+        //public async Task<DataList<EamisDeliveryReceiptDTO>> DeliveryReceiptHeaderToDetailsList(EamisDeliveryReceiptDTO filter, PageConfig config)
+        //{
+        //    IQueryable<EAMISDELIVERYRECEIPT> query = FilterDeliveryHeaderToDetails(filter);
+        //    string resolve_sort = config.SortBy ?? "Id";
+        //    bool resolve_isAscending = (config.IsAscending) ? config.IsAscending : false;
+        //    int resolved_size = config.Size ?? _maxPageSize;
+        //    if (resolved_size > _maxPageSize) resolved_size = _maxPageSize;
+        //    int resolved_index = config.Index ?? 1;
+
+        //    var paged = PageQueryForDelivery(query, resolved_size, resolved_index);
+        //    return new DataList<EamisDeliveryReceiptDTO>
+        //    {
+        //        Count = await query.CountAsync(),
+        //        Items = await QueryToDeliveryReceiptHeaderToDetails(paged).ToListAsync()
+        //    };
+        //}
+        private IQueryable<EAMISDELIVERYRECEIPT> PageQueryForDelivery(IQueryable<EAMISDELIVERYRECEIPT> query, int resolved_size, int resolved_index)
+        {
+            return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+        }
+        //private IQueryable<EamisDeliveryReceiptDTO> QueryToDeliveryReceiptHeaderToDetails(IQueryable<EAMISDELIVERYRECEIPT> query)
+        //{
+        //    return query.Select(x => new EamisDeliveryReceiptDTO
+        //    {
+        //        Id = x.ID,
+        //        TransactionType = x.TRANSACTION_TYPE,
+        //        ReceivedBy = x.RECEIVED_BY,
+        //        DateReceived = x.DATE_RECEIVED,
+        //        SupplierId = x.SUPPLIER_ID,
+        //        PurchaseOrderNumber = x.PURCHASE_ORDER_NUMBER,
+        //        PurchaseOrderDate = x.PURCHASE_ORDER_DATE,
+        //        PurchaseRequestNumber = x.PURCHASE_REQUEST_NUMBER,
+        //        PurchaseRequestDate = x.PURCHASE_REQUEST_DATE,
+        //        SaleInvoiceNumber = x.SALE_INVOICE_NUMBER,
+        //        SaleInvoiceDate = x.SALE_INVOICE_DATE,
+        //        TotalAmount = x.TOTAL_AMOUNT,
+        //        TransactionStatus = x.TRANSACTION_STATUS,
+        //        StockroomId = x.WAREHOUSE_ID,
+        //        DRNumFrSupplier = x.DR_BY_SUPPLIER_NUMBER,
+        //        DRDate = x.DR_BY_SUPPLIER_DATE,
+        //        Warehouse = new EamisWarehouseDTO
+        //        {
+        //            Id = x.WAREHOUSE_GROUP.ID,
+        //            Warehouse_Description = x.WAREHOUSE_GROUP.WAREHOUSE_DESCRIPTION
+        //        },
+        //        Supplier = new EamisSupplierDTO
+        //        {
+        //            Id = x.SUPPLIER_GROUP.ID,
+        //            CompanyName = x.SUPPLIER_GROUP.COMPANY_NAME
+        //        },
+        //        DeliveryDetailsGroup = _ctx.EAMIS_DELIVERY_RECEIPT_DETAILS.AsNoTracking().Where(d => d.DELIVERY_RECEIPT_ID == x.ID).Select(f => new EamisDeliveryReceiptDetailsDTO
+        //        {
+        //            Id = f.ID,
+        //            DeliveryReceiptId = f.DELIVERY_RECEIPT_ID,
+        //            ItemId = f.ITEM_ID,
+        //            UnitCost = f.UNIT_COST,
+        //            QtyReceived = f.QTY_RECEIVED,
+        //            SerialNumber = f.SERIAL_LOT,
+        //            PropertyItem = new EamisPropertyItemsDTO
+        //            {
+        //                Id = f.ITEMS_GROUP.ID,
+        //                PropertyName = f.ITEMS_GROUP.PROPERTY_NAME,
+        //                PropertyNo = f.ITEMS_GROUP.PROPERTY_NO,
+        //                ItemCategory = new EamisItemCategoryDTO
+        //                {
+        //                    ForDepreciation = f.ITEMS_GROUP.ITEM_CATEGORY.FOR_DEPRECIATION,
+        //                    Id = f.ITEMS_GROUP.ITEM_CATEGORY.ID
+        //                }
+        //            },
+        //            PropertySerialTran = _ctx.EAMIS_SERIAL_TRAN.AsNoTracking().Select(g => new EamisSerialTranDTO
+        //            {
+        //                Id = g.ID,
+        //                DeliveryReceiptDetailsId = g.DELIVERY_RECEIPT_DETAILS_ID,
+        //                SerialNumber = g.SERIAL_NO,
+        //            }).Where(m => m.DeliveryReceiptDetailsId == f.ID).ToList(),
+        //        }).FirstOrDefault(),
+        //        DeliveryImages = _ctx.EAMIS_ATTACHED_FILES.AsNoTracking().Select(v => new EamisAttachedFilesDTO
+        //        {
+        //            Id = v.ID,
+        //            FileName = v.ATTACHED_FILENAME,
+        //            ModuleName = v.MODULE_NAME,
+        //            TransactionNumber = v.TRANID
+        //        }).Where(i => i.TransactionNumber == x.TRANSACTION_TYPE).ToList()
+        //    });
+        //}
+        private IQueryable<EAMISDELIVERYRECEIPT> FilterDeliveryHeaderToDetails(EamisDeliveryReceiptDTO filter, IQueryable<EAMISDELIVERYRECEIPT> custom_query = null, bool strict = false)
+        {
+            var predicate = PredicateBuilder.New<EAMISDELIVERYRECEIPT>(true);
+            if (filter.Id != null && filter.Id != 0)
+                predicate = predicate.And(x => x.ID == filter.Id);
+            if (!string.IsNullOrEmpty(filter.TransactionType)) predicate = (strict)
+                   ? predicate.And(x => x.TRANSACTION_TYPE.ToLower() == filter.TransactionType.ToLower())
+                   : predicate.And(x => x.TRANSACTION_TYPE.Contains(filter.TransactionType.ToLower()));
+            if (filter.SupplierId != null && filter.SupplierId != 0)
+                predicate = predicate.And(x => x.SUPPLIER_ID == filter.SupplierId);
+            if (!string.IsNullOrEmpty(filter.PurchaseOrderNumber)) predicate = (strict)
+                  ? predicate.And(x => x.PURCHASE_ORDER_NUMBER.ToLower() == filter.PurchaseOrderNumber.ToLower())
+                  : predicate.And(x => x.PURCHASE_ORDER_NUMBER.Contains(filter.PurchaseOrderNumber.ToLower()));
+            if (filter.PurchaseOrderDate != null && filter.PurchaseOrderDate != DateTime.MinValue)
+                predicate = predicate.And(x => x.PURCHASE_ORDER_DATE == filter.PurchaseOrderDate);
+            if (!string.IsNullOrEmpty(filter.PurchaseRequestNumber)) predicate = (strict)
+                  ? predicate.And(x => x.PURCHASE_REQUEST_NUMBER.ToLower() == filter.PurchaseRequestNumber.ToLower())
+                  : predicate.And(x => x.PURCHASE_REQUEST_NUMBER.Contains(filter.PurchaseRequestNumber.ToLower()));
+            if (filter.PurchaseRequestDate != null && filter.PurchaseRequestDate != DateTime.MinValue)
+                predicate = predicate.And(x => x.PURCHASE_REQUEST_DATE == filter.PurchaseRequestDate);
+            if (!string.IsNullOrEmpty(filter.SaleInvoiceNumber)) predicate = (strict)
+                              ? predicate.And(x => x.SALE_INVOICE_NUMBER.ToLower() == filter.SaleInvoiceNumber.ToLower())
+                              : predicate.And(x => x.SALE_INVOICE_NUMBER.Contains(filter.SaleInvoiceNumber.ToLower()));
+            if (filter.SaleInvoiceDate != null && filter.SaleInvoiceDate != DateTime.MinValue)
+                predicate = predicate.And(x => x.SALE_INVOICE_DATE == filter.SaleInvoiceDate);
+            if (filter.TotalAmount != null && filter.TotalAmount != 0)
+                predicate = predicate.And(x => x.TOTAL_AMOUNT == filter.TotalAmount);
+            if (!string.IsNullOrEmpty(filter.TransactionStatus)) predicate = (strict)
+                   ? predicate.And(x => x.TRANSACTION_STATUS.ToLower() == filter.TransactionStatus.ToLower())
+                   : predicate.And(x => x.TRANSACTION_STATUS.Contains(filter.TransactionStatus.ToLower()));
+
+
+            var query = custom_query ?? _ctx.EAMIS_DELIVERY_RECEIPT;
+            return query.Where(predicate);
+        }
         partial class IssuedQtyDTO
         {
             public string ItemCode { get; set; }

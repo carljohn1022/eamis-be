@@ -300,7 +300,17 @@ namespace EAMIS.Core.LogicRepository.Transaction
             };
         }
 
-
+        //public async Task<EamisSerialTranDTO> getSerialNumber (int deliveryReceiptDetailID)
+        //{
+        //    var result = await Task.Run(() => _ctx.EAMIS_SERIAL_TRAN.AsNoTracking().Where(x => x.DELIVERY_RECEIPT_DETAILS_ID == deliveryReceiptDetailID).ToList());
+        //    return new EamisSerialTranDTO
+        //    {
+        //        Id = result.ID,
+        //        DeliveryReceiptDetailsId = result.DELIVERY_RECEIPT_DETAILS_ID,
+        //        SerialNumber = result.SERIAL_NO,
+        //        WarrantyExpiryDate = result.WARRANTY_EXPIRY_DATE
+        //    };
+        //}
 
 
     }
