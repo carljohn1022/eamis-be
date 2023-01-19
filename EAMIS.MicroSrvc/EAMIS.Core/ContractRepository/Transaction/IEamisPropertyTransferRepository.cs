@@ -11,7 +11,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
     public interface IEamisPropertyTransferRepository
     {
         Task<DataList<EamisPropertyTransactionDTO>> List(EamisPropertyTransactionDTO filter, PageConfig config);
-        Task<string> GetNextSequenceNumber();
+        Task<string> GetNextSequenceNumber(string tranType);
         Task<EamisPropertyTransactionDTO> Insert(EamisPropertyTransactionDTO item);
         Task<EamisPropertyTransactionDTO> Update(EamisPropertyTransactionDTO item);
         Task<EamisPropertyTransactionDTO> getPropertyItemById(int itemID);

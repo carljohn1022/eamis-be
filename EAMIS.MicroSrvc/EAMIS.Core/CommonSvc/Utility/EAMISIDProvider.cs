@@ -59,6 +59,26 @@ namespace EAMIS.Core.CommonSvc.Utility
                     nextId = maxId + 1;
                     _id = PrefixSettings.IMPrefix + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
                     break;
+                case TransactionTypeSettings.ICSIssuance:
+                    maxId = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(t => t.TRAN_TYPE == TransactionTypeSettings.ICSIssuance).ToList().Count(); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    break;
+                case TransactionTypeSettings.PARIssuance:
+                    maxId = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(t => t.TRAN_TYPE == TransactionTypeSettings.PARIssuance).ToList().Count(); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    break;
+                case TransactionTypeSettings.PTRTransfer:
+                    maxId = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(t => t.TRAN_TYPE == TransactionTypeSettings.PTRTransfer).ToList().Count();
+                    nextId = maxId + 1;
+                    _id = DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');
+                    break;
+                case TransactionTypeSettings.ITRTransfer:
+                    maxId = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(t => t.TRAN_TYPE == TransactionTypeSettings.ITRTransfer).ToList().Count();
+                    nextId = maxId + 1;
+                    _id = DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');
+                    break;
             }
             return _id;
         }

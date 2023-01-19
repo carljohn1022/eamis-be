@@ -29,10 +29,21 @@ namespace EAMIS.Core.LogicRepository.Transaction
         }
 
         #region property transaction
-        public async Task<string> GetNextSequenceNumber()
+        public async Task<string> GetNextSequenceNumber(string tranType)
         {
-            var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.PropertyTransfer);
-            return nextId;
+            if (tranType == TransactionTypeSettings.PTRTransfer)
+            {
+                var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.PTRTransfer);
+                return nextId;
+            }
+            if (tranType == TransactionTypeSettings.ITRTransfer)
+            {
+                var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.ITRTransfer);
+                return nextId;
+            }
+            return null;
+            //var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.PropertyTransfer);
+            //return nextId;
         }
         public async Task<DataList<EamisPropertyTransactionDTO>> List(EamisPropertyTransactionDTO filter, PageConfig config)
         {
@@ -157,6 +168,21 @@ namespace EAMIS.Core.LogicRepository.Transaction
         }
         public async Task<EamisPropertyTransactionDTO> Insert(EamisPropertyTransactionDTO item)
         {
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(i => i.TRANSACTION_NUMBER == item.TransactionNumber).FirstOrDefault();
+            if (result != null)
+            {
+                if (item.TranType == TransactionTypeSettings.ITRTransfer)
+                {
+                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.ITRTransfer);
+                    item.TransactionNumber = item.TranType + nextIdProvided;
+                }
+                if (item.TranType == TransactionTypeSettings.PTRTransfer)
+                {
+                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.PTRTransfer);
+                    item.TransactionNumber = item.TranType + nextIdProvided;
+                }
+            }
+
             EAMISPROPERTYTRANSACTION data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
@@ -164,21 +190,21 @@ namespace EAMIS.Core.LogicRepository.Transaction
             //ensure that recently added record has the correct transaction type number
             item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
 
-            string _drType = item.TranType + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
+            //string _drType = item.TranType + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
 
-            //check if the forecasted transaction type matches with the actual transaction type (saved/created in DB)
-            //forecasted transaction type = item.TransactionType
-            //actual transaction type = item.TransactionType.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0')
-            if (item.TransactionNumber != _drType)
-            {
-                item.TransactionNumber = _drType; //if not matched, replace value of FTT with  ATT
+            ////check if the forecasted transaction type matches with the actual transaction type (saved/created in DB)
+            ////forecasted transaction type = item.TransactionType
+            ////actual transaction type = item.TransactionType.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0')
+            //if (item.TransactionNumber != _drType)
+            //{
+            //    item.TransactionNumber = _drType; //if not matched, replace value of FTT with  ATT
 
-                //reset context state to avoid error
-                _ctx.Entry(data).State = EntityState.Detached;
+            //    //reset context state to avoid error
+            //    _ctx.Entry(data).State = EntityState.Detached;
 
-                //call the update method, force to update the transaction type in the DB
-                await this.Update(item);
-            }
+            //    //call the update method, force to update the transaction type in the DB
+            //    await this.Update(item);
+            //}
             return item;
         }
         public async Task<EamisPropertyTransactionDTO> Update(EamisPropertyTransactionDTO item)

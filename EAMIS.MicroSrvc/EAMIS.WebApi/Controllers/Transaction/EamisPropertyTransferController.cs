@@ -34,9 +34,9 @@ namespace EAMIS.WebApi.Controllers.Transaction
         }
 
         [HttpGet("getNextSequence")]
-        public async Task<string> GetNextSequenceAsync()
+        public async Task<string> GetNextSequenceAsync(string tranType)
         {
-            var nextId = await _eamisPropertyTransferRepository.GetNextSequenceNumber();
+            var nextId = await _eamisPropertyTransferRepository.GetNextSequenceNumber(tranType);
             return nextId;
         }
 

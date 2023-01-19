@@ -19,7 +19,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<string> UpdatePropertyItemQty(EamisDeliveryReceiptDetailsDTO item);
         Task<EamisPropertyTransactionDetailsDTO> UpdateDetails(EamisPropertyTransactionDetailsDTO item);
         Task<EamisPropertyTransactionDTO> getPropertyItemById(int itemID);
-        Task<string> GetNextSequenceNumber();
+        Task<string> GetNextSequenceNumber(string tranType);
         Task<string> GetNextSequenceNumberForMaterialIssuance();
         Task<DataList<EamisPropertyTransactionDetailsDTO>> SearchReceiving(string type, string searchValue);
         Task<DataList<EamisDeliveryReceiptDetailsDTO>> SearchDRForMaterialIssuance(string type, string searcValue);

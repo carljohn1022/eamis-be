@@ -41,10 +41,19 @@ namespace EAMIS.Core.LogicRepository.Transaction
               : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
 
-        public async Task<string> GetNextSequenceNumber()
+        public async Task<string> GetNextSequenceNumber(string tranType)
         {
-            var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.Issuance);
-            return nextId;
+            if (tranType == TransactionTypeSettings.ICSIssuance)
+            {
+                var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.ICSIssuance);
+                return nextId;
+            }
+            if (tranType == TransactionTypeSettings.PARIssuance)
+            {
+                var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.PARIssuance);
+                return nextId;
+            }
+            return null;
         }
         public async Task<string> GetNextSequenceNumberForMaterialIssuance()
         {
@@ -235,25 +244,42 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         public async Task<EamisPropertyTransactionDTO> InsertProperty(EamisPropertyTransactionDTO item)
         {
+            
+
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(i => i.TRANSACTION_NUMBER == item.TransactionNumber).FirstOrDefault();
+            if (result != null)
+            {
+                if (item.TranType == TransactionTypeSettings.ICSIssuance)
+                {
+                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.ICSIssuance);
+                    item.TransactionNumber = item.TranType + nextIdProvided;
+                }
+                if (item.TranType == TransactionTypeSettings.PARIssuance)
+                {
+                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.PARIssuance);
+                    item.TransactionNumber = item.TranType + nextIdProvided;
+                }
+            }
             EAMISPROPERTYTRANSACTION data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
             //ensure that recently added record has the correct transaction id number
             item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
+            
 
-            string _drType = item.TranType + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
+            //string _drType = item.TranType + nextId;
 
-            if (item.TransactionNumber != _drType)
-            {
-                item.TransactionNumber = _drType;
+            //if (item.TransactionNumber != _drType)
+            //{
+            //    item.TransactionNumber = _drType;
 
-                //reset context state to avoid error
-                _ctx.Entry(data).State = EntityState.Detached;
+            //    //reset context state to avoid error
+            //    _ctx.Entry(data).State = EntityState.Detached;
 
-                //call the update method, force to update the transaction number in DB
-                await this.UpdateProperty(item);
-            }
-            item.Id = data.ID;
+            //    //call the update method, force to update the transaction number in DB
+            //    await this.UpdateProperty(item);
+            //}
+            //item.Id = data.ID;
             return item;
         }
         public async Task<EamisPropertyTransactionDTO> InsertPropertyForMaterialIssuance(EamisPropertyTransactionDTO item)

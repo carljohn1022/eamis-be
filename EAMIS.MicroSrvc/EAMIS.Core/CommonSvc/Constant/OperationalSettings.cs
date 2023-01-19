@@ -25,6 +25,10 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string PropertyRevaluation = "Property Revaluation";
         public const string AssetSchedule = "Asset Schedule";
         public const string IssuanceMaterial = "Issuance Material";
+        public const string ICSIssuance = "ICS";
+        public const string PARIssuance = "PAR";
+        public const string PTRTransfer = "PTR";
+        public const string ITRTransfer = "ITR";
     }
 
 
