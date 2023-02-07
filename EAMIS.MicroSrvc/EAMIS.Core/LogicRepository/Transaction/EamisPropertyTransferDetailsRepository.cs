@@ -222,7 +222,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                           .Where(pn => !(pn.PROPERTY_NUMBER == null || pn.PROPERTY_NUMBER.Trim() == string.Empty))
                                           .GroupBy(x => x.PROPERTY_NUMBER)
                                           .Select(i => i.Max(x => x.ID))
-                                          .ToList();
+                                          .ToList(); //check if there a problem.
             if (tranType == "PTR") { 
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
                                             .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
@@ -230,8 +230,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             h => h.ID,
                                             (d, h) => new { d, h })
                                             .Where(x => arrDistinctDetailID.Contains(x.d.ID) &&
-                                                   (x.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance ||
-                                                    x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer )
+                                                   (x.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance)
                                                     && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                     && x.d.UNIT_COST >= 50000
                                                    //&& x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved --> to do: uncomment this line to get property items with Approved status only
@@ -281,8 +280,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                            h => h.ID,
                                            (d, h) => new { d, h })
                                            .Where(x => arrDistinctDetailID.Contains(x.d.ID) &&
-                                                  (x.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance ||
-                                                   x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer)
+                                                  (x.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance)
                                                    && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                    && x.d.UNIT_COST < 50000
                                                   //&& x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved --> to do: uncomment this line to get property items with Approved status only

@@ -856,7 +856,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                         c => c.p.CATEGORY_ID,
                                         ic => ic.ID,
                                         (c, ic) => new { ic, c })
-                                        .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving &&
+                                        .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving ||
+                                                    x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer &&
                                                     x.ic.IS_ASSET == true) //added Property Transfer
                                         .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                         {
@@ -913,7 +914,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             c => c.p.CATEGORY_ID,
                                             ic => ic.ID,
                                             (c, ic) => new { ic, c })
-                                            .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving &&
+                                            .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving ||
+                                                        x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer &&
                                                         x.ic.IS_ASSET == true)
                                             .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                             {
