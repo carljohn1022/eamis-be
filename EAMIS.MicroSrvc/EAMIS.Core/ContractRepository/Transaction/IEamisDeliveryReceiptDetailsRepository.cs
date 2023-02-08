@@ -18,6 +18,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         bool HasError { get; set; }
         Task<DataList<EamisDeliveryReceiptDetailsDTO>> SearchDeliveryDetailsforReceiving(string type, string searchvalue);
         Task<EAMISSERIALTRAN> PostSerialTranByItem(EamisSerialTranDTO item);
+        Task<List<EamisSerialTranDTO>> PostSerialTran(List<EamisSerialTranDTO> items);
         //Task<EamisSerialTranDTO> getSerialNumber(int deliveryReceiptDetailID);
 
         //Task<List<EamisTranTypeDTO>> GetTranTypeList();

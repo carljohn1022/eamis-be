@@ -267,20 +267,38 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return retValue;
         }
+        public async Task<List<EamisSerialTranDTO>> PostSerialTran(List<EamisSerialTranDTO> items)
+        {
+            List<EAMISSERIALTRAN> lstItem = new List<EAMISSERIALTRAN>();
+            try
+            {
+                for (int intItems = 0; intItems < items.Count(); intItems++)
+                {
+                    EAMISSERIALTRAN objItem = MapToEntity(items[intItems]);
+                    lstItem.Add(objItem);
+
+                }
+
+                _ctx.EAMIS_SERIAL_TRAN.AddRange(lstItem);
+                _ctx.SaveChangesAsync().GetAwaiter().GetResult();
+                bolerror = false;
+
+            }
+            catch (Exception ex)
+            {
+                bolerror = true;
+                _errorMessage = ex.InnerException.Message;
+            }
+            return items;
+        }
         public async Task<EAMISSERIALTRAN> PostSerialTranByItem(EamisSerialTranDTO item)
         {
             EAMISSERIALTRAN serialTran = MapToEntity(item);
             try
             {
-                if (item.SerialNumber == "")
-                {
-                    _ctx.Entry(serialTran).State = EntityState.Deleted;
-                }
-                else { 
                 _ctx.Entry(serialTran).State = EntityState.Added;
                 _ctx.SaveChangesAsync().GetAwaiter().GetResult();
                 bolerror = false;
-                }
             }
             catch (Exception ex)
             {

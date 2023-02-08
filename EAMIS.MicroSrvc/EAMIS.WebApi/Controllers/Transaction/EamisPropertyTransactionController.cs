@@ -189,5 +189,12 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var response = await _eamisAttachedFilesRepository.GetTranFileName(transactionNumber);
             return response;
         }
+        [HttpGet("DeliveryReceiptHeaderToDetailsList")]
+        public async Task<ActionResult<EamisDeliveryReceiptDTO>> DeliveryReceiptHeaderToDetails ([FromQuery] EamisDeliveryReceiptDTO filter, [FromQuery] PageConfig config)
+        {
+            if (filter == null)
+                filter = new EamisDeliveryReceiptDTO();
+            return Ok(await _eamisPropertyTransactionRepository.DeliveryReceiptHeaderToDetails(filter, config));
+        }
     }
 }

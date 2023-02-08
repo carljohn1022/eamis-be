@@ -25,7 +25,7 @@ namespace EAMIS.Common.DTO.Transaction
         public decimal RealEstateTaxPayment { get; set; }
         public decimal AreaSQM { get; set; }
         public string Notes { get; set; }
-
+        public string SerialNumber { get; set; }
 
     }
 }

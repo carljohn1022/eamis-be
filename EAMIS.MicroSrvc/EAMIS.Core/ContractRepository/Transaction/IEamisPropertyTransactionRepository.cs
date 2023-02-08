@@ -7,6 +7,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
     public interface IEamisPropertyTransactionRepository
     {
         Task<DataList<EamisPropertyTransactionDTO>> List(EamisPropertyTransactionDTO filter, PageConfig config);
+        Task<DataList<EamisDeliveryReceiptDTO>> DeliveryReceiptHeaderToDetails(EamisDeliveryReceiptDTO filter, PageConfig config);
         Task<EamisPropertyTransactionDTO> Insert(EamisPropertyTransactionDTO item);
         Task<EamisPropertyTransactionDTO> Update(EamisPropertyTransactionDTO item);
         Task<EamisPropertyTransactionDTO> Delete(EamisPropertyTransactionDTO item);

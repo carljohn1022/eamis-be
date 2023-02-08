@@ -325,7 +325,137 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 }).Where(i => i.TransactionNumber == result.TRANSACTION_NUMBER).ToList()
             };
         }
+        public async Task<DataList<EamisDeliveryReceiptDTO>> DeliveryReceiptHeaderToDetails(EamisDeliveryReceiptDTO filter, PageConfig config)
+        {
+            IQueryable<EAMISDELIVERYRECEIPT> query = DRHDFiltered(filter);
+            string resolved_sort = config.SortBy ?? "Id";
+            bool resolved_isAscending = (config.IsAscending) ? config.IsAscending : false;
+            int resolved_size = config.Size ?? _maxPageSize;
+            if (resolved_size > _maxPageSize) resolved_size = _maxPageSize;
+            int resolved_index = config.Index ?? 1;
 
+            var paged = DRHDPageQuery(query, resolved_size, resolved_index);
+            return new DataList<EamisDeliveryReceiptDTO>
+            {
+                Count = await query.CountAsync(),
+                Items = await DRHDDTO(paged).ToListAsync()
+            };
+        }
+        private IQueryable<EAMISDELIVERYRECEIPT> DRHDFiltered(EamisDeliveryReceiptDTO filter, IQueryable<EAMISDELIVERYRECEIPT> custom_query = null, bool strict = false)
+        {
+            var predicate = PredicateBuilder.New<EAMISDELIVERYRECEIPT>(true);
+            if (filter.Id != null && filter.Id != 0)
+                predicate = predicate.And(x => x.ID == filter.Id);
+            if (!string.IsNullOrEmpty(filter.TransactionType)) predicate = (strict)
+                   ? predicate.And(x => x.TRANSACTION_TYPE.ToLower() == filter.TransactionType.ToLower())
+                   : predicate.And(x => x.TRANSACTION_TYPE.Contains(filter.TransactionType.ToLower()));
+            if (filter.SupplierId != null && filter.SupplierId != 0)
+                predicate = predicate.And(x => x.SUPPLIER_ID == filter.SupplierId);
+            if (!string.IsNullOrEmpty(filter.PurchaseOrderNumber)) predicate = (strict)
+                  ? predicate.And(x => x.PURCHASE_ORDER_NUMBER.ToLower() == filter.PurchaseOrderNumber.ToLower())
+                  : predicate.And(x => x.PURCHASE_ORDER_NUMBER.Contains(filter.PurchaseOrderNumber.ToLower()));
+            if (filter.PurchaseOrderDate != null && filter.PurchaseOrderDate != DateTime.MinValue)
+                predicate = predicate.And(x => x.PURCHASE_ORDER_DATE == filter.PurchaseOrderDate);
+            if (!string.IsNullOrEmpty(filter.PurchaseRequestNumber)) predicate = (strict)
+                  ? predicate.And(x => x.PURCHASE_REQUEST_NUMBER.ToLower() == filter.PurchaseRequestNumber.ToLower())
+                  : predicate.And(x => x.PURCHASE_REQUEST_NUMBER.Contains(filter.PurchaseRequestNumber.ToLower()));
+            if (filter.PurchaseRequestDate != null && filter.PurchaseRequestDate != DateTime.MinValue)
+                predicate = predicate.And(x => x.PURCHASE_REQUEST_DATE == filter.PurchaseRequestDate);
+            if (!string.IsNullOrEmpty(filter.SaleInvoiceNumber)) predicate = (strict)
+                              ? predicate.And(x => x.SALE_INVOICE_NUMBER.ToLower() == filter.SaleInvoiceNumber.ToLower())
+                              : predicate.And(x => x.SALE_INVOICE_NUMBER.Contains(filter.SaleInvoiceNumber.ToLower()));
+            if (filter.SaleInvoiceDate != null && filter.SaleInvoiceDate != DateTime.MinValue)
+                predicate = predicate.And(x => x.SALE_INVOICE_DATE == filter.SaleInvoiceDate);
+            if (filter.TotalAmount != null && filter.TotalAmount != 0)
+                predicate = predicate.And(x => x.TOTAL_AMOUNT == filter.TotalAmount);
+            if (!string.IsNullOrEmpty(filter.TransactionStatus)) predicate = (strict)
+                   ? predicate.And(x => x.TRANSACTION_STATUS.ToLower() == filter.TransactionStatus.ToLower())
+                   : predicate.And(x => x.TRANSACTION_STATUS.Contains(filter.TransactionStatus.ToLower()));
+
+            predicate = predicate.And(x => x.DELIVERY_RECEIPT_DETAILS.Where(y => y.ITEMS_GROUP.ITEM_CATEGORY.IS_ASSET == true).Any());
+
+            var query = custom_query ?? _ctx.EAMIS_DELIVERY_RECEIPT;
+            return query.Where(predicate);
+        }
+        private IQueryable<EAMISDELIVERYRECEIPT> DRHDPageQuery(IQueryable<EAMISDELIVERYRECEIPT> query, int resolved_size, int resolved_index)
+        {
+            return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
+        }
+        private IQueryable<EamisDeliveryReceiptDTO> DRHDDTO(IQueryable<EAMISDELIVERYRECEIPT> query)
+        {
+            return query.Select(x => new EamisDeliveryReceiptDTO
+            {
+                Id = x.ID,
+                TransactionType = x.TRANSACTION_TYPE,
+                ReceivedBy = x.RECEIVED_BY,
+                DateReceived = x.DATE_RECEIVED,
+                SupplierId = x.SUPPLIER_ID,
+                PurchaseOrderNumber = x.PURCHASE_ORDER_NUMBER,
+                PurchaseOrderDate = x.PURCHASE_ORDER_DATE,
+                PurchaseRequestNumber = x.PURCHASE_REQUEST_NUMBER,
+                PurchaseRequestDate = x.PURCHASE_REQUEST_DATE,
+                SaleInvoiceNumber = x.SALE_INVOICE_NUMBER,
+                SaleInvoiceDate = x.SALE_INVOICE_DATE,
+                TotalAmount = x.TOTAL_AMOUNT,
+                TransactionStatus = x.TRANSACTION_STATUS,
+                StockroomId = x.WAREHOUSE_ID,
+                DRNumFrSupplier = x.DR_BY_SUPPLIER_NUMBER,
+                DRDate = x.DR_BY_SUPPLIER_DATE,
+                Warehouse = new EamisWarehouseDTO
+                {
+                    Id = x.WAREHOUSE_GROUP.ID,
+                    Warehouse_Description = x.WAREHOUSE_GROUP.WAREHOUSE_DESCRIPTION
+                },
+                Supplier = new EamisSupplierDTO
+                {
+                    Id = x.SUPPLIER_GROUP.ID,
+                    CompanyName = x.SUPPLIER_GROUP.COMPANY_NAME
+                },
+                DeliveryImages = _ctx.EAMIS_ATTACHED_FILES.AsNoTracking().Select(v => new EamisAttachedFilesDTO
+                {
+                    Id = v.ID,
+                    FileName = v.ATTACHED_FILENAME,
+                    ModuleName = v.MODULE_NAME,
+                    TransactionNumber = v.TRANID
+                }).Where(i => i.TransactionNumber == x.TRANSACTION_TYPE).ToList(),
+
+                DeliveryReceiptDetails = _ctx.EAMIS_DELIVERY_RECEIPT_DETAILS.AsNoTracking().Select(y => new EamisDeliveryReceiptDetailsDTO
+                {
+                    Id = y.ID,
+                    DeliveryReceiptId = y.DELIVERY_RECEIPT_ID,
+                    ItemId = y.ITEM_ID,
+                    QtyOrder = y.QTY_ORDER,
+                    QtyDelivered = y.QTY_DELIVERED,
+                    QtyRejected = y.QTY_REJECTED,
+                    QtyReceived = y.QTY_RECEIVED,
+                    UnitCost = y.UNIT_COST,
+                    SerialNumber = y.SERIAL_LOT,
+                    UnitOfMeasurement = y.UNIT_OF_MEASUREMENT,
+                    SubTotal = y.SUB_TOTAL,
+                    PropertyItem = new EamisPropertyItemsDTO
+                    {
+                        Id = y.ITEMS_GROUP.ID,
+                        PropertyNo = y.ITEMS_GROUP.PROPERTY_NO,
+                        PropertyName = y.ITEMS_GROUP.PROPERTY_NAME,
+                        UomId = y.ITEMS_GROUP.UOM_ID,
+                        ItemCategory = new EamisItemCategoryDTO
+                        {
+                            Id = y.ITEMS_GROUP.ITEM_CATEGORY.ID,
+                            ForDepreciation = y.ITEMS_GROUP.ITEM_CATEGORY.FOR_DEPRECIATION,
+                            IsAsset = y.ITEMS_GROUP.ITEM_CATEGORY.IS_ASSET
+                        }
+                    },
+                    PropertySerialTran = _ctx.EAMIS_SERIAL_TRAN.AsNoTracking().Select(s => new EamisSerialTranDTO
+                    {
+                        Id = s.ID,
+                        SerialNumber = s.SERIAL_NO,
+                        WarrantyExpiryDate = s.WARRANTY_EXPIRY_DATE,
+                        DeliveryReceiptDetailsId = s.DELIVERY_RECEIPT_DETAILS_ID
+                    }).Where(i => i.DeliveryReceiptDetailsId == y.ID).ToList()
+                }).Where(i => i.DeliveryReceiptId == x.ID).ToList()
+            });
+
+        }
     }
 
 
