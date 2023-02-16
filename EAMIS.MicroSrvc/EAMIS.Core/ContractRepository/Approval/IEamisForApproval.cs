@@ -17,8 +17,14 @@ namespace EAMIS.Core.ContractRepository.Approval
         Task<List<EamisForApprovalDTO>> FirstApproverList(int userId, string transactionType);
         Task<List<EamisForApprovalDTO>> SecondApproverList(int userId, string transactionType);
         Task<List<EamisForApprovalDTO>> ThirdApproverList(int userId, string transactionType);
+        Task<List<EamisForApprovalDTO>> FourthApproverList(int userId, string transactionType);
+        Task<List<EamisForApprovalDTO>> FifthApproverList(int userId, string transactionType);
 
         Task<List<MyApprovalListDTO>> MyApprovalList(int userId, string transactionType);
         Task<EamisForApprovalDTO> getForApprovalStatus(string transactionNumber);
+        Task<int> getTransactionID(string transactionNumber);
+        Task<int> getDeliveryID(string transactionType);
+        Task<int> getServiceLogID(string tranID);
+        Task<int> getRevaluationID(string tranID);
     }
 }

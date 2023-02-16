@@ -503,7 +503,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                                (di, h) => new { di, h })
                                                                .Where(i => i.di.c.ID == itemCategory.CATEGORY_ID &&
                                                                            !(i.di.pi.d.PROPERTY_NUMBER == null || i.di.pi.d.PROPERTY_NUMBER == string.Empty) &&
-                                                                           i.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance)
+                                                                           i.h.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceProperties)
                                                                .GroupBy(g => new { g.di.c.ID })
                                                                .Select(s => new { Count = s.Count() })
                                                                .FirstOrDefault();
@@ -680,7 +680,12 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                 .Where(r => r.REFERENCE_ID == x.ID)
                                 .GroupBy(g => g.REFERENCE_ID)
                                 .Select(i => i.Sum(v => v.QTY)).FirstOrDefault(),
-                SalvageValue = x.SALVAGE_VALUE,
+                //IsAssigneeCustodianChange = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
+                //                .Where(r => r.REFERENCE_ID == x.ID )
+                //                .GroupBy(g => g.REFERENCE_ID)
+                //                .Select(i => i.Any(v => v.ASSIGNEE_CUSTODIAN != x.ASSIGNEE_CUSTODIAN))
+                //                .FirstOrDefault() ? "yes" : "no",
+            SalvageValue = x.SALVAGE_VALUE,
                 BookValue = x.BOOK_VALUE,
                 EstLife = x.ESTIMATED_LIFE,
                 Area = x.AREA,
@@ -770,7 +775,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                                     .Where(r => r.REFERENCE_ID == s.ID)
                                                                     .GroupBy(g => g.REFERENCE_ID)
                                                                     .Select(i => i.Sum(v => v.QTY)).FirstOrDefault()) > 0
-                                                                    && s.UNIT_COST >= 50000 && s.ASSIGNEE_CUSTODIAN == assigneeCustodian
+                                                                    && s.UNIT_COST >= 50000 && s.ASSIGNEE_CUSTODIAN == assigneeCustodian                                                            
                                                     );
                 return query.Where(predicate);
             }
@@ -841,7 +846,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                 .Where(pn => !(pn.PROPERTY_NUMBER == null || pn.PROPERTY_NUMBER.Trim() == string.Empty))
                                 .Select(x => x.PROPERTY_NUMBER)
                                 .ToList();
-            if(tranType == "PAR") 
+
+            
+            if (tranType == "PAR") 
             { 
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
                                         .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
@@ -857,7 +864,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                         ic => ic.ID,
                                         (c, ic) => new { ic, c })
                                         .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving ||
-                                                    x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer &&
+                                                    x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer  &&
                                                     x.ic.IS_ASSET == true) //added Property Transfer
                                         .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                         {

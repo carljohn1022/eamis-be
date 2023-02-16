@@ -10,6 +10,7 @@ namespace EAMIS.Core.ContractRepository.Approval
         Task<EamisApprovalSetupDetailsDTO> Insert(EamisApprovalSetupDetailsDTO item);
         Task<EamisApprovalSetupDetailsDTO> Update(EamisApprovalSetupDetailsDTO item);
         Task<EamisApprovalSetupDetailsDTO> Delete(EamisApprovalSetupDetailsDTO item);
+        Task<int> getApprovalSetupId(string transactionType);
         string ErrorMessage { get; set; }
         public bool HasError { get; set; }
     }

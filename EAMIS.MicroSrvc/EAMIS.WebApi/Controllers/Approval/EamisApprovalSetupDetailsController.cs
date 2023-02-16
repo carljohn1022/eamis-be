@@ -53,5 +53,11 @@ namespace EAMIS.WebApi.Controllers.Approval
                 return BadRequest(_eamisApporvalSetupDetailsRepository.ErrorMessage);
             return Ok(result);
         }
+        [HttpGet("GetApprovalSetupID")]
+        public async Task<int> GetApprovalSetupID(string transactionType)
+        {
+            var response = await _eamisApporvalSetupDetailsRepository.getApprovalSetupId(transactionType);
+            return response;
+        }
     }
 }

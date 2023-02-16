@@ -120,5 +120,29 @@ namespace EAMIS.WebApi.Controllers.Approval
         {
             return Ok(await _eamisForApprovalRepository.getForApprovalStatus(transactionNumber));
         }
+        [HttpGet("GetTransactionID")]
+        public async Task<int> GetTransactionID(string transactionNumber)
+        {
+            var response = await _eamisForApprovalRepository.getTransactionID(transactionNumber);
+            return response;
+        }
+        [HttpGet("GetDeliveryID")]
+        public async Task<int> GetDeliveryID(string transactionType)
+        {
+            var response = await _eamisForApprovalRepository.getDeliveryID(transactionType);
+            return response;
+        }
+        [HttpGet("GetServiceLogID")]
+        public async Task<int> GetServiceLogID(string tranID)
+        {
+            var response = await _eamisForApprovalRepository.getServiceLogID(tranID);
+            return response;
+        }
+        [HttpGet("GetRevaluationID")]
+        public async Task<int> GetRevaluationID(string tranID)
+        {
+            var response = await _eamisForApprovalRepository.getRevaluationID(tranID);
+            return response;
+        }
     }
 }

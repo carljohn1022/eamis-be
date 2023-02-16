@@ -142,7 +142,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 {
                     Id = x.SERVICE_LOG_GROUP.ID,
                     ServiceLogType = x.SERVICE_LOG_GROUP.SERVICE_LOG_TYPE,
-                    TransactionId = x.SERVICE_LOG_GROUP.TRAN_ID
+                    TransactionId = x.SERVICE_LOG_GROUP.TRAN_ID,
+                    TransactionStatus = x.SERVICE_LOG_GROUP.TRANSACTION_STATUS
                 },
 
                 SupplierDescription = x.SUPPLIER_DESC,
@@ -206,6 +207,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             ID = 0,
                                             RECEIVING_TRAN_ID = x.d1.d.PROPERTY_TRANS_ID,
                                             PROPERTY_NUMBER = x.d1.d.PROPERTY_NUMBER,
+                                            SERIAL_NUMBER = x.d1.d.SERIAL_NUMBER,
+                                            RECEIVING_AMOUNT = x.d1.d.UNIT_COST,
                                             PROPERTY_DESC = x.d1.d.ITEM_DESCRIPTION,
                                             SUPPLIER_ID = x.dr.SUPPLIER_ID,
                                             SUPPLIER_DESC = x.dr.SUPPLIER_GROUP.COMPANY_NAME,
@@ -252,6 +255,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     RealEstateTaxPayment = x.REAL_ESTATE_TAX_PAYMENT, //value must be assigned manually by user
                     ReceivingAmount = x.RECEIVING_AMOUNT, //value must be assigned manually by user
                     ReceivingTransactionId = x.RECEIVING_TRAN_ID,
+                    SerialNumber = x.SERIAL_NUMBER,
                     //ServiceDate = x.SERVICE_DATE, //Get from service log => Tran_Date, programatically assign it's value before calling the Insert/create method
                     //ServiceLogId = x.SERVICE_LOG_ID, //Get from service log => ID, programatically assign it's value before calling the Insert/create method
                     SupplierId = x.SUPPLIER_ID, //Get from Delivery Receipt => Supplier_ID

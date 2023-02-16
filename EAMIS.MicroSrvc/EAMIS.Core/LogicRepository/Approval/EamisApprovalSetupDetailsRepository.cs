@@ -171,5 +171,13 @@ namespace EAMIS.Core.LogicRepository.Approval
             }
             return item;
         }
+
+        public async Task<int> getApprovalSetupId(string transactionType)
+        {
+            int retValue = 0;
+            var result = await Task.Run(() => _ctx.EAMIS_APPROVAL_SETUP.Where(s => s.MODULE_NAME == transactionType).AsNoTracking().ToList()).ConfigureAwait(false);
+            retValue = result[0].ID;
+            return retValue;
+        }
     }
 }

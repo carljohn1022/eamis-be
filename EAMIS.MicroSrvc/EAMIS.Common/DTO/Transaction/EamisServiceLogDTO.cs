@@ -12,6 +12,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string ServiceLogType { get; set; }
         public string TransactionId { get; set; }
         public DateTime TransactionDate { get; set; }
+        public string TransactionStatus { get; set; }
         public List<EamisServiceLogDetailsDTO> ServiceLogDetails { get; set; }
     }
 }

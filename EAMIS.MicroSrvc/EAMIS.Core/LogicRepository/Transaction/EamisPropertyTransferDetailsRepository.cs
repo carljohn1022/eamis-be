@@ -230,10 +230,10 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             h => h.ID,
                                             (d, h) => new { d, h })
                                             .Where(x => arrDistinctDetailID.Contains(x.d.ID) &&
-                                                   (x.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance)
+                                                   (x.h.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceProperties)
                                                     && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                     && x.d.UNIT_COST >= 50000
-                                                   //&& x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved --> to do: uncomment this line to get property items with Approved status only
+                                                    && x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
                                                    )
                                             .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                             {
@@ -280,10 +280,10 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                            h => h.ID,
                                            (d, h) => new { d, h })
                                            .Where(x => arrDistinctDetailID.Contains(x.d.ID) &&
-                                                  (x.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance)
+                                                  (x.h.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceProperties)
                                                    && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                    && x.d.UNIT_COST < 50000
-                                                  //&& x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved --> to do: uncomment this line to get property items with Approved status only
+                                                   && x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
                                                   )
                                            .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                            {

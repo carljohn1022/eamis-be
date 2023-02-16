@@ -19,6 +19,8 @@ namespace EAMIS.Core.CommonSvc.Constant
         public const string DeliveryReceipt = "Delivery Receipt";
         public const string PropertyReceiving = "Property Receiving";
         public const string Issuance = "Issuance/Releasing"; // "Property Issuance";
+        public const string IssuanceProperties = "Issuance/Releasing - Properties";
+        public const string IssuanceMaterials = "Issuance/Releasing - Materials";
         public const string PropertyTransfer = "Property Transfer";
         public const string ServiceLog = "Service Log";
         public const string PropertyDisposal = "Property Disposal";

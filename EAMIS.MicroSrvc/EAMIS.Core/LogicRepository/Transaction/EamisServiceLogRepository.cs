@@ -64,6 +64,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ServiceLogType = x.SERVICE_LOG_TYPE,
                 TransactionId = x.TRAN_ID,
                 TransactionDate = x.TRAN_DATE,
+                TransactionStatus = x.TRANSACTION_STATUS,
                 ServiceLogDetails = x.SERVICE_LOG_DETAILS.Select
                                     (d => new EamisServiceLogDetailsDTO
                                     {
@@ -138,7 +139,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             //ensure that recently added record has the correct transaction id number
             item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
 
-            string _drType = PrefixSettings.SLPrefix + Convert.ToString(data.ID).PadLeft(6, '0');
+            string _drType = PrefixSettings.SLPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
 
             //check if the forecasted transaction id matches with the actual transaction id (saved/created in DB)
             //forecasted transaction id = item.TransactionId
@@ -174,6 +175,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ID = item.Id,
                 TRAN_DATE = item.TransactionDate,
                 TRAN_ID = item.TransactionId,
+                TRANSACTION_STATUS = item.TransactionStatus,
                 SERVICE_LOG_TYPE = item.ServiceLogType
             };
         }
@@ -186,6 +188,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Id = result.ID,
                 TransactionDate = result.TRAN_DATE,
                 TransactionId = result.TRAN_ID,
+                TransactionStatus = result.TRANSACTION_STATUS,
                 ServiceLogType = result.SERVICE_LOG_TYPE,
                 ServiceLogDetails = _ctx.EAMIS_SERVICE_LOG_DETAILS.AsNoTracking().Select(x => new EamisServiceLogDetailsDTO
                 {
@@ -205,6 +208,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     AppraisedValue = x.APPRAISED_VALUE,
                     AppraisalIncrement = x.APPRAISAL_INCREMENT,
                     RealEstateTaxPayment = x.REAL_ESTATE_TAX_PAYMENT,
+                    SerialNumber = x.SERIAL_NUMBER,
                     AreaSQM = x.AREA_SQM,
                     Notes = x.NOTES
                 }).Where(i => i.ServiceLogId == result.ID).ToList()

@@ -14,6 +14,7 @@ namespace EAMIS.Core.Domain.Entities
         public string SERVICE_LOG_TYPE { get; set; }
         public string TRAN_ID { get; set; }
         public DateTime TRAN_DATE { get; set; }
+        public string TRANSACTION_STATUS { get; set; }
         public List<EAMISSERVICELOGDETAILS> SERVICE_LOG_DETAILS { get; set; }
     }
 }
