@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Rolemanager;
+﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Rolemanager;
 using EAMIS.Core.ContractRepository.Masterfiles;
 using EAMIS.Core.Response.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,27 @@ namespace EAMIS.WebApi.Controllers.Rolemanager
         public EamisRoleModuleLinkController(IEamisRoleModuleLinkRepository eamisRoleModuleLinkRepository)
         {
             _eamisRoleModuleLinkRepository = eamisRoleModuleLinkRepository;
+        }
+        [HttpGet("GetRoleId")]
+        public async Task<ActionResult<EamisRoleModuleLinkDTO>> GetUserIdRole(int userId)
+        {
+            if (await _eamisRoleModuleLinkRepository.Validate(userId))
+                return Unauthorized();
+            return Ok(await _eamisRoleModuleLinkRepository.GetUserIdList(userId));
+
+        }
+        [HttpGet("AgencyName")]
+        public async Task<string> GetAgencyName(int userId)
+        {
+            var response = await _eamisRoleModuleLinkRepository.GetAgencyName(userId);
+            return response;
+        }
+        [HttpGet("GetUserId")]
+        public async Task<ActionResult<EamisUserRolesDTO>> GetUserId(int userId)
+        {
+            if (_eamisRoleModuleLinkRepository.HasError)
+                return BadRequest(_eamisRoleModuleLinkRepository.ErrorMessage);
+            return Ok(await _eamisRoleModuleLinkRepository.GetUserIdList(userId));
         }
         [HttpGet("list")]
         public async Task<ActionResult<EamisRoleModuleLinkDTO>> List([FromQuery] EamisRoleModuleLinkDTO filter, [FromQuery] PageConfig config)

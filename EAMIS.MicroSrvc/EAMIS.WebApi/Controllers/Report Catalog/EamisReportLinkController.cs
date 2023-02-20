@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Report;
+﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Common.DTO.Report;
 using EAMIS.Common.DTO.Report_Catalog;
 //using EAMIS.Core.ContractRepository.Report.Catalog;
 using EAMIS.Core.ContractRepository.Report_Catalog;
@@ -31,7 +32,11 @@ namespace EAMIS.WebApi.Controllers.Report
                 filter = new EamisUserReportLinkDTO();
             return Ok(await _eamisReportLinkRepository.List(filter, config));
         }
-
+        [HttpGet("GetUserId")]
+        public async Task<ActionResult<EamisUsersDTO>> GetUserId(int userId)
+        {
+            return Ok(await _eamisReportLinkRepository.GetUserIdList(userId));
+        }
         [HttpPost("Add")]
         public async Task<ActionResult<EamisUserReportLinkDTO>> Add([FromBody] EamisUserReportLinkDTO item)
         {

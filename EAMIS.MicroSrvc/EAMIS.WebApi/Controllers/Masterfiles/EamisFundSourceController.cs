@@ -53,13 +53,13 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         public async Task<ActionResult<EamisFundSourceDTO>> Edit([FromBody] EamisFundSourceDTO item,int id)
         {
             var data = new EamisFundSourceDTO();
-            if (await _eamisFundSourceRepository.UpdateValidateExistingCode(item.Code, item.Id))
+            if (await _eamisFundSourceRepository.UpdateValidateExistingCode(item.FundCategory, item.Id))
             {
                 if (item == null)
                     item = new EamisFundSourceDTO();
                 return Ok(await _eamisFundSourceRepository.Update(item, id));
             }
-            else if(await _eamisFundSourceRepository.ValidateExistingCode(item.Code))
+            else if(await _eamisFundSourceRepository.ValidateExistingCode(item.FundCategory))
             {
                 return Unauthorized();
             }

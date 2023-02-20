@@ -43,6 +43,7 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
             {
                 USER_ID = item.User_Id,
                 USERNAME = item.Username,
+                BRANCH = item.Branch,
                 PASSWORD_HASH = item.Password_Hash,
                 PASSWORD_SALT = item.Password_Salt,
                 USER_INFO_ID = item.UserInfoId,
@@ -67,6 +68,7 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
                // USER_INFO_ID = aisPersonnelEmployeeId.Id,
                 AGENCY_EMPLOYEE_NUMBER = aisPersonnelEmployeeId.AgencyEmployeeNumber,
                 USERNAME = item.Username,
+                BRANCH = item.Branch,
                 IS_DELETED = false,
                 IS_ACTIVE = true,
                 IS_BLOCKED = false,
@@ -129,6 +131,7 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
             {
                 User_Id = x.USER_ID,
                 Username = x.USERNAME,
+                Branch = x.BRANCH,
                 UserInfoId = x.USER_INFO_ID,
                 Password_Hash = x.PASSWORD_HASH,
                 Password_Salt = x.PASSWORD_SALT,
@@ -167,6 +170,7 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
                 IsActive = item.IS_ACTIVE,
                 IsDeleted = item.IS_DELETED,
                 IsBlocked = item.IS_BLOCKED,
+                Branch = item.BRANCH,
                 AgencyEmployeeNumber = item.AGENCY_EMPLOYEE_NUMBER,
                 PersonnelInfo = new AisPersonnelDTO
                 {
@@ -300,9 +304,12 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
 
         public Task<bool> Validate(string EmployeeAgencyNumber)
         {
-            return _aisctx.Personnel.AsNoTracking().AnyAsync(x => x.AgencyEmployeeNumber == EmployeeAgencyNumber);
+            return _ctx.EAMIS_USERS.AsNoTracking().AnyAsync(x => x.AGENCY_EMPLOYEE_NUMBER == EmployeeAgencyNumber);
         }
-
+        public async Task<bool> UserExists(string Username)
+        {
+            return await _ctx.EAMIS_USERS.AnyAsync(x => x.USERNAME == Username);
+        }
         public Task<bool> ValidateExistAgency(string EmployeeAgencyNumber)
         {
             return _ctx.EAMIS_USERS.AsNoTracking().AnyAsync(x => x.AGENCY_EMPLOYEE_NUMBER == EmployeeAgencyNumber);

@@ -22,7 +22,8 @@ namespace EAMIS.Core.Domain.Entities
         public bool IS_ACTIVE { get; set; }
         public bool IS_DELETED { get; set; }
         public bool IS_BLOCKED { get; set; }
-      
+        public string BRANCH { get; set; }
+
         public List<EAMISUSERROLES> USER_ROLES { get; set; }
         public List<EAMISUSERLOGIN> EAMISUSER_LOGIN { get; set; }
    

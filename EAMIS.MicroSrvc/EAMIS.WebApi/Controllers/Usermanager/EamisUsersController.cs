@@ -30,9 +30,11 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         [HttpPost("register")]
         public async Task<ActionResult<EAMISUSERS>> Register(RegisterDTO item)
         {
-            if (!await _applicationUsers.Validate(item.AgencyEmployeeNumber)) return BadRequest("BadRequest");
-            if (await _applicationUsers.ValidateExistAgency(item.AgencyEmployeeNumber)) return BadRequest("Agency Number is already exist");
-            if (await _applicationUsers.UserExists(item.Username,item.AgencyEmployeeNumber)) return BadRequest("Username is already taken and EmployeeAgencyNumber is already taken.");
+            if (await _applicationUsers.Validate(item.AgencyEmployeeNumber))
+                return Unauthorized();
+            //if (await _applicationUsers.ValidateExistAgency(item.AgencyEmployeeNumber)) return BadRequest("Agency Number is already exist");
+            if (await _applicationUsers.UserExists(item.Username))
+                return Unauthorized();
             return Ok(await _applicationUsers.Register(item));
 
         }

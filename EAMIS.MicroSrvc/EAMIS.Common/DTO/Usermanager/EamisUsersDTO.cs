@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Ais;
+using EAMIS.Common.DTO.Report_Catalog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,10 @@ namespace EAMIS.Common.DTO.Masterfiles
         public bool IsDeleted { get; set; }
         public bool IsBlocked { get; set; }
         public string AgencyEmployeeNumber { get; set; }
-        public List<EamisUserRolesDTO> UserRoles {get;set;}
+        public string Branch { get; set; }
+        public List<EamisUserRolesDTO> UserRoles { get; set; }
+        public List<EamisUserReportLinkDTO> RoleReportLink { get; set; }
+        public List<EamisUserRolesDTO> RoleManager { get; set; }
         public EamisUserloginDTO UserLogin { get; set; }
         public AisPersonnelDTO PersonnelInfo { get; set; }
     }
@@ -29,6 +33,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public string Password { get; set; }
         public string AgencyEmployeeNumber { get; set; }
         public int UserInfoId { get; set; }
+        public string Branch { get; set; }
     }
    
 }

@@ -73,7 +73,15 @@ namespace EAMIS.WebApi.Controllers.Transaction
 
             return Ok(result);
         }
+        [HttpPut("serialUpdate")]
+        public async Task<ActionResult<List<EamisSerialTranDTO>>> serialUpdate(List<EamisSerialTranDTO> items, int deliveryReceiptDetailID, int qty)
+        {
+            if (items == null)
+                items = new List<EamisSerialTranDTO>();
+            var result = await _eamisDeliveryReceiptDetailsRepository.updateSerial(items, deliveryReceiptDetailID, qty);
 
+            return Ok(result);
+        }
         //[HttpGet("GetSerialTran")]
         //public async Task<ActionResult<EamisDeliveryReceiptDTO>> getSerialTran(int deliveryReceiptDetailID)
         //{

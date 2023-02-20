@@ -45,7 +45,51 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             }
             return item;
         }
+        public async Task<string> GetAgencyName(int userId)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _ctx.EAMIS_USERS.Where(s => s.USER_ID == userId).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                retValue = result[0].AGENCY_EMPLOYEE_NUMBER.ToString();
+            }
+            return retValue;
+        }
+        public async Task<EamisUserRolesDTO> GetUserIdList(int userId)
+        {
 
+            var result = await Task.Run(() => _ctx.EAMIS_USER_ROLES.AsNoTracking().FirstOrDefaultAsync(x => x.USER_ID == userId)).ConfigureAwait(false);
+            return new EamisUserRolesDTO
+            {
+                Id = result.ID,
+                UserId = result.USER_ID,
+                RoleId = result.ROLE_ID,
+                IsDeleted = result.IS_DELETED,
+                ModulesRoles = _ctx.EAMIS_ROLE_MODULE_LINK.Select(r => new EamisRoleModuleLinkDTO
+                {
+                    Id = r.ID,
+                    ModuleId = r.MODULE_ID,
+                    RoleId = r.ROLE_ID,
+                    ViewRight = r.VIEW_RIGHT,
+                    UpdateRight = r.UPDATE_RIGHT,
+                    DeactivateRight = r.DEACTIVATE_RIGHT,
+                    PrintRight = r.PRINT_RIGHT,
+                    IsActive = r.IS_ACTIVE,
+                    InsertRight = r.INSERT_RIGHT,
+                    UserId = r.USER_ID,
+                    ModulesNameList = _ctx.EAMIS_MODULES.Select(v => new EamisModulesDTO
+                    {
+                        Id = v.ID,
+                        ModuleName = v.MODULE_NAME,
+                        IsActive = v.IS_ACTIVE
+                    }).Where(i => i.Id == r.MODULE_ID).FirstOrDefault(),
+                }).Where(i => i.UserId == result.USER_ID).ToList(),
+            };
+        }
+        public Task<bool> Validate(int UserId)
+        {
+            return _ctx.EAMIS_ROLE_MODULE_LINK.AsNoTracking().AnyAsync(x => x.USER_ID == UserId);
+        }
         public async Task<EamisRoleModuleLinkDTO> Insert(EamisRoleModuleLinkDTO item)
         {
             try
@@ -113,7 +157,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 InsertRight = item.INSERT_RIGHT,
                 ModuleId = item.MODULE_ID,
                 PrintRight = item.PRINT_RIGHT,
-                IsActive = item.IS_ACTIVE
+                IsActive = item.IS_ACTIVE,
+                UserId = item.USER_ID
             };
 
         }
@@ -130,7 +175,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 PRINT_RIGHT = item.PrintRight,
                 UPDATE_RIGHT = item.UpdateRight,
                 VIEW_RIGHT = item.ViewRight,
-                IS_ACTIVE = item.IsActive
+                IS_ACTIVE = item.IsActive,
+                USER_ID = item.UserId
             };
         }
         private IQueryable<EamisRoleModuleLinkDTO> QueryToDTO(IQueryable<EAMISROLEMODULELINK> query)
@@ -146,6 +192,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 ModuleId = x.MODULE_ID,
                 PrintRight = x.PRINT_RIGHT,
                 IsActive = x.IS_ACTIVE,
+                UserId = x.USER_ID,
                 Roles = _ctx.EAMIS_ROLES.Select(r => new EamisRolesDTO
                 {
                     Id = r.ID,

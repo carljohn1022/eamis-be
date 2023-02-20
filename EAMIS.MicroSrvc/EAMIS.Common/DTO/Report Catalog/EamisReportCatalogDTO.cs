@@ -11,5 +11,6 @@ namespace EAMIS.Common.DTO.Report_Catalog
         public int Id { get; set; }
         public string ReportName { get; set; }
         public string ReportDescription { get; set; }
+        public bool Active { get; set; }
     }
 }

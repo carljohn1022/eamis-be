@@ -91,3 +91,25 @@ C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS
 C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\ref\EAMIS.Common.dll
 C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.pdb
 C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.csproj.AssemblyReference.cache
+C:\Users\Administrator\Desktop\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\bin\Debug\net5.0\EAMIS.Common.deps.json
+C:\Users\Administrator\Desktop\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\bin\Debug\net5.0\EAMIS.Common.dll
+C:\Users\Administrator\Desktop\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\bin\Debug\net5.0\ref\EAMIS.Common.dll
+C:\Users\Administrator\Desktop\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\bin\Debug\net5.0\EAMIS.Common.pdb
+C:\Users\Administrator\Desktop\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Administrator\Desktop\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.AssemblyInfoInputs.cache
+C:\Users\Administrator\Desktop\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.AssemblyInfo.cs
+C:\Users\Administrator\Desktop\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.dll
+C:\Users\Administrator\Desktop\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\ref\EAMIS.Common.dll
+C:\Users\Administrator\Desktop\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.pdb
+C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\bin\Debug\net5.0\EAMIS.Common.deps.json
+C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\bin\Debug\net5.0\EAMIS.Common.dll
+C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\bin\Debug\net5.0\ref\EAMIS.Common.dll
+C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\bin\Debug\net5.0\EAMIS.Common.pdb
+C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.AssemblyInfoInputs.cache
+C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.AssemblyInfo.cs
+C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.csproj.CoreCompileInputs.cache
+C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.dll
+C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\ref\EAMIS.Common.dll
+C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Common\obj\Debug\net5.0\EAMIS.Common.pdb

@@ -317,6 +317,40 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 WARRANTY_EXPIRY_DATE = item.WarrantyExpiryDate
             };
         }
+        public async Task<List<EAMISSERIALTRAN>> updateSerial(List<EamisSerialTranDTO> items, int deliveryReceiptDetailID, int qty)
+        {
+            List<EAMISSERIALTRAN> lstItem = new List<EAMISSERIALTRAN>();
+
+            var latestCountRecords = await _ctx.EAMIS_SERIAL_TRAN
+                       .Where(x => x.DELIVERY_RECEIPT_DETAILS_ID == deliveryReceiptDetailID)
+                       .CountAsync();
+
+            var takeQty = latestCountRecords - qty;
+            if (takeQty > 0)
+            {
+                var latestRecordForQty = await _ctx.EAMIS_SERIAL_TRAN
+                            .Where(x => x.DELIVERY_RECEIPT_DETAILS_ID == deliveryReceiptDetailID)
+                            .OrderByDescending(x => x.ID)
+                            .Take(takeQty)
+                            .ToListAsync();
+                foreach (var record in latestRecordForQty)
+                {
+                    _ctx.Entry(record).State = EntityState.Deleted;
+                }
+            }
+            else
+            {
+                foreach (var item in items)
+                {
+                    EAMISSERIALTRAN data = MapToEntity(item);
+                    _ctx.Entry(data).State = data.ID == 0 ? EntityState.Added : EntityState.Modified;
+                    lstItem.Add(data);
+                }
+            }
+            await _ctx.SaveChangesAsync();
+            bolerror = false;
+            return lstItem;
+        }
 
         //public async Task<EamisSerialTranDTO> getSerialNumber (int deliveryReceiptDetailID)
         //{

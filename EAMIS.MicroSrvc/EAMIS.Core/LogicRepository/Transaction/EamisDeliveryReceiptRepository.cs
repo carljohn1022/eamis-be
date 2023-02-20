@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EAMIS.Core.CommonSvc.Constant;
 using EAMIS.Core.CommonSvc.Utility;
+using System.Collections.Generic;
 
 namespace EAMIS.Core.LogicRepository.Transaction
 {
@@ -237,6 +238,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Items = await QueryToDTO(paged).ToListAsync()
             };
         }
+
         public async Task<EamisDeliveryReceiptDTO> getDeliveryItemById(int itemID)
         {
             var result = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.AsNoTracking().FirstOrDefaultAsync(x => x.ID == itemID)).ConfigureAwait(false);

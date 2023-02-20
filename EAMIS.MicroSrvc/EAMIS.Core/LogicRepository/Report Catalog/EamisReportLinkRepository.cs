@@ -64,7 +64,37 @@ namespace EAMIS.Core.LogicRepository.Report
             }
             return item;
         }
-
+        public async Task<EamisUsersDTO> GetUserIdList(int userId)
+        {
+            var result = await Task.Run(() => _ctx.EAMIS_USERS.AsNoTracking().FirstOrDefaultAsync(x => x.USER_ID == userId)).ConfigureAwait(false);
+            return new EamisUsersDTO
+            {
+                User_Id = result.USER_ID,
+                Username = result.USERNAME,
+                UserInfoId = result.USER_INFO_ID,
+                Password_Hash = result.PASSWORD_HASH,
+                Password_Salt = result.PASSWORD_SALT,
+                IsActive = result.IS_ACTIVE,
+                IsDeleted = result.IS_DELETED,
+                IsBlocked = result.IS_BLOCKED,
+                AgencyEmployeeNumber = result.AGENCY_EMPLOYEE_NUMBER,
+                Branch = result.BRANCH,
+                RoleReportLink = _ctx.EAMIS_USER_REPORT_LINK.AsNoTracking().Select(d => new EamisUserReportLinkDTO
+                {
+                    Id = d.ID,
+                    UserId = d.USER_ID,
+                    ReportId = d.REPORT_ID,
+                    CanView = d.CAN_VIEW,
+                    ReportCatalog = _ctx.EAMIS_REPORT_CATALOG.Select(r => new EamisReportCatalogDTO
+                    {
+                        Id = r.ID,
+                        ReportName = r.REPORT_NAME,
+                        ReportDescription = r.REPORT_DESCRIPTION,
+                        Active = d.CAN_VIEW
+                    }).Where(i => i.Id == d.REPORT_ID).FirstOrDefault()
+                }).Where(i => i.UserId == result.USER_ID).ToList()
+            };
+        }
         public async Task<DataList<EamisUserReportLinkDTO>> List(EamisUserReportLinkDTO filter, PageConfig config)
         {
             IQueryable<EAMISUSERREPORTLINK> query = FilteredEntities(filter);

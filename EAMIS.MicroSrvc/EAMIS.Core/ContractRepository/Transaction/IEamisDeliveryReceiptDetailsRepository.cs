@@ -13,6 +13,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<EamisDeliveryReceiptDetailsDTO> Insert(EamisDeliveryReceiptDetailsDTO item);
         Task<EamisDeliveryReceiptDetailsDTO> Update(EamisDeliveryReceiptDetailsDTO item);
         Task<EamisDeliveryReceiptDetailsDTO> Delete(EamisDeliveryReceiptDetailsDTO item);
+        Task<List<EAMISSERIALTRAN>> updateSerial(List<EamisSerialTranDTO> items, int deliveryReceiptDetailID, int qty);
         Task<string> GetItemById(int itemId);
         string ErrorMessage { get; set; }
         bool HasError { get; set; }

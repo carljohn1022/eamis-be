@@ -11,5 +11,6 @@ namespace EAMIS.Core.Domain.Entities
         public int ID { get; set; }
         public string REPORT_NAME { get; set; }
         public string REPORT_DESCRIPTION { get; set; }
+        public bool ACTIVE { get; set; }
     }
 }

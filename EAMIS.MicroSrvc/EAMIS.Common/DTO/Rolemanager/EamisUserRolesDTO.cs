@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EAMIS.Common.DTO.Rolemanager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,8 @@ namespace EAMIS.Common.DTO.Masterfiles
         public int RoleId { get; set; }
         public bool IsDeleted { get; set; }
         public EamisRolesDTO Roles { get; set; }
-       
+        public EamisRoleModuleLinkDTO RoleModules { get; set; }
+        public List<EamisRoleModuleLinkDTO> ModulesRoles { get; set; }
+
     }
 }

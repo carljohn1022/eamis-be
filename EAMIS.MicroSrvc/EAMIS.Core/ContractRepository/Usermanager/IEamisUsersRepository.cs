@@ -17,6 +17,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<DataList<EamisUsersDTO>> PublicSearch(string searchType, string searchKey, PageConfig config);
         Task<DataList<EamisUsersDTO>> List(EamisUsersDTO filter, PageConfig config);
         Task<bool> Validate(string EmployeeAgencyNumber);
+        Task<bool> UserExists(string Username);
         Task<bool> ValidateExistAgency(string EmployeeAgencyNumber);
         Task<string> GetAgencyName(string AgencyEmployeeNumber);
         //Task<EamisUsersDTO> ChangePassword(EamisUsersDTO item);

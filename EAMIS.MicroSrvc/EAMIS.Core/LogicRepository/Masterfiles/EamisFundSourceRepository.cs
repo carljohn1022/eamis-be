@@ -219,14 +219,14 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             };
         }
 
-        public Task<bool> ValidateExistingCode(string code)
+        public Task<bool> ValidateExistingCode(string FundCategory)
         {
-            return _ctx.EAMIS_FUND_SOURCE.AsNoTracking().AnyAsync(x => x.CODE == code );
+            return _ctx.EAMIS_FUND_SOURCE.AsNoTracking().AnyAsync(x => x.FUND_CATEGORY == FundCategory);
         }
 
-        public Task<bool> UpdateValidateExistingCode(string code, int id)
+        public Task<bool> UpdateValidateExistingCode(string FundCategory, int id)
         {
-            return _ctx.EAMIS_FUND_SOURCE.AsNoTracking().AnyAsync(x => x.CODE == code && x.ID == id);
+            return _ctx.EAMIS_FUND_SOURCE.AsNoTracking().AnyAsync(x => x.FUND_CATEGORY == FundCategory && x.ID == id);
         }
     }
 }
