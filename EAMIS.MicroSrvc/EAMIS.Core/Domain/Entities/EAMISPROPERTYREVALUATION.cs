@@ -13,6 +13,8 @@ namespace EAMIS.Core.Domain.Entities
         public DateTime TRAN_DATE { get; set; }
         public string PARTICULARS { get; set; }
         public bool IS_ACTIVE { get; set; }
+        public string USER_STAMP { get; set; }
+        public string STATUS { get; set; }
         //public List<EAMISPROPERTYREVALUATIONDETAILS> PropertyRevaluationDetails { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.CommonSvc.Constant;
 using EAMIS.Core.ContractRepository.Approval;
+using EAMIS.Core.ContractRepository.Transaction;
 using EAMIS.Core.Domain;
 using EAMIS.Core.Domain.Entities;
 using EAMIS.Core.Response.DTO;
@@ -22,14 +23,16 @@ namespace EAMIS.Core.LogicRepository.Approval
 
         private EAMISContext _ctx;
         private readonly int _maxPageSize;
+        private readonly IEamisPropertyTransactionDetailsRepository _eamisPropertyTransactionDetailsRepository;
         private string _errorMessage = "";
         public string ErrorMessage { get => _errorMessage; set => value = _errorMessage; }
 
         private bool bolerror = false;
         public bool HasError { get => bolerror; set => value = bolerror; }
-        public EamisForApprovalRepository(EAMISContext ctx)
+        public EamisForApprovalRepository(EAMISContext ctx, IEamisPropertyTransactionDetailsRepository eamisPropertyTransactionDetailsRepository)
         {
             _ctx = ctx;
+            _eamisPropertyTransactionDetailsRepository = eamisPropertyTransactionDetailsRepository;
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
               : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
@@ -400,9 +403,27 @@ namespace EAMIS.Core.LogicRepository.Approval
                                                     DRNumFrSupplier = x.DR_BY_SUPPLIER_NUMBER,
                                                     DRDate = x.DR_BY_SUPPLIER_DATE,
                                                     AprDate = x.APR_DATE,
-                                                    AprNum = x.APR_NUMBER
+                                                    AprNum = x.APR_NUMBER,
+                                                    UserStamp = x.USER_STAMP
                                                 })
                                                 .FirstOrDefault();
+                if (newStatus == DocStatus.Approved) 
+                { 
+                    List<EamisDeliveryReceiptDetailsDTO> details = _ctx.EAMIS_DELIVERY_RECEIPT_DETAILS
+                            .Where(d => d.DELIVERY_RECEIPT_ID == data.Id)
+                            .Select(x => new EamisDeliveryReceiptDetailsDTO
+                            {
+                                Id = x.ID,
+                                DeliveryReceiptId = x.DELIVERY_RECEIPT_ID,
+                                ItemId = x.ITEM_ID,
+                                QtyReceived = x.QTY_RECEIVED
+                            })
+                            .ToList();
+                    foreach (var item in details)
+                    {
+                        await _eamisPropertyTransactionDetailsRepository.UpdatePropertyItemQty(item);
+                    }
+                }
                 if (data != null)
                 {
                     EAMISDELIVERYRECEIPT value = new EAMISDELIVERYRECEIPT
@@ -455,13 +476,55 @@ namespace EAMIS.Core.LogicRepository.Approval
                                                     ApprovedBy = x.APPROVED_BY,
                                                     DeliveryDate = x.DELIVERY_DATE,
                                                     UserStamp = x.USER_STAMP,
-                                                    TimeStamp = x.TIMESTAMP,
                                                     TransactionStatus = x.TRANSACTION_STATUS,
                                                     FundSource = x.FUND_SOURCE,
                                                     IsProperty = x.IS_PROPERTY,
                                                     TranType = x.TRAN_TYPE,
                                                 })
                                                 .FirstOrDefault();
+                if (data.TransactionType == TransactionTypeSettings.IssuanceMaterials )
+                { 
+                    if (newStatus == DocStatus.Approved)
+                    {
+                        List<EamisPropertyTransactionDetailsDTO> details = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                .Where(d => d.PROPERTY_TRANS_ID == data.Id)
+                                .Select(x => new EamisPropertyTransactionDetailsDTO
+                                {
+                                    Id = x.ID,
+                                    PropertyTransactionID = x.PROPERTY_TRANS_ID,
+                                    ItemCode = x.ITEM_CODE,
+                                    Qty = x.QTY,
+                                    UnitCost = x.UNIT_COST,
+                                })
+                                .ToList();
+                        foreach (var item in details)
+                        {
+                            await _eamisPropertyTransactionDetailsRepository.UpdateIssuedPropertyItemQty(item);
+                        }
+                    }
+                }
+                if (data.TransactionType == TransactionTypeSettings.IssuanceProperties)
+                {
+                    if (newStatus == DocStatus.Approved)
+                    {
+                        List<EamisPropertyTransactionDetailsDTO> details = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                .Where(d => d.PROPERTY_TRANS_ID == data.Id)
+                                .Select(x => new EamisPropertyTransactionDetailsDTO
+                                {
+                                    Id = x.ID,
+                                    PropertyTransactionID = x.PROPERTY_TRANS_ID,
+                                    ItemCode = x.ITEM_CODE,
+                                    Qty = x.QTY,
+                                    UnitCost = x.UNIT_COST,
+                                    transactionDetailId = x.REFERENCE_ID
+                                })
+                                .ToList();
+                        foreach (var item in details)
+                        {
+                            await _eamisPropertyTransactionDetailsRepository.UpdateIssuedPropertyItemQty(item);
+                        }
+                    }
+                }
                 if (data != null)
                 {
                     EAMISPROPERTYTRANSACTION value = new EAMISPROPERTYTRANSACTION
@@ -478,7 +541,6 @@ namespace EAMIS.Core.LogicRepository.Approval
                         APPROVED_BY = data.ApprovedBy,
                         DELIVERY_DATE = data.DeliveryDate,
                         USER_STAMP = data.UserStamp,
-                        TIMESTAMP = data.TimeStamp,
                         TRANSACTION_STATUS = newStatus,
                         IS_PROPERTY = data.IsProperty
                     };
@@ -505,7 +567,9 @@ namespace EAMIS.Core.LogicRepository.Approval
                                                     IsActive = x.IS_ACTIVE,
                                                     Particulars = x.PARTICULARS,
                                                     TransactionDate = x.TRAN_DATE,
-                                                    TransactionId = x.TRAN_ID
+                                                    TransactionId = x.TRAN_ID,
+                                                    UserStamp = x.USER_STAMP,
+                                                    Status = x.STATUS
                                                 })
                                                 .FirstOrDefault();
                 if (data != null)
@@ -516,7 +580,9 @@ namespace EAMIS.Core.LogicRepository.Approval
                         IS_ACTIVE = data.IsActive,
                         PARTICULARS = data.Particulars,
                         TRAN_ID = data.TransactionId,
-                        TRAN_DATE = data.TransactionDate
+                        TRAN_DATE = data.TransactionDate,
+                        USER_STAMP = data.UserStamp,
+                        STATUS = newStatus
                     };
                     _ctx.Entry(value).State = EntityState.Modified;
                     await _ctx.SaveChangesAsync();
@@ -540,7 +606,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                                                     Id = x.ID,
                                                     TransactionStatus = x.TRANSACTION_STATUS,
                                                     TransactionDate = x.TRAN_DATE,
-                                                    TransactionId = x.TRAN_ID
+                                                    TransactionId = x.TRAN_ID,
+                                                    UserStamp = x.USER_STAMP
                                                 })
                                                 .FirstOrDefault();
                 if (data != null)
@@ -550,7 +617,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                         ID = data.Id,
                         TRANSACTION_STATUS = newStatus,
                         TRAN_ID = data.TransactionId,
-                        TRAN_DATE = data.TransactionDate
+                        TRAN_DATE = data.TransactionDate,
+                        USER_STAMP = data.UserStamp
                     };
                     _ctx.Entry(value).State = EntityState.Modified;
                     await _ctx.SaveChangesAsync();
@@ -878,6 +946,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                 predicate = predicate.And(x => x.ID == filter.Id);
             if (filter.TransactionType != null && !string.IsNullOrEmpty(filter.TransactionType))
                 predicate = predicate.And(x => x.TRANSACTION_TYPE == filter.TransactionType);
+            if (filter.DocStatus != null && !string.IsNullOrEmpty(filter.DocStatus))
+                predicate = predicate.And(x => x.DOCSTATUS == filter.DocStatus);
             if (filter.TransactionNumber != null && !string.IsNullOrEmpty(filter.TransactionNumber))
                 predicate = predicate.And(x => x.TRANSACTION_NUMBER == filter.TransactionNumber);
             if (filter.Approver1Id != 0)
@@ -1027,7 +1097,10 @@ namespace EAMIS.Core.LogicRepository.Approval
         }
         public async Task<EamisForApprovalDTO> getForApprovalStatus(string transactionNumber)
         {
-            var result = await Task.Run(() => _ctx.EAMIS_FOR_APPROVAL.AsNoTracking().FirstOrDefaultAsync(x => x.TRANSACTION_NUMBER == transactionNumber)).ConfigureAwait(false);
+            var result = await Task.Run(() => _ctx.EAMIS_FOR_APPROVAL.AsNoTracking()
+            .OrderByDescending(x => x.ID)
+            .FirstOrDefaultAsync(x => x.TRANSACTION_NUMBER == transactionNumber)).ConfigureAwait(false);
+
             if (result != null)
             {
                 return new EamisForApprovalDTO

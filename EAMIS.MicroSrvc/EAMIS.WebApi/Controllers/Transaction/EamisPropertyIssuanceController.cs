@@ -170,9 +170,9 @@ namespace EAMIS.WebApi.Controllers.Transaction
         }
         
         [HttpGet("GeneratePropertyNumber")]
-        public async Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode)
+        public async Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode, int counter)
         {
-            var result = await _eamisPropertyIssuanceRepository.GeneratePropertyNumber(acquisitionDate, itemCode, responsibilityCode);
+            var result = await _eamisPropertyIssuanceRepository.GeneratePropertyNumber(acquisitionDate, itemCode, responsibilityCode, counter);
 
             if (_eamisPropertyIssuanceRepository.HasError)
                 return _eamisPropertyIssuanceRepository.ErrorMessage;

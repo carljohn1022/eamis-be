@@ -7,6 +7,7 @@ using EAMIS.Core.ContractRepository;
 using EAMIS.Core.ContractRepository.Ais;
 using EAMIS.Core.ContractRepository.Approval;
 using EAMIS.Core.ContractRepository.Classification;
+using EAMIS.Core.ContractRepository.Inventory_Taking;
 using EAMIS.Core.ContractRepository.Masterfiles;
 using EAMIS.Core.ContractRepository.Report_Catalog;
 using EAMIS.Core.ContractRepository.Rolemanager;
@@ -17,6 +18,7 @@ using EAMIS.Core.LogicRepository;
 using EAMIS.Core.LogicRepository.Ais;
 using EAMIS.Core.LogicRepository.Approval;
 using EAMIS.Core.LogicRepository.Classification;
+using EAMIS.Core.LogicRepository.Inventory_Taking;
 using EAMIS.Core.LogicRepository.Masterfiles;
 using EAMIS.Core.LogicRepository.Masterfiles.EAMIS.Core.LogicRepository.Masterfiles;
 using EAMIS.Core.LogicRepository.Report;
@@ -149,6 +151,9 @@ namespace EAMIS.WebApi
 
             //Property Ledger
             services.AddScoped<IEamisPropertyLedgerRepository, EamisPropertyLedgerRepository>();
+
+            //Inventory Taking
+            services.AddScoped<IEamisInventoryTakingRepository, EamisInventoryTakingRepository>();
 
             services.AddDbContext<EAMISContext>(options =>
             {

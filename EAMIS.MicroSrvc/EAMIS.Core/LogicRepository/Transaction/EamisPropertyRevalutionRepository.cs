@@ -94,7 +94,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ID = item.Id,
                 TRAN_DATE = item.TransactionDate,
                 TRAN_ID = item.TransactionId,
-                PARTICULARS = item.Particulars
+                PARTICULARS = item.Particulars,
+                USER_STAMP = item.UserStamp,
+                STATUS = item.Status
             };
         }
         
@@ -132,6 +134,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TransactionDate = x.TRAN_DATE,
                 Particulars = x.PARTICULARS,
                 IsActive = x.IS_ACTIVE,
+                Status = x.STATUS,
                 PropertyRevaluationDetails = _ctx.EAMIS_PROPERTY_REVALUATION_DETAILS.AsNoTracking().Select(d => new EamisPropertyRevaluationDetailsDTO 
                 { 
                     Id = d.ID,
@@ -193,6 +196,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TransactionDate = result.TRAN_DATE,
                 Particulars = result.PARTICULARS,
                 IsActive = result.IS_ACTIVE,
+                Status = result.STATUS,
                 PropertyRevaluationDetails = _ctx.EAMIS_PROPERTY_REVALUATION_DETAILS.AsNoTracking().Select(x => new EamisPropertyRevaluationDetailsDTO
                 {
                     Id = x.ID,

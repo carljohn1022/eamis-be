@@ -129,8 +129,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                             (d, h) => new { d, h })
                             .Where(s => s.h.TRANSACTION_STATUS == DocStatus.Draft &&
                                         s.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving &&
-                                        s.d.ITEM_CODE == itemCode &&
-                                        s.d.TIME_STAMP <= asOfDate)
+                                        s.d.ITEM_CODE == itemCode 
+                                        && s.d.TIME_STAMP <= asOfDate)
                             .GroupBy(g => g.d.ITEM_CODE)
                             .Select(t => t.Sum(s => s.d.QTY))
                             .FirstOrDefault();

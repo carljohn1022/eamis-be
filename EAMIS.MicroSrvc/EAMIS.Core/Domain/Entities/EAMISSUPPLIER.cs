@@ -27,6 +27,7 @@ namespace EAMIS.Core.Domain.Entities
         public string BRANCH { get; set; }
         public string EMAIL_ADD { get; set; }
         public bool IS_ACTIVE { get; set; }
+        public string USER_STAMP { get; set; }
 
         [ForeignKey("BRGY_CODE")]
         public EAMISBARANGAY BARANGAY_GROUP { get; set; }

@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Transaction;
+﻿using EAMIS.Common.DTO.LookUp;
+using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.Response.DTO;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,6 @@ namespace EAMIS.Core.ContractRepository.Transaction
 
         Task<string> GetNextSequenceNumber();
         Task<EamisDeliveryReceiptDTO> getDeliveryItemById(int itemID);
+        Task<List<LookupDTO>> ForRenewalTransactionNumber(); //added by me 
     }
 }

@@ -111,7 +111,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 BRGY_CODE = item.BrgyCode,
                 CITY_MUNICIPALITY_CODE = item.CityMunicipalityCode,
                 PROVINCE_CODE = item.ProvinceCode,
-                REGION_CODE = item.RegionCode
+                REGION_CODE = item.RegionCode,
+                USER_STAMP = item.UserStamp
             };
         }
 

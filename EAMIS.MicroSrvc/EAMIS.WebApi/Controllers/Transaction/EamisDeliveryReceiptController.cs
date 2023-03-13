@@ -1,4 +1,5 @@
-﻿using EAMIS.Common.DTO.Masterfiles;
+﻿using EAMIS.Common.DTO.LookUp;
+using EAMIS.Common.DTO.Masterfiles;
 using EAMIS.Common.DTO.Transaction;
 using EAMIS.Core.CommonSvc.Constant;
 using EAMIS.Core.ContractRepository.Masterfiles;
@@ -206,6 +207,13 @@ namespace EAMIS.WebApi.Controllers.Transaction
                     }
             }
             return BadRequest("Required parameter is missing.");
+        }
+
+        [HttpGet("GetForRenewal")]
+        public async Task<ActionResult<LookupDTO>> ForRenewalTransactionNumber()
+        {
+
+            return Ok(await _eamisDeliveryReceiptRepository.ForRenewalTransactionNumber());
         }
     }
 }

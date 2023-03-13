@@ -19,6 +19,7 @@ namespace EAMIS.Core.Domain.Entities
         public int PROVINCE_CODE { get; set; }
         public int BARANGAY_CODE { get; set; }
         public bool IS_ACTIVE { get; set; }
+        public string USER_STAMP { get; set; }
         [ForeignKey("BARANGAY_CODE")]
         public EAMISBARANGAY BARANGAY { get; set; }
         public List<EAMISPROPERTYITEMS> PROPERTY_ITEMS { get; set; }

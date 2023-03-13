@@ -12,5 +12,6 @@ namespace EAMIS.Common.DTO.Masterfiles
         public string Short_Description { get; set; }
         public string Uom_Description { get; set; }
         public bool isActive { get; set; }
+        public string UserStamp { get; set; }
     }
 }

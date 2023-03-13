@@ -127,7 +127,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 await _ctx.SaveChangesAsync();
 
                 //update property_items table quantity in stock
-                await _eamisPropertyTransactionDetailsRepository.UpdatePropertyItemQty(item);
+               /* await _eamisPropertyTransactionDetailsRepository.UpdatePropertyItemQty(item);*/ //Approve first before calling method
 
                 transaction.Commit();
                 item.Id = data.ID;

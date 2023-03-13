@@ -461,7 +461,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                 ApprovedBy = h.APPROVED_BY,
                                                 DeliveryDate = h.DELIVERY_DATE,
                                                 UserStamp = h.USER_STAMP,
-                                                TimeStamp = h.TIMESTAMP,
                                                 TransactionStatus = h.TRANSACTION_STATUS,
                                                 FundSource = h.FUND_SOURCE
                                             }).FirstOrDefault()

@@ -233,7 +233,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                    (x.h.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceProperties)
                                                     && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                     && x.d.UNIT_COST >= 50000
-                                                    && x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
+                                                    //&& x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
                                                    )
                                             .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                             {
@@ -283,7 +283,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                   (x.h.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceProperties)
                                                    && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                    && x.d.UNIT_COST < 50000
-                                                   && x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
+                                                   //&& x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
                                                   )
                                            .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                            {
@@ -375,7 +375,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                 ApprovedBy = h.APPROVED_BY,
                                                 DeliveryDate = h.DELIVERY_DATE,
                                                 UserStamp = h.USER_STAMP,
-                                                TimeStamp = h.TIMESTAMP,
                                                 TransactionStatus = h.TRANSACTION_STATUS,
                                                 FundSource = h.FUND_SOURCE
                                             }).FirstOrDefault()

@@ -21,5 +21,6 @@ namespace EAMIS.Common.DTO.Masterfiles
         public string locationDescription { get; set; }
         public bool isActive { get; set; }
         public string responsibilityCenter { get; set; }
+        public string UserStamp { get; set; }
     }
 }

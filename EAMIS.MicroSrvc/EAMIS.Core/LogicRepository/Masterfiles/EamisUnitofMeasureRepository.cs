@@ -88,7 +88,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 ID = item.Id,
                 SHORT_DESCRIPTION = item.Short_Description,
                 UOM_DESCRIPTION = item.Uom_Description,
-                IS_ACTIVE = item.isActive
+                IS_ACTIVE = item.isActive,
+                USER_STAMP = item.UserStamp
 
             };
         }

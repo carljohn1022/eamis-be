@@ -13,6 +13,8 @@ namespace EAMIS.Common.DTO.Transaction
         public DateTime TransactionDate { get; set; }
         public string Particulars { get; set; }
         public bool IsActive { get; set; }
+        public string UserStamp { get; set; }
+        public string Status { get; set; }
         public List<EamisPropertyRevaluationDetailsDTO> PropertyRevaluationDetails { get; set; }
     }
 }

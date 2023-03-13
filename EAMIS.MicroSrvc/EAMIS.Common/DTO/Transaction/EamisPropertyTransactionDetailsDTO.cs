@@ -40,6 +40,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string Remarks { get; set; }
         public string ModeOfDisposal { get; set; }
         public string IsAssigneeCustodianChange { get; set; }
+        public int CountIndex { get; set; }
         public EamisPropertyTransactionDTO PropertyTransactionGroup { get; set; }
 
     }

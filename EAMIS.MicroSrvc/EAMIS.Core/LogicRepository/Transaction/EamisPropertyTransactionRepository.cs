@@ -123,7 +123,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 APPROVED_BY = item.ApprovedBy,
                 DELIVERY_DATE = item.DeliveryDate,
                 USER_STAMP = item.UserStamp,
-                TIMESTAMP = item.TimeStamp,
                 TRANSACTION_STATUS = item.TransactionStatus,
                 IS_PROPERTY = item.IsProperty
 
@@ -190,8 +189,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ReceivedBy = x.RECEIVED_BY,
                 ApprovedBy = x.APPROVED_BY,
                 DeliveryDate = x.DELIVERY_DATE,
-                UserStamp = x.USER_STAMP,
-                TimeStamp = x.TIMESTAMP,
                 TransactionStatus = x.TRANSACTION_STATUS,
                 FundSource = x.FUND_SOURCE //added for Report
                 ,
@@ -238,9 +235,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.UserStamp)) predicate = (strict)
                    ? predicate.And(x => x.USER_STAMP.ToLower() == filter.UserStamp.ToLower())
                    : predicate.And(x => x.USER_STAMP.Contains(filter.UserStamp.ToLower()));
-            if (!string.IsNullOrEmpty(filter.TimeStamp)) predicate = (strict)
-                   ? predicate.And(x => x.TIMESTAMP.ToLower() == filter.TimeStamp.ToLower())
-                   : predicate.And(x => x.TIMESTAMP.Contains(filter.TimeStamp.ToLower()));
             if (!string.IsNullOrEmpty(filter.TransactionStatus)) predicate = (strict)
                    ? predicate.And(x => x.TRANSACTION_STATUS.ToLower() == filter.TransactionStatus.ToLower())
                    : predicate.And(x => x.TRANSACTION_STATUS.Contains(filter.TransactionStatus.ToLower()));
@@ -280,8 +274,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ReceivedBy = result.RECEIVED_BY,
                 ApprovedBy = result.APPROVED_BY,
                 DeliveryDate = result.DELIVERY_DATE,
-                UserStamp = result.USER_STAMP,
-                TimeStamp = result.TIMESTAMP,
                 TransactionStatus = result.TRANSACTION_STATUS,
                 PropertyTransactionDetails = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Select(x => new EamisPropertyTransactionDetailsDTO
                 {
@@ -308,10 +300,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     EstLife = x.ESTIMATED_LIFE,
                     Area = x.AREA,
                     Semi = x.SEMI_EXPANDABLE_AMOUNT,
-                    UserStamp = x.USER_STAMP,
-                    TimeStamp = x.TIME_STAMP,
                     WarrantyExpiry = x.WARRANTY_EXPIRY,
-
                     Invoice = x.INVOICE,
                     PropertyCondition = x.PROPERTY_CONDITION
                 }).Where(i => i.PropertyTransactionID == result.ID).ToList()

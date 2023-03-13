@@ -51,7 +51,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return Ok(result);
         }
 
-        [HttpPost("Edit")]
+        [HttpPut("Edit")]
         public async Task<ActionResult<EamisPropertyRevaluationDetailsDTO>> Edit([FromBody] EamisPropertyRevaluationDetailsDTO item)
         {
             if (item == null)

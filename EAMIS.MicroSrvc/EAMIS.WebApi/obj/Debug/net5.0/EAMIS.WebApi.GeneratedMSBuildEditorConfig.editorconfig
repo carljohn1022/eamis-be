@@ -7,4 +7,4 @@ build_property.PublishSingleFile =
 build_property.IncludeAllContentForSelfExtract = 
 build_property._SupportedPlatformList = Android,iOS,Linux,macOS,Windows
 build_property.RootNamespace = EAMIS.WebApi
-build_property.ProjectDir = C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\
+build_property.ProjectDir = C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.WebApi\

@@ -14,6 +14,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public int FinancingSourceId { get; set; }
         public int AuthorizationId { get; set; }
         public string FundCategory { get; set; }
+        public string UserStamp { get; set; }
         public bool IsActive { get; set; }
         public EamisGeneralFundSourceDTO GeneralFundSource { get; set; }
         public EamisFinancingSourceDTO FinancingSource { get; set; }

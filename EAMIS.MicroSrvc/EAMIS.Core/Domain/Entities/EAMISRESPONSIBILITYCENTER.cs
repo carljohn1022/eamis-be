@@ -23,5 +23,6 @@ namespace EAMIS.Core.Domain.Entities
         public string RESPONSIBILITY_CENTER { get; set; }
         public string LOCATION_CODE { get; set; }
         public string LOCATION_DESC { get; set; }
+        public string USER_STAMP { get; set; }
     }
 }

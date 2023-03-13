@@ -12,6 +12,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public int CategoryId { get; set; }
         public string SubCategoryName { get; set; }
         public bool IsActive { get; set; }
+        public string UserStamp { get; set; }
         public EamisItemCategoryDTO ItemCategory { get; set; }
     }
 }

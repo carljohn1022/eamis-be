@@ -36,7 +36,6 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 if (item == null) return new EAMISRESPONSIBILITYCENTER();
                 return new EAMISRESPONSIBILITYCENTER
                 {
-
                     ID = item.Id,
                     MAIN_GROUP_CODE = item.mainGroupCode,
                     MAIN_GROUP_DESC = item.mainGroupDesc,
@@ -49,8 +48,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                     LOCATION_CODE = item.locationCode,
                     LOCATION_DESC = item.locationDescription,
                     IS_ACTIVE = item.isActive,
-                    RESPONSIBILITY_CENTER = item.responsibilityCenter
-                    
+                    RESPONSIBILITY_CENTER = item.responsibilityCenter,
+                    USER_STAMP = item.UserStamp          
                 };
             }
             public async Task<DataList<EamisResponsibilityCenterDTO>> List(EamisResponsibilityCenterDTO filter, PageConfig config)

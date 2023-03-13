@@ -102,7 +102,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 OBJECT_CODE = item.ObjectCode,
                 ACCOUNT_CODE = item.AccountCode,
                 IS_ACTIVE = item.IsActive,
-                IS_PART_OF_INVENTORY = item.IsPartofInventroy
+                IS_PART_OF_INVENTORY = item.IsPartofInventroy,
+                USER_STAMP = item.UserStamp,
             };
         }
 

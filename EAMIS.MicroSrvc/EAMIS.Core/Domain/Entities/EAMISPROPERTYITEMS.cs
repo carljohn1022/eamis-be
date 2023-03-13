@@ -26,6 +26,7 @@ namespace EAMIS.Core.Domain.Entities
         public string IMG_URL { get; set; } 
         public bool IS_ACTIVE { get; set; }
         public string SPECIFIC_DESC { get; set; }
+        public string USER_STAMP { get; set; }
         public EAMISITEMCATEGORY ITEM_CATEGORY { get; set; }
         public EAMISUNITOFMEASURE UOM_GROUP { get; set; }
         public EAMISWAREHOUSE WAREHOUSE_GROUP { get; set; }

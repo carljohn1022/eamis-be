@@ -87,7 +87,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             {
                 ID = item.Id,
                 PROCUREMENT_DESCRIPTION = item.ProcurementDescription,
-                IS_ACTIVE = item.IsActive
+                IS_ACTIVE = item.IsActive,
+                USER_STAMP = item.UserStamp
             };
         }
 

@@ -11,5 +11,6 @@ namespace EAMIS.Common.DTO.LookUp
     {
         public string LookUpValue { get; set; }
         public string LookUpValue1 { get; set; }
+        public string TransactionNumber { get; set; }
     }
 }

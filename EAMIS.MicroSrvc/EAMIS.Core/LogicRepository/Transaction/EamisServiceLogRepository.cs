@@ -57,7 +57,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         private IQueryable<EamisServiceLogDTO> QueryToDTO(IQueryable<EAMISSERVICELOG> query)
         {
-            var category = _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().ToList();
+           // var category = _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().ToList();
             return query.Select(x => new EamisServiceLogDTO
             {
                 Id = x.ID,
@@ -176,7 +176,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TRAN_DATE = item.TransactionDate,
                 TRAN_ID = item.TransactionId,
                 TRANSACTION_STATUS = item.TransactionStatus,
-                SERVICE_LOG_TYPE = item.ServiceLogType
+                SERVICE_LOG_TYPE = item.ServiceLogType,
+                USER_STAMP = item.UserStamp
             };
         }
         public async Task<EamisServiceLogDTO> getServiceItemById(int itemID)

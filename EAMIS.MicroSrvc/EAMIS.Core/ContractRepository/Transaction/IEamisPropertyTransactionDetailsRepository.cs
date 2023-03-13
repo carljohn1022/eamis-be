@@ -14,8 +14,10 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item);
         Task<EamisPropertyTransactionDetailsDTO> getPropertyItemById(int itemID);
         Task<string> UpdatePropertyItemQty(EamisDeliveryReceiptDetailsDTO item);
+        Task<string> UpdateIssuedPropertyItemQty(EamisPropertyTransactionDetailsDTO item);
         Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string responsibilityCode, string serialNumber);
-      //  Task<DataList<EamisDeliveryReceiptDTO>> DeliveryReceiptHeaderToDetailsList(EamisDeliveryReceiptDTO filter, PageConfig config);
+        Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode, int counter);
+        //  Task<DataList<EamisDeliveryReceiptDTO>> DeliveryReceiptHeaderToDetailsList(EamisDeliveryReceiptDTO filter, PageConfig config);
         string ErrorMessage { get; set; }
         bool HasError { get; set; }
     }

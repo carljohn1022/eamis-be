@@ -86,9 +86,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.UserStamp)) predicate = (strict)
                    ? predicate.And(x => x.USER_STAMP.ToLower() == filter.UserStamp.ToLower())
                    : predicate.And(x => x.USER_STAMP.Contains(filter.UserStamp.ToLower()));
-            if (!string.IsNullOrEmpty(filter.TimeStamp)) predicate = (strict)
-                   ? predicate.And(x => x.TIMESTAMP.ToLower() == filter.TimeStamp.ToLower())
-                   : predicate.And(x => x.TIMESTAMP.Contains(filter.TimeStamp.ToLower()));
             if (!string.IsNullOrEmpty(filter.TransactionStatus)) predicate = (strict)
                    ? predicate.And(x => x.TRANSACTION_STATUS.ToLower() == filter.TransactionStatus.ToLower())
                    : predicate.And(x => x.TRANSACTION_STATUS.Contains(filter.TransactionStatus.ToLower()));
@@ -116,7 +113,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ApprovedBy = x.APPROVED_BY,
                 DeliveryDate = x.DELIVERY_DATE,
                 UserStamp = x.USER_STAMP,
-                TimeStamp = x.TIMESTAMP,
                 TransactionStatus = x.TRANSACTION_STATUS
             });
         }
@@ -166,7 +162,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ApprovedBy = result.APPROVED_BY,
                 DeliveryDate = result.DELIVERY_DATE,
                 UserStamp = result.USER_STAMP,
-                TimeStamp = result.TIMESTAMP,
                 TransactionStatus = result.TRANSACTION_STATUS,
                 PropertyTransactionDetails = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Select(x => new EamisPropertyTransactionDetailsDTO
                 {
@@ -233,7 +228,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 APPROVED_BY = item.ApprovedBy,
                 DELIVERY_DATE = item.DeliveryDate,
                 USER_STAMP = item.UserStamp,
-                TIMESTAMP = item.TimeStamp,
                 TRANSACTION_STATUS = item.TransactionStatus
             };
         }

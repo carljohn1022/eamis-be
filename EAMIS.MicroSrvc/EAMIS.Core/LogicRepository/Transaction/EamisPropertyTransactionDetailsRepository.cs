@@ -657,6 +657,23 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return strResult;
         }
+        //For Issuance/Releasing 
+        public async Task<string> UpdateIssuedPropertyItemQty(EamisPropertyTransactionDetailsDTO item)
+        {
+            string strResult = "";
+            //check item in DB
+            var itemInDB = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.FirstOrDefault(i => i.PROPERTY_NO == item.ItemCode)).ConfigureAwait(false);
+            if (itemInDB != null)
+            {
+                itemInDB.QUANTITY = itemInDB.QUANTITY - item.Qty;
+                var result = await _ctx.SaveChangesAsync();
+                if (result > 0)
+                {
+                    strResult = "Successfully updated.";
+                }
+            }
+            return strResult;
+        }
         public async Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode)
         {
             //check item's category
@@ -914,6 +931,145 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
             var query = custom_query ?? _ctx.EAMIS_DELIVERY_RECEIPT;
             return query.Where(predicate);
+        }
+        public async Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode, int counter)
+        {
+            //check item's category
+
+            string yearPurchased = acquisitionDate.Year.ToString();
+            //get property item's category
+            var itemCategory = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.AsNoTracking()
+                                                        .Where(i => i.PROPERTY_NO == itemCode)
+                                                        .Select(i => new { i.CATEGORY_ID })
+                                                        .FirstOrDefault()).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(itemCategory.CATEGORY_ID.ToString()))
+            {
+                bolerror = true;
+                _errorMessage = "Property item's is either empty or invalid.";
+            }
+            else
+            {
+                var cat = await Task.Run(() => _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking()
+                                                   .Where(c => c.ID == itemCategory.CATEGORY_ID)
+                                                   .Select(c => new { c.CHART_OF_ACCOUNT_ID, c.CATEGORY_NAME })
+                                                   .FirstOrDefault()).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(cat.CHART_OF_ACCOUNT_ID.ToString()))
+                {
+                    bolerror = true;
+                    _errorMessage = "Item's category could not be found.";
+                }
+                else
+                {
+                    //get responsibility center office and location
+                    var loc = await Task.Run(() => _ctx.EAMIS_RESPONSIBILITY_CENTER.AsNoTracking()
+                                                       .Where(r => r.RESPONSIBILITY_CENTER == responsibilityCode)
+                                                       .Select(s => new { s.OFFICE_CODE, s.LOCATION_CODE })
+                                                       .FirstOrDefault()).ConfigureAwait(false);
+
+                    if (string.IsNullOrEmpty(loc.OFFICE_CODE) || string.IsNullOrEmpty(loc.LOCATION_CODE))
+                    {
+                        bolerror = true;
+                        _errorMessage = "Responsibility center office/location code is either empty or invalid.";
+                    }
+                    else if (loc.LOCATION_CODE.Length < 3)
+                    {
+                        bolerror = true;
+                        _errorMessage = "Responsibility center location code is either empty or invalid.";
+                    }
+                    else
+                    {
+                        //obtain group id and general ledger
+                        var coa = await Task.Run(() => _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking()
+                                                           .Join(_ctx.EAMIS_GROUP_CLASSIFICATION,
+                                                           c => c.GROUP_ID,
+                                                           g => g.ID,
+                                                           (c, g) => new { c, g })
+                                                           .Where(c => c.c.ID == cat.CHART_OF_ACCOUNT_ID)
+                                                           .Select(c => new
+                                                           {
+                                                               c.c.GROUP_ID,
+                                                               c.c.GENERAL_LEDGER_ACCOUNT,
+                                                               c.g.PPE_SUB_MAJOR_ACCT_GRP
+                                                           })
+                                                           .FirstOrDefault()).ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(coa.GROUP_ID.ToString()))
+                        {
+                            bolerror = true;
+                            _errorMessage = "Item's group is either empty or invalid.";
+                        }
+                        else
+                        {
+                            if (string.IsNullOrEmpty(coa.GENERAL_LEDGER_ACCOUNT))
+                            {
+                                bolerror = true;
+                                _errorMessage = "Item's general ledger account is either empty or invalid.";
+                            }
+                            else
+                            {
+                                //When all validation is passed
+                                //Get total count issued for the underlying item category
+                                var totalIssuedCount = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                                           .Join(_ctx.EAMIS_PROPERTYITEMS,
+                                                           d => d.ITEM_CODE,
+                                                           p => p.PROPERTY_NO,
+                                                           (d, p) => new { d, p })
+                                                           .Join(_ctx.EAMIS_ITEM_CATEGORY,
+                                                           pi => pi.p.CATEGORY_ID,
+                                                           c => c.ID,
+                                                           (pi, c) => new { pi, c })
+                                                           .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                                           di => di.pi.d.PROPERTY_TRANS_ID,
+                                                           h => h.ID,
+                                                           (di, h) => new { di, h })
+                                                           .Where(i => i.di.c.ID == itemCategory.CATEGORY_ID &&
+                                                                       !(i.di.pi.d.PROPERTY_NUMBER == null || i.di.pi.d.PROPERTY_NUMBER == string.Empty) &&
+                                                                       i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving)
+                                                           .GroupBy(g => new { g.di.c.ID })
+                                                           .Select(s => new { Count = s.Count() })
+                                                           .FirstOrDefault();
+                                int totalCount = 0;
+                                if (totalIssuedCount != null)
+                                    if (totalIssuedCount.Count > 0)
+                                        totalCount = totalIssuedCount.Count + counter;
+
+                                //construct the property number
+                                //YEAR PURCHASED +
+                                //PPE SUB-MAJOR ACCOUNT GROUP +
+                                //GEN.LEDGER ACCOUNT +
+                                //"SERIAL NUMBER (first three digit - category type, next four digit - series per category type, last three digit - location)" +
+                                //OFFICE
+
+                                //- first 3 digits of category type - Get from Eamis_Item_Category, ID column. if length is less than 3, pad zero(0)
+                                //-next four digit-series per category type - count no if issuance/issued item then increment by 1
+                                //- last three digit-location
+
+                                string serialNumber = "";
+                                string propertyNumber = "";
+
+                                //int locStart = loc.LOCATION_CODE.Length - (loc.LOCATION_CODE.Length - 3
+                                int locStart = loc.LOCATION_CODE.Length - 3;
+                                if (itemCategory.CATEGORY_ID.ToString().Length < 3)
+                                    serialNumber = itemCategory.CATEGORY_ID.ToString().PadLeft(3, '0');
+                                else
+                                    serialNumber = itemCategory.CATEGORY_ID.ToString().Substring(0, 3);
+
+                                serialNumber += totalCount.ToString().PadLeft(4, '0') +
+                                                   loc.LOCATION_CODE.Substring(locStart);
+
+                                propertyNumber = yearPurchased + "-" +
+                                                 coa.PPE_SUB_MAJOR_ACCT_GRP.ToString() + "-" +
+                                                 coa.GENERAL_LEDGER_ACCOUNT.ToString() + "-" +
+                                                 serialNumber + "-" +
+                                                 loc.OFFICE_CODE.ToString();
+                                return propertyNumber;
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            return string.Empty;
         }
         partial class IssuedQtyDTO
         {

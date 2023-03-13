@@ -11,5 +11,6 @@ namespace EAMIS.Core.Domain.Entities
         public int ID { get; set; }
         public string PROCUREMENT_DESCRIPTION { get; set; }
         public bool IS_ACTIVE { get; set; }
+        public string USER_STAMP { get; set; }
     }
 }

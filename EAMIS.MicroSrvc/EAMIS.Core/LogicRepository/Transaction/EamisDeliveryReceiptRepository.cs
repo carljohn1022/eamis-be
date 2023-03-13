@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using EAMIS.Core.CommonSvc.Constant;
 using EAMIS.Core.CommonSvc.Utility;
 using System.Collections.Generic;
+using EAMIS.Common.DTO.LookUp;
 
 namespace EAMIS.Core.LogicRepository.Transaction
 {
@@ -59,7 +60,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DR_BY_SUPPLIER_NUMBER = item.DRNumFrSupplier,
                 DR_BY_SUPPLIER_DATE = item.DRDate,
                 APR_NUMBER = item.AprNum,
-                APR_DATE = item.AprDate
+                APR_DATE = item.AprDate,
+                USER_STAMP = item.UserStamp
             };
         }
         //public async Task<EamisDeliveryReceiptDTO> GeneratedDRNum()
@@ -313,6 +315,28 @@ namespace EAMIS.Core.LogicRepository.Transaction
             };
         }
 
-     
+        //added by me
+        public async Task<List<LookupDTO>> ForRenewalTransactionNumber() 
+        {
+            DateTime currentDate = DateTime.Now;
+            DateTime threeYearsAgo = currentDate.AddYears(-3);
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                   .Where(f => f.ACQUISITION_DATE <= threeYearsAgo)
+                   .Join(_ctx.EAMIS_PROPERTY_TRANSACTION
+                         .Where(t => t.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving), 
+                         d => d.PROPERTY_TRANS_ID,
+                         t => t.ID,
+                         (d, t) => new { TransactionDetails = d, Transaction = t })
+                   .GroupBy(x => x.TransactionDetails.PROPERTY_NUMBER)
+                   .Select(i => new LookupDTO
+                   {
+                       TransactionNumber = i.Key
+                   })
+                   .ToList();
+
+            return result;
+        }
+
+
     }
 }

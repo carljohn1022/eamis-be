@@ -104,7 +104,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         private IQueryable<EamisPropertyItemsDTO> QueryToDTO(IQueryable<EAMISPROPERTYITEMS> query)
         {
-            var category = _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().ToList();
+            //var category = _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().ToList();
 
             return query.Select(x => new EamisPropertyItemsDTO
             {
@@ -194,8 +194,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ReceivedBy = result.RECEIVED_BY,
                 ApprovedBy = result.APPROVED_BY,
                 DeliveryDate = result.DELIVERY_DATE,
-                UserStamp = result.USER_STAMP,
-                TimeStamp = result.TIMESTAMP,
                 TransactionStatus = result.TRANSACTION_STATUS,
                 IsProperty = result.IS_PROPERTY,
                 PropertyTransactionDetails = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Select(x => new EamisPropertyTransactionDetailsDTO
@@ -224,7 +222,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     Area = x.AREA,
                     Semi = x.SEMI_EXPANDABLE_AMOUNT,
                     UserStamp = x.USER_STAMP,
-                    TimeStamp = x.TIME_STAMP,
+                    //TimeStamp = x.TIME_STAMP,
                     WarrantyExpiry = x.WARRANTY_EXPIRY,
                     Invoice = x.INVOICE,
                     PropertyCondition = x.PROPERTY_CONDITION,
@@ -322,7 +320,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 APPROVED_BY = item.ApprovedBy,
                 DELIVERY_DATE = item.DeliveryDate,
                 USER_STAMP = item.UserStamp,
-                TIMESTAMP = item.TimeStamp,
                 TRANSACTION_STATUS = item.TransactionStatus,
                 IS_PROPERTY = item.IsProperty
 
@@ -412,7 +409,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             return query;
         }
 
-        public async Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode)
+        public async Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode, int counter)
         {
             //check item's category
            
@@ -503,14 +500,16 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                                (di, h) => new { di, h })
                                                                .Where(i => i.di.c.ID == itemCategory.CATEGORY_ID &&
                                                                            !(i.di.pi.d.PROPERTY_NUMBER == null || i.di.pi.d.PROPERTY_NUMBER == string.Empty) &&
-                                                                           i.h.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceProperties)
+                                                                           i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving)
                                                                .GroupBy(g => new { g.di.c.ID })
                                                                .Select(s => new { Count = s.Count() })
                                                                .FirstOrDefault();
                                     int totalCount = 0;
                                     if (totalIssuedCount != null)
                                         if (totalIssuedCount.Count > 0)
-                                            totalCount = totalIssuedCount.Count + 1;
+                                            totalCount = totalIssuedCount.Count + counter;
+                                    if (totalIssuedCount == null)
+                                        totalCount = 0 + counter;
 
                                     //construct the property number
                                     //YEAR PURCHASED +
@@ -892,7 +891,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             AREA = x.c.i.d.AREA,
                                             SEMI_EXPANDABLE_AMOUNT = x.c.i.d.SEMI_EXPANDABLE_AMOUNT,
                                             USER_STAMP = x.c.i.d.USER_STAMP,
-                                            TIME_STAMP = x.c.i.d.TIME_STAMP,
+                                            //TIME_STAMP = x.c.i.d.TIME_STAMP,
                                             WARRANTY_EXPIRY = x.c.i.d.WARRANTY_EXPIRY,
                                             INVOICE = x.c.i.d.INVOICE,
                                             PROPERTY_CONDITION = x.c.i.d.PROPERTY_CONDITION,
@@ -950,7 +949,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                 AREA = x.c.i.d.AREA,
                                                 SEMI_EXPANDABLE_AMOUNT = x.c.i.d.SEMI_EXPANDABLE_AMOUNT,
                                                 USER_STAMP = x.c.i.d.USER_STAMP,
-                                                TIME_STAMP = x.c.i.d.TIME_STAMP,
+                                                //TIME_STAMP = x.c.i.d.TIME_STAMP,
                                                 WARRANTY_EXPIRY = x.c.i.d.WARRANTY_EXPIRY,
                                                 INVOICE = x.c.i.d.INVOICE,
                                                 PROPERTY_CONDITION = x.c.i.d.PROPERTY_CONDITION,
@@ -1123,7 +1122,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                         c => c.p.CATEGORY_ID,
                                         ic => ic.ID,
                                         (c, ic) => new { ic, c })
-                                    .Where(x => x.ic.IS_SUPPLIES == true)
+                                    .Where(x => x.ic.IS_SUPPLIES == true && x.c.i.h.TRANSACTION_STATUS == DocStatus.Approved)
                                     .Select(x => new EAMISDELIVERYRECEIPTDETAILS
                                     {
                                         ID = x.c.i.d.ID,

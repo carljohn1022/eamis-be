@@ -215,6 +215,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 AUTHORIZATION_ID = item.AuthorizationId,
                 FINANCING_SOURCE_ID = item.FinancingSourceId,
                 FUND_CATEGORY = item.FundCategory,
+                USER_STAMP = item.UserStamp,
                 IS_ACTIVE = item.IsActive
             };
         }

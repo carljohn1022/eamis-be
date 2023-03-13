@@ -91,7 +91,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 ID = item.Id,
                 CATEGORY_ID = item.CategoryId,
                 SUB_CATEGORY_NAME = item.SubCategoryName,
-                IS_ACTIVE= item.IsActive
+                IS_ACTIVE= item.IsActive,
+                USER_STAMP = item.UserStamp,
             };
         }
 

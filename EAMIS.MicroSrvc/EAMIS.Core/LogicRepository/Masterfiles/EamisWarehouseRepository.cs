@@ -58,7 +58,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 REGION_CODE = item.Region_Code,
                 MUNICIPALITY_CODE = item.Municipality_Code,
                 PROVINCE_CODE = item.Province_Code,
-                IS_ACTIVE = item.IsActive
+                IS_ACTIVE = item.IsActive,
+                USER_STAMP = item.UserStamp
             };
         }
 

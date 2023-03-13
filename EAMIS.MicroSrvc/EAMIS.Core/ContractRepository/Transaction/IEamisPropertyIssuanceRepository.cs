@@ -29,7 +29,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         string ErrorMessage { get; set; }
         bool HasError { get; set; }
         //Task<string> GeneratePropertyNumber(int transactionDetailId, string itemCode, string responsibilityCode); Remove Saglit
-        Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode);
+        Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode, int counter);
         Task<string> GetDRNumFrSupplier(string dr);
         Task<string> GetAPRNum(string dr);
         Task<DataList<EamisDeliveryReceiptDetailsDTO>> ListSuppliesDRForIssuance(EamisDeliveryReceiptDetailsDTO filter, PageConfig config);

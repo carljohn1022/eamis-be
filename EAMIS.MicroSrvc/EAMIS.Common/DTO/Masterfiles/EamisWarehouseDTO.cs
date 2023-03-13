@@ -16,6 +16,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public int Province_Code { get; set; }
         public int Barangay_Code { get; set; }
         public bool IsActive { get; set; }
+        public string UserStamp { get; set; }
         //public EamisRegionDTO RegionDTO { get; set; }
         public EamisBarangayDTO Barangay { get; set; }
     }

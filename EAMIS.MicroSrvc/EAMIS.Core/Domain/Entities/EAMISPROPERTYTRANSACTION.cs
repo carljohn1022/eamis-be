@@ -19,7 +19,6 @@ namespace EAMIS.Core.Domain.Entities
         public string APPROVED_BY { get; set; }
         public DateTime DELIVERY_DATE { get; set; }
         public string USER_STAMP { get; set; }
-        public string TIMESTAMP { get; set; }
         public string TRANSACTION_STATUS { get; set; }
         public string FUND_SOURCE { get; set; }
         public bool IS_PROPERTY { get; set; }

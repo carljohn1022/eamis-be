@@ -103,7 +103,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
 
         private EAMISITEMCATEGORY MapToEntity(EamisItemCategoryDTO item)
         {
-            var chartAccount = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().ToList();
+            //var chartAccount = _ctx.EAMIS_CHART_OF_ACCOUNTS.AsNoTracking().ToList();
 
             if (item == null) return new EAMISITEMCATEGORY();
             return new EAMISITEMCATEGORY
@@ -121,7 +121,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 IS_ASSET = item.IsAsset,
                 IS_SUPPLIES = item.IsSupplies,
                 IS_ACTIVE = item.IsActive,
-                FOR_DEPRECIATION = item.ForDepreciation
+                FOR_DEPRECIATION = item.ForDepreciation,
+                USER_STAMP = item.UserStamp,
             };
         }
 

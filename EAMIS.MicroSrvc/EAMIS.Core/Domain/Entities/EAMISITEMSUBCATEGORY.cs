@@ -14,6 +14,7 @@ namespace EAMIS.Core.Domain.Entities
         public int CATEGORY_ID { get; set; }
         public string SUB_CATEGORY_NAME { get; set; }
         public bool IS_ACTIVE { get; set; }
+        public string USER_STAMP { get; set; }
         public EAMISITEMCATEGORY ITEM_CATEGORY { get; set; }
         public EAMISPROPERTYITEMS PROPERTY_ITEM { get; set; }
         

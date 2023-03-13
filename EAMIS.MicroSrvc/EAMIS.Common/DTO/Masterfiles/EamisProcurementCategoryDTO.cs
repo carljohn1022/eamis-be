@@ -11,5 +11,6 @@ namespace EAMIS.Common.DTO.Masterfiles
         public int Id { get; set; }
         public string ProcurementDescription { get; set; }
         public bool IsActive { get; set; }
+        public string UserStamp { get; set; }
     }
 }

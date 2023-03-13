@@ -95,7 +95,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
 
         private EAMISPROPERTYITEMS MapToEntity(EamisPropertyItemsDTO item)
         {
-            var category = _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().ToList();
+           //var category = _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().ToList();
             if (item == null) return new EAMISPROPERTYITEMS();
             return new EAMISPROPERTYITEMS
             {
@@ -115,7 +115,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 IS_ACTIVE = item.IsActive,
                 IMG_URL = item.ImageURL,
                 SPECIFIC_DESC = item.SpecificDesc,
-
+                USER_STAMP = item.UserStamp
             };
         }
 
@@ -282,7 +282,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
 
         private IQueryable<EamisPropertyItemsDTO> QueryToDTO(IQueryable<EAMISPROPERTYITEMS> query)
         {
-            var category = _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().ToList();
+            //var category = _ctx.EAMIS_ITEM_CATEGORY.AsNoTracking().ToList();
 
             return query.Select(x => new EamisPropertyItemsDTO
             {

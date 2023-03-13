@@ -16,6 +16,7 @@ namespace EAMIS.Core.Domain.Entities
         public int FINANCING_SOURCE_ID { get; set; }
         public int AUTHORIZATION_ID { get; set; }
         public string FUND_CATEGORY { get; set; }
+        public string USER_STAMP { get; set; }
         public bool IS_ACTIVE { get; set; }
         public EAMISGENERALFUNDSOURCE GENERALFUNDSOURCE { get; set; }
         public EAMISFINANCINGSOURCE FINANCING_SOURCE { get; set; }

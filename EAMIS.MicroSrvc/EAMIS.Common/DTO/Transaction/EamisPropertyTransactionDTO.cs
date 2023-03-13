@@ -16,7 +16,6 @@ namespace EAMIS.Common.DTO.Transaction
         public string ApprovedBy  { get; set; }
         public DateTime DeliveryDate  { get; set; }
         public string UserStamp  { get; set; }
-        public string TimeStamp  { get; set; }
         public string TransactionStatus { get; set; }
         public string FundSource { get; set; }
         public string TranType { get; set; }

@@ -100,6 +100,10 @@ namespace EAMIS.Core.Domain
         //Report
         public DbSet<EAMISREPORTCATALOG> EAMIS_REPORT_CATALOG { get; set; }
         public DbSet<EAMISUSERREPORTLINK> EAMIS_USER_REPORT_LINK { get; set; }
+
+        //Inventory Taking
+        public DbSet<EAMISINVENTORYTAKING> EAMIS_INVENTORY_TAKING { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<EAMISATTACHMENTTYPE>()
