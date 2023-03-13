@@ -41,6 +41,8 @@ namespace EAMIS.Common.DTO.Transaction
         public string ModeOfDisposal { get; set; }
         public string IsAssigneeCustodianChange { get; set; }
         public int CountIndex { get; set; }
+        public string FromResponsibilityCode { get; set; }
+        public int FromEndUser { get; set; }
         public EamisPropertyTransactionDTO PropertyTransactionGroup { get; set; }
 
     }

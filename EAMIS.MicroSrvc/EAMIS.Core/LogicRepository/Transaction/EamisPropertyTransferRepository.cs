@@ -276,7 +276,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     WarrantyExpiry = x.WARRANTY_EXPIRY,
                     Invoice = x.INVOICE,
                     PropertyCondition = x.PROPERTY_CONDITION,
-                    transactionDetailId = x.REFERENCE_ID
+                    transactionDetailId = x.REFERENCE_ID,
+                    FromResponsibilityCode = x.FROM_RESPONSIBILITY_CENTER,
+                    FromEndUser = x.FROM_END_USER,
                 }).Where(i => i.PropertyTransactionID == result.ID).ToList()
                 ,
                 DeliveryImages = _ctx.EAMIS_ATTACHED_FILES.AsNoTracking().Select(v => new EamisAttachedFilesDTO

@@ -40,6 +40,8 @@ namespace EAMIS.Common.DTO.Transaction
         public string PropertyCondition { get; set; }
         public int NewAssigneeCustodian { get; set; }
         public string NewResponsibilityCode { get; set; }
+        public string FromResponsibilityCode { get; set; }
+        public int FromEndUser { get; set; }
 
         //public string TransactionNumber { get; set; }
         //public string TransactionType { get; set; }

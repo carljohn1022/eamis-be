@@ -837,7 +837,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return null;
         }
-        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, string tranType, int assigneeCustodian, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null)
+        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, string tranType, int assigneeCustodian, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> additional_query = null)
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
             //Do not display items under service logs
@@ -862,9 +862,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                         c => c.p.CATEGORY_ID,
                                         ic => ic.ID,
                                         (c, ic) => new { ic, c })
-                                        .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving ||
-                                                    x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer  &&
-                                                    x.ic.IS_ASSET == true) //added Property Transfer
+                                        .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving &&
+                                                    x.ic.IS_ASSET == true && x.c.i.h.TRANSACTION_STATUS == PropertyItemStatus.Approved) //added Property Transfer
                                         .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                         {
                                             ID = x.c.i.d.ID,
@@ -879,6 +878,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             PR = x.c.i.d.PR,
                                             ACQUISITION_DATE = x.c.i.d.ACQUISITION_DATE,
                                             ASSIGNEE_CUSTODIAN = x.c.i.d.ASSIGNEE_CUSTODIAN,
+                                            FROM_END_USER = x.c.i.d.FROM_END_USER,
                                             REQUESTED_BY = x.c.i.d.REQUESTED_BY,
                                             OFFICE = x.c.i.d.OFFICE,
                                             DEPARTMENT = x.c.i.d.DEPARTMENT,
@@ -903,7 +903,66 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                                 .Select(i => i.Sum(v => v.QTY)).FirstOrDefault()) > 0
                                                                 && s.UNIT_COST >= 50000 && s.ASSIGNEE_CUSTODIAN == assigneeCustodian
                                                 );
-            return query.Where(predicate);
+                var addition_query = additional_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                        .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                               d => d.PROPERTY_TRANS_ID,
+                                               h => h.ID,
+                                               (d, h) => new { d, h })
+                                        .Join(_ctx.EAMIS_PROPERTYITEMS,
+                                        i => i.d.ITEM_CODE,
+                                        p => p.PROPERTY_NO,
+                                        (i, p) => new { i, p })
+                                        .Join(_ctx.EAMIS_ITEM_CATEGORY,
+                                        c => c.p.CATEGORY_ID,
+                                        ic => ic.ID,
+                                        (c, ic) => new { ic, c })
+                                        .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer &&
+                                                    x.ic.IS_ASSET == true && x.c.i.h.TRANSACTION_STATUS == PropertyItemStatus.Approved) //added Property Transfer
+                                        .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
+                                        {
+                                            ID = x.c.i.d.ID,
+                                            PROPERTY_TRANS_ID = x.c.i.d.PROPERTY_TRANS_ID,
+                                            IS_DEPRECIATION = x.c.i.d.IS_DEPRECIATION,
+                                            DR = x.c.i.d.DR,
+                                            PROPERTY_NUMBER = x.c.i.d.PROPERTY_NUMBER,
+                                            ITEM_CODE = x.c.i.d.ITEM_CODE,
+                                            ITEM_DESCRIPTION = x.c.i.d.ITEM_DESCRIPTION,
+                                            SERIAL_NUMBER = x.c.i.d.SERIAL_NUMBER,
+                                            PO = x.c.i.d.PO,
+                                            PR = x.c.i.d.PR,
+                                            ACQUISITION_DATE = x.c.i.d.ACQUISITION_DATE,
+                                            ASSIGNEE_CUSTODIAN = x.c.i.d.ASSIGNEE_CUSTODIAN,
+                                            FROM_END_USER = x.c.i.d.FROM_END_USER,
+                                            REQUESTED_BY = x.c.i.d.REQUESTED_BY,
+                                            OFFICE = x.c.i.d.OFFICE,
+                                            DEPARTMENT = x.c.i.d.DEPARTMENT,
+                                            RESPONSIBILITY_CODE = x.c.i.d.RESPONSIBILITY_CODE,
+                                            UNIT_COST = x.c.i.d.UNIT_COST,
+                                            QTY = x.c.i.d.QTY,
+                                            SALVAGE_VALUE = x.c.i.d.SALVAGE_VALUE,
+                                            BOOK_VALUE = x.c.i.d.BOOK_VALUE,
+                                            ESTIMATED_LIFE = x.c.i.d.ESTIMATED_LIFE,
+                                            AREA = x.c.i.d.AREA,
+                                            SEMI_EXPANDABLE_AMOUNT = x.c.i.d.SEMI_EXPANDABLE_AMOUNT,
+                                            USER_STAMP = x.c.i.d.USER_STAMP,
+                                            //TIME_STAMP = x.c.i.d.TIME_STAMP,
+                                            WARRANTY_EXPIRY = x.c.i.d.WARRANTY_EXPIRY,
+                                            INVOICE = x.c.i.d.INVOICE,
+                                            PROPERTY_CONDITION = x.c.i.d.PROPERTY_CONDITION,
+                                            REFERENCE_ID = x.c.i.d.REFERENCE_ID
+                                        }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER) &&
+                                                       (s.QTY - _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
+                                                                .Where(r => r.REFERENCE_ID == s.ID)
+                                                                .GroupBy(g => g.REFERENCE_ID)
+                                                                .Select(i => i.Sum(v => v.QTY)).FirstOrDefault()) > 0
+                                                                && s.UNIT_COST >= 50000 && s.ASSIGNEE_CUSTODIAN == assigneeCustodian
+                                                                && s.FROM_END_USER != s.ASSIGNEE_CUSTODIAN
+                                                );
+                if (addition_query != null)
+                {
+                    query = query.Concat(addition_query);
+                }
+                return query.Where(predicate);
             }
             if (tranType == "ICS")
             {
@@ -920,9 +979,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             c => c.p.CATEGORY_ID,
                                             ic => ic.ID,
                                             (c, ic) => new { ic, c })
-                                            .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving ||
-                                                        x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer &&
-                                                        x.ic.IS_ASSET == true)
+                                            .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving &&
+                                                        x.ic.IS_ASSET == true && x.c.i.h.TRANSACTION_STATUS == PropertyItemStatus.Approved)
                                             .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                             {
                                                 ID = x.c.i.d.ID,
@@ -937,6 +995,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                 PR = x.c.i.d.PR,
                                                 ACQUISITION_DATE = x.c.i.d.ACQUISITION_DATE,
                                                 ASSIGNEE_CUSTODIAN = x.c.i.d.ASSIGNEE_CUSTODIAN,
+                                                FROM_END_USER = x.c.i.d.FROM_END_USER,
                                                 REQUESTED_BY = x.c.i.d.REQUESTED_BY,
                                                 OFFICE = x.c.i.d.OFFICE,
                                                 DEPARTMENT = x.c.i.d.DEPARTMENT,
@@ -961,6 +1020,65 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                                     .Select(i => i.Sum(v => v.QTY)).FirstOrDefault()) > 0
                                                                     && s.UNIT_COST < 50000 && s.ASSIGNEE_CUSTODIAN == assigneeCustodian
                                                     );
+                var addition_query = additional_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                            .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                                   d => d.PROPERTY_TRANS_ID,
+                                                   h => h.ID,
+                                                   (d, h) => new { d, h })
+                                            .Join(_ctx.EAMIS_PROPERTYITEMS,
+                                            i => i.d.ITEM_CODE,
+                                            p => p.PROPERTY_NO,
+                                            (i, p) => new { i, p })
+                                            .Join(_ctx.EAMIS_ITEM_CATEGORY,
+                                            c => c.p.CATEGORY_ID,
+                                            ic => ic.ID,
+                                            (c, ic) => new { ic, c })
+                                            .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer &&
+                                                        x.ic.IS_ASSET == true && x.c.i.h.TRANSACTION_STATUS == PropertyItemStatus.Approved)
+                                            .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
+                                            {
+                                                ID = x.c.i.d.ID,
+                                                PROPERTY_TRANS_ID = x.c.i.d.PROPERTY_TRANS_ID,
+                                                IS_DEPRECIATION = x.c.i.d.IS_DEPRECIATION,
+                                                DR = x.c.i.d.DR,
+                                                PROPERTY_NUMBER = x.c.i.d.PROPERTY_NUMBER,
+                                                ITEM_CODE = x.c.i.d.ITEM_CODE,
+                                                ITEM_DESCRIPTION = x.c.i.d.ITEM_DESCRIPTION,
+                                                SERIAL_NUMBER = x.c.i.d.SERIAL_NUMBER,
+                                                PO = x.c.i.d.PO,
+                                                PR = x.c.i.d.PR,
+                                                ACQUISITION_DATE = x.c.i.d.ACQUISITION_DATE,
+                                                ASSIGNEE_CUSTODIAN = x.c.i.d.ASSIGNEE_CUSTODIAN,
+                                                FROM_END_USER = x.c.i.d.FROM_END_USER,
+                                                REQUESTED_BY = x.c.i.d.REQUESTED_BY,
+                                                OFFICE = x.c.i.d.OFFICE,
+                                                DEPARTMENT = x.c.i.d.DEPARTMENT,
+                                                RESPONSIBILITY_CODE = x.c.i.d.RESPONSIBILITY_CODE,
+                                                UNIT_COST = x.c.i.d.UNIT_COST,
+                                                QTY = x.c.i.d.QTY,
+                                                SALVAGE_VALUE = x.c.i.d.SALVAGE_VALUE,
+                                                BOOK_VALUE = x.c.i.d.BOOK_VALUE,
+                                                ESTIMATED_LIFE = x.c.i.d.ESTIMATED_LIFE,
+                                                AREA = x.c.i.d.AREA,
+                                                SEMI_EXPANDABLE_AMOUNT = x.c.i.d.SEMI_EXPANDABLE_AMOUNT,
+                                                USER_STAMP = x.c.i.d.USER_STAMP,
+                                                //TIME_STAMP = x.c.i.d.TIME_STAMP,
+                                                WARRANTY_EXPIRY = x.c.i.d.WARRANTY_EXPIRY,
+                                                INVOICE = x.c.i.d.INVOICE,
+                                                PROPERTY_CONDITION = x.c.i.d.PROPERTY_CONDITION,
+                                                REFERENCE_ID = x.c.i.d.REFERENCE_ID
+                                            }).Where(s => !arrservicelogs.Contains(s.PROPERTY_NUMBER) &&
+                                                           (s.QTY - _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
+                                                                    .Where(r => r.REFERENCE_ID == s.ID)
+                                                                    .GroupBy(g => g.REFERENCE_ID)
+                                                                    .Select(i => i.Sum(v => v.QTY)).FirstOrDefault()) > 0
+                                                                    && s.UNIT_COST < 50000 && s.ASSIGNEE_CUSTODIAN == assigneeCustodian
+                                                                    && s.FROM_END_USER != s.ASSIGNEE_CUSTODIAN
+                                                    );
+                if (addition_query != null)
+                {
+                    query = query.Concat(addition_query);
+                }
                 return query.Where(predicate);
             }
             return null;

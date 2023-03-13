@@ -38,6 +38,8 @@ namespace EAMIS.Core.Domain.Entities
         public int REFERENCE_ID { get; set; }
         public string REMARKS { get; set; }
         public string MODE_OF_DISPOSAL { get; set; }
+        public int FROM_END_USER { get; set; }
+        public string FROM_RESPONSIBILITY_CENTER { get; set; }
         public EAMISPROPERTYTRANSACTION PROPERTY_TRANSACTION_GROUP { get; set; }
 
 
