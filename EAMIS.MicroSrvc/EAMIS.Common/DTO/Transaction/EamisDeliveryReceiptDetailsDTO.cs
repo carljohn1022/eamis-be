@@ -19,6 +19,7 @@ namespace EAMIS.Common.DTO.Transaction
         public int SerialNumber  { get; set; }
         public string UnitOfMeasurement  { get; set; }
         public decimal SubTotal { get; set; }
+        public string userStamp { get; set; }
         //public DateTime WarrantyExpiryDate  { get; set; }
         public Masterfiles.EamisPropertyItemsDTO PropertyItem { get; set; }
         public EamisDeliveryReceiptDTO DeliveryReceipt { get; set; }

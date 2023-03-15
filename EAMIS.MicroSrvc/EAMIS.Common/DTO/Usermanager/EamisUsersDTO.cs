@@ -21,6 +21,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public bool IsBlocked { get; set; }
         public string AgencyEmployeeNumber { get; set; }
         public string Branch { get; set; }
+        public string UserStamp { get; set; }
         public List<EamisUserRolesDTO> UserRoles { get; set; }
         public List<EamisUserReportLinkDTO> RoleReportLink { get; set; }
         public List<EamisUserRolesDTO> RoleManager { get; set; }
@@ -34,6 +35,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public string AgencyEmployeeNumber { get; set; }
         public int UserInfoId { get; set; }
         public string Branch { get; set; }
+        public string UserStamp { get; set; }
     }
    
 }

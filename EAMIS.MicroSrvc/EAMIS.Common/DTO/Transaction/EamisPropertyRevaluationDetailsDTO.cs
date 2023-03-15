@@ -24,6 +24,7 @@ namespace EAMIS.Common.DTO.Transaction
         public decimal SalvageValue { get; set; }
         public decimal DepPerMonth { get; set; }
         public decimal NewDepPerMonth { get; set; }
+        public string UserStamp { get; set; }
         public EamisPropertyRevaluationDTO PropertyRevaluation { get; set; }
     }
 }

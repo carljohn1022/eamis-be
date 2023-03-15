@@ -87,7 +87,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 UNIT_COST = item.UnitCost,
                 SERIAL_LOT = item.SerialNumber,
                 UNIT_OF_MEASUREMENT = item.UnitOfMeasurement,
-                SUB_TOTAL = item.SubTotal
+                SUB_TOTAL = item.SubTotal,
+                USER_STAMP = item.userStamp
                 //WARRANTY_EXPIRY_DATE = item.WarrantyExpiryDate
             };
         }

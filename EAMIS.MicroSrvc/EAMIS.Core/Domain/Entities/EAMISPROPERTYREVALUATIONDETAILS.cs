@@ -24,6 +24,7 @@ namespace EAMIS.Core.Domain.Entities
         public DateTime NEW_DEP { get; set; }
         public decimal NEW_DEP_PER_MONTH { get; set; }
         public decimal DEP_PER_MONTH { get; set; }
+        public string USER_STAMP { get; set; }
 
     }
 }

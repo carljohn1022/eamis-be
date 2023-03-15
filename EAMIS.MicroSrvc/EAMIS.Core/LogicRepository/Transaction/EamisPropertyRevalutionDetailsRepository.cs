@@ -131,7 +131,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 REVALUED_AMT = item.RevaluedAmount,
                 SALVAGE_VALUE = item.SalvageValue,
                 DEP_PER_MONTH = item.DepPerMonth,
-                NEW_DEP_PER_MONTH = item.NewDepPerMonth
+                NEW_DEP_PER_MONTH = item.NewDepPerMonth,
+                USER_STAMP = item.UserStamp
 
             };
         }

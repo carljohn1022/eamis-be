@@ -59,7 +59,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 SERVICE_LOG_ID = item.ServiceLogId, //Get from service log => ID, programatically assign it's value before calling the Insert/create method
                 SUPPLIER_ID = item.SupplierId,
                 SUPPLIER_DESC = item.SupplierDescription,
-                TRAN_TYPE = item.TranType
+                TRAN_TYPE = item.TranType,
+                USER_STAMP = item.UserStamp
             };
         }
         public async Task<EamisServiceLogDetailsDTO> InsertServiceLogDetails(EamisServiceLogDetailsDTO item)

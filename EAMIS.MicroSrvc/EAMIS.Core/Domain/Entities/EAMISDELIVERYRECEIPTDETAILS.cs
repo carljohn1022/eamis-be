@@ -18,6 +18,7 @@ namespace EAMIS.Core.Domain.Entities
         public int SERIAL_LOT { get; set; }
         public string UNIT_OF_MEASUREMENT { get; set; }
         public decimal SUB_TOTAL { get; set; }
+        public string USER_STAMP { get; set; }
         //public DateTime WARRANTY_EXPIRY_DATE { get; set; }
         public EAMISPROPERTYITEMS ITEMS_GROUP { get; set; }
         public EAMISDELIVERYRECEIPT DELIVERY_RECEIPT_GROUP { get;set; }

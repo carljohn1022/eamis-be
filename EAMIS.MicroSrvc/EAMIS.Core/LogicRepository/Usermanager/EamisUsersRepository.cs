@@ -51,6 +51,7 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
                 IS_DELETED = item.IsDeleted,
                 AGENCY_EMPLOYEE_NUMBER = item.AgencyEmployeeNumber,
                 IS_BLOCKED = item.IsBlocked,
+                USER_STAMP = item.UserStamp
             };
         }
 
@@ -75,7 +76,7 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
                 USER_INFO_ID = item.UserInfoId,
                 PASSWORD_HASH = hmac.ComputeHash(Encoding.UTF8.GetBytes(item.Password)),
                 PASSWORD_SALT = hmac.Key,
-
+                USER_STAMP = item.UserStamp
                 };
                 _ctx.Entry(user).State = EntityState.Added;
                 await _ctx.SaveChangesAsync();
