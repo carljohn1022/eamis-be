@@ -605,6 +605,7 @@ namespace EAMIS.Core.LogicRepository.Approval
                                                 {
                                                     Id = x.ID,
                                                     TransactionStatus = x.TRANSACTION_STATUS,
+                                                    ServiceLogType = x.SERVICE_LOG_TYPE,
                                                     TransactionDate = x.TRAN_DATE,
                                                     TransactionId = x.TRAN_ID,
                                                     UserStamp = x.USER_STAMP
@@ -617,6 +618,7 @@ namespace EAMIS.Core.LogicRepository.Approval
                         ID = data.Id,
                         TRANSACTION_STATUS = newStatus,
                         TRAN_ID = data.TransactionId,
+                        SERVICE_LOG_TYPE = data.ServiceLogType,
                         TRAN_DATE = data.TransactionDate,
                         USER_STAMP = data.UserStamp
                     };

@@ -335,9 +335,11 @@ namespace EAMIS.Core.LogicRepository.Transaction
             var predicate = PredicateBuilder.New<EAMISDELIVERYRECEIPT>(true);
             if (filter.Id != null && filter.Id != 0)
                 predicate = predicate.And(x => x.ID == filter.Id);
-            if (!string.IsNullOrEmpty(filter.TransactionType)) predicate = (strict)
-                   ? predicate.And(x => x.TRANSACTION_TYPE.ToLower() == filter.TransactionType.ToLower())
-                   : predicate.And(x => x.TRANSACTION_TYPE.Contains(filter.TransactionType.ToLower()));
+           
+
+                // Check if the TRANSACTION_TYPE is found in another table
+               
+            
             if (filter.SupplierId != null && filter.SupplierId != 0)
                 predicate = predicate.And(x => x.SUPPLIER_ID == filter.SupplierId);
             if (!string.IsNullOrEmpty(filter.PurchaseOrderNumber)) predicate = (strict)
@@ -361,7 +363,15 @@ namespace EAMIS.Core.LogicRepository.Transaction
                    ? predicate.And(x => x.TRANSACTION_STATUS.ToLower() == filter.TransactionStatus.ToLower())
                    : predicate.And(x => x.TRANSACTION_STATUS.Contains(filter.TransactionStatus.ToLower()));
 
-            predicate = predicate.And(x => x.DELIVERY_RECEIPT_DETAILS.Where(y => y.ITEMS_GROUP.ITEM_CATEGORY.IS_ASSET == true).Any());
+            //predicate = predicate.And(x => x.DELIVERY_RECEIPT_DETAILS.Where(y => y.ITEMS_GROUP.ITEM_CATEGORY.IS_ASSET == true).Any());
+            var excludedTypes = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                                   d => d.PROPERTY_TRANS_ID,
+                                                   h => h.ID,
+                                                   (d, h) => new { d, h })
+                .Where(x => x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved)
+                .Select(t => t.d.DR).ToList();
+            predicate = predicate.And(x => !excludedTypes.Contains(x.TRANSACTION_TYPE) && x.TRANSACTION_STATUS == PropertyItemStatus.Approved);
 
             var query = custom_query ?? _ctx.EAMIS_DELIVERY_RECEIPT;
             return query.Where(predicate);

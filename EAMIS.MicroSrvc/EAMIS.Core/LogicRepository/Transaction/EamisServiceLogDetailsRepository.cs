@@ -177,7 +177,19 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (string.IsNullOrEmpty(filter.PropertyDescription) && filter.PropertyDescription != null)
                 predicate = predicate.And(x => x.PROPERTY_DESC == filter.PropertyDescription);
 
-            predicate = predicate.And(x => x.ASSET_CONDITION == "UNSERVICEABLE");
+            var excludedTypes = _ctx.EAMIS_SERVICE_LOG_DETAILS
+                .Join(_ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS,
+                                                   d => d.PROPERTY_NUMBER,
+                                                   h => h.PROPERTY_NUMBER,
+                                                   (d, h) => new { d, h })
+                .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
+                                            i => i.h.PROPERTY_TRANS_ID,
+                                            p => p.ID,
+                                            (i, p) => new { i, p })
+                .Where(x => x.p.TRANSACTION_TYPE == TransactionTypeSettings.PropertyDisposal && x.i.d.ASSET_CONDITION == "UNSERVICEABLE")
+                .Select(t => t.i.d.PROPERTY_NUMBER).ToList();
+
+            predicate = predicate.And(x => !excludedTypes.Contains(x.PROPERTY_NUMBER) && x.SERVICE_LOG_GROUP.TRANSACTION_STATUS == PropertyItemStatus.Approved);
 
             var query = custom_query ?? _ctx.EAMIS_SERVICE_LOG_DETAILS;
             return query.Where(predicate);
@@ -202,7 +214,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                d1 => d1.d.DR,
                                                dr => dr.TRANSACTION_TYPE,
                                                (d1, dr) => new { d1, dr })
-                                        .Where(x => x.d1.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving)
+                                        .Where(x => x.d1.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving && x.d1.h.TRANSACTION_STATUS == PropertyItemStatus.Approved)
                                         .Select(x => new EAMISSERVICELOGDETAILS
                                         {
                                             ID = 0,

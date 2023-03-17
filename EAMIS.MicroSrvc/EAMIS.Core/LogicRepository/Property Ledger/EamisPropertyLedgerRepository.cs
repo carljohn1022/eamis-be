@@ -127,7 +127,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                             d => d.PROPERTY_TRANS_ID,
                             h => h.ID,
                             (d, h) => new { d, h })
-                            .Where(s => s.h.TRANSACTION_STATUS == DocStatus.Draft &&
+                            .Where(s => s.h.TRANSACTION_STATUS == PropertyItemStatus.Approved &&
                                         s.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving &&
                                         s.d.ITEM_CODE == itemCode 
                                         && s.d.TIME_STAMP <= asOfDate)
@@ -144,8 +144,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                             d => d.PROPERTY_TRANS_ID,
                             h => h.ID,
                             (d, h) => new { d, h })
-                            .Where(s => s.h.TRANSACTION_STATUS == DocStatus.Draft &&
-                                        s.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance &&
+                            .Where(s => s.h.TRANSACTION_STATUS == PropertyItemStatus.Approved &&
+                                        s.h.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceProperties &&
                                         s.d.ITEM_CODE == itemCode &&
                                         s.d.TIME_STAMP <= asOfDate)
                             .GroupBy(g => g.d.ITEM_CODE)
@@ -226,8 +226,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                             d => d.PROPERTY_TRANS_ID,
                             h => h.ID,
                             (d, h) => new { d, h })
-                            .Where(s => s.h.TRANSACTION_STATUS == DocStatus.Draft &&
-                                        s.h.TRANSACTION_TYPE == TransactionTypeSettings.Issuance &&
+                            .Where(s => s.h.TRANSACTION_STATUS == PropertyItemStatus.Approved &&
+                                        s.h.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceProperties &&
                                         s.d.TIME_STAMP <= filter.AsOfDate)
                             .GroupBy(g => new {
                                 g.d.ITEM_CODE,

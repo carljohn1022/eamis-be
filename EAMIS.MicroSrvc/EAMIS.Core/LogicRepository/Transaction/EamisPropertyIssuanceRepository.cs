@@ -842,8 +842,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
             var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
             //Do not display items under service logs
             var arrservicelogs = _ctx.EAMIS_SERVICE_LOG_DETAILS.AsNoTracking()
-                                .Where(pn => !(pn.PROPERTY_NUMBER == null || pn.PROPERTY_NUMBER.Trim() == string.Empty))
-                                .Select(x => x.PROPERTY_NUMBER)
+                                 .Join(_ctx.EAMIS_SERVICE_LOG,
+                                            d => d.SERVICE_LOG_ID,
+                                            h => h.ID,
+                                            (d, h) => new { d, h })
+                                .Where(pn => !(pn.d.PROPERTY_NUMBER == null || pn.d.PROPERTY_NUMBER.Trim() == string.Empty) && 
+                                        pn.d.ASSET_CONDITION == "UNSERVICEABLE" &&
+                                        pn.h.TRANSACTION_STATUS == PropertyItemStatus.Approved)
+                                .Select(x => x.d.PROPERTY_NUMBER)
                                 .ToList();
 
             

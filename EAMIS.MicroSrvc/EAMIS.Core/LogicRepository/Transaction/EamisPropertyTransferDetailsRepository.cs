@@ -219,18 +219,24 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
 
-            var arrDistinctDetailID = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
-                                          .Where(pn => !(pn.PROPERTY_NUMBER == null || pn.PROPERTY_NUMBER.Trim() == string.Empty))
-                                          .GroupBy(x => x.PROPERTY_NUMBER)
-                                          .Select(i => i.Max(x => x.ID))
-                                          .ToList(); //check if there a problem.
+            var arrservicelogs = _ctx.EAMIS_SERVICE_LOG_DETAILS.AsNoTracking()
+                               .Join(_ctx.EAMIS_SERVICE_LOG,
+                                          d => d.SERVICE_LOG_ID,
+                                          h => h.ID,
+                                          (d, h) => new { d, h })
+                              .Where(pn => !(pn.d.PROPERTY_NUMBER == null || pn.d.PROPERTY_NUMBER.Trim() == string.Empty) &&
+                                      pn.d.ASSET_CONDITION == "UNSERVICEABLE" &&
+                                      pn.h.TRANSACTION_STATUS == PropertyItemStatus.Approved)
+                              .Select(x => x.d.PROPERTY_NUMBER)
+                              .ToList();
+
             if (tranType == "PTR") { 
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
                                             .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
                                             d => d.PROPERTY_TRANS_ID,
                                             h => h.ID,
                                             (d, h) => new { d, h })
-                                            .Where(x => arrDistinctDetailID.Contains(x.d.ID) &&
+                                            .Where(x => !arrservicelogs.Contains(x.d.PROPERTY_NUMBER) &&
                                                    (x.h.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceProperties)
                                                     && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                     && x.d.UNIT_COST >= 50000
@@ -272,7 +278,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                  d => d.PROPERTY_TRANS_ID,
                                                  h => h.ID,
                                                  (d, h) => new { d, h })
-                                                 .Where(x => arrDistinctDetailID.Contains(x.d.ID) &&
+                                                 .Where(x => !arrservicelogs.Contains(x.d.PROPERTY_NUMBER) &&
                                                         (x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer)
                                                          && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                          && x.d.UNIT_COST >= 50000
@@ -324,7 +330,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                            d => d.PROPERTY_TRANS_ID,
                                            h => h.ID,
                                            (d, h) => new { d, h })
-                                           .Where(x => arrDistinctDetailID.Contains(x.d.ID) &&
+                                           .Where(x => !arrservicelogs.Contains(x.d.PROPERTY_NUMBER) &&
                                                   (x.h.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceProperties)
                                                    && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                    && x.d.UNIT_COST < 50000
@@ -366,7 +372,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                            d => d.PROPERTY_TRANS_ID,
                                            h => h.ID,
                                            (d, h) => new { d, h })
-                                           .Where(x => arrDistinctDetailID.Contains(x.d.ID) &&
+                                           .Where(x => !arrservicelogs.Contains(x.d.PROPERTY_NUMBER) &&
                                                   (x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer)
                                                    && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                    && x.d.UNIT_COST < 50000
