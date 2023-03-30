@@ -230,7 +230,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 USER_STAMP = item.UserStamp,
                 TRANSACTION_STATUS = item.TransactionStatus,
                 TRAN_TYPE = item.TranType.Trim(),
-                BRANCH_ID = item.BranchID
+                BRANCH_ID = item.BranchID,
+                FOR_DONATION = item.ForDonation
             };
         }
 
@@ -249,6 +250,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ApprovedBy = result.APPROVED_BY,
                 DeliveryDate = result.DELIVERY_DATE,
                 TranType = result.TRAN_TYPE.Trim(),
+                ForDonation = result.FOR_DONATION,
                 TransactionStatus = result.TRANSACTION_STATUS,
                 PropertyTransactionDetails = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Select(x => new EamisPropertyTransactionDetailsDTO
                 {

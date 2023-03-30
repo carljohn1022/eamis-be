@@ -23,6 +23,7 @@ namespace EAMIS.Core.Domain.Entities
         public string FUND_SOURCE { get; set; }
         public bool IS_PROPERTY { get; set; }
         public string BRANCH_ID { get; set; }
+        public bool FOR_DONATION { get; set; }
         public List <EAMISPROPERTYTRANSACTIONDETAILS> PROPERTY_TRANSACTION_DETAILS { get; set; }
         public List <EAMISSERVICELOGDETAILS> SERVICE_LOG_DETAILS { get; set; }
 

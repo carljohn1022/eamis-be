@@ -482,7 +482,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                                                     FundSource = x.FUND_SOURCE,
                                                     IsProperty = x.IS_PROPERTY,
                                                     TranType = x.TRAN_TYPE,
-                                                    BranchID = x.BRANCH_ID
+                                                    BranchID = x.BRANCH_ID,
+                                                    ForDonation = x.FOR_DONATION
                                                 })
                                                 .FirstOrDefault();
                 if (data.TransactionType == TransactionTypeSettings.IssuanceMaterials )
@@ -546,7 +547,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                         USER_STAMP = data.UserStamp,
                         TRANSACTION_STATUS = newStatus,
                         IS_PROPERTY = data.IsProperty,
-                        BRANCH_ID = data.BranchID
+                        BRANCH_ID = data.BranchID,
+                        FOR_DONATION = data.ForDonation
                     };
                     _ctx.Entry(value).State = EntityState.Modified;
                     await _ctx.SaveChangesAsync();
