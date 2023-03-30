@@ -17,6 +17,7 @@ using EAMIS.Common.DTO.Ais;
 using EAMIS.Core.Domain.Entities.AIS;
 using LinqKit;
 using System.Linq;
+using EAMIS.Common.DTO.Branch_Maintenance;
 
 namespace EAMIS.Core.BusinessLogic.Masterfiles
 {
@@ -140,6 +141,12 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
                 IsDeleted = x.IS_DELETED,
                 IsBlocked = x.IS_BLOCKED,
                 AgencyEmployeeNumber = x.AGENCY_EMPLOYEE_NUMBER,
+                BranchGroup = _ctx.branch.AsNoTracking().Where(h => h.BranchID == x.BRANCH)
+                                            .Select(h => new EamisBranchDTO
+                                            {
+                                                BranchID = h.BranchID,
+                                                BranchDescription = h.BranchDescription
+                                            }).FirstOrDefault(),
                 UserRoles = x.USER_ROLES.Select(y => new EamisUserRolesDTO { Id = y.ID, RoleId = y.ROLE_ID, Roles = new EamisRolesDTO { Role_Name = y.ROLES.ROLE_NAME } }).ToList(),
                 
                 PersonnelInfo  = new AisPersonnelDTO

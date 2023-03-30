@@ -98,8 +98,15 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         public async Task<ActionResult<EamisPropertyItemsDTO>> Edit([FromForm] EamisPropertyItemsDTO item)
         {
             var data = new EamisPropertyItemsDTO();
-            var itemindb = await _eamisPropertyItemsRepository.UpdateValidateExistingItem(item.PropertyNo, item.Id);
-
+            //var itemindb = await _eamisPropertyItemsRepository.UpdateValidateExistingItem(item.PropertyNo, item.Id);
+            if (await _eamisPropertyItemsRepository.UpdateValidateExistingItem(item.PropertyNo, item.Id))
+            {
+                return Unauthorized();
+            }
+            if (await _eamisPropertyItemsRepository.UpdateValidateExistingItemPropertyName(item.PropertyName, item.Id))
+            {
+                return Unauthorized();
+            }
 
 
             string fileName = "";

@@ -6,7 +6,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
 {
     public interface IEamisPropertyRevalutionRepository
     {
-        Task<string> GetNextSequenceNumber();
+        Task<string> GetNextSequenceNumber(string branchID);
         string ErrorMessage { get; set; }
         bool HasError { get; set; }
         Task<DataList<EamisPropertyRevaluationDTO>> List(EamisPropertyRevaluationDTO filter, PageConfig config);

@@ -33,6 +33,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string AprNum { get; set; }
         public DateTime AprDate { get; set; }
         public string UserStamp { get; set; }
+        public string BranchID { get; set; }
         public EamisWarehouseDTO Warehouse { get; set; }
         public EamisSupplierDTO Supplier { get; set; }
         public List<EamisAttachedFilesDTO> DeliveryImages { get; set; } = new List<EamisAttachedFilesDTO>();

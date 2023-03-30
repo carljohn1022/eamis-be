@@ -29,11 +29,11 @@ namespace EAMIS.WebApi.Controllers.Transaction
         /// <param name="config"></param>
         /// <returns></returns>
         [HttpGet("list")]
-        public async Task<ActionResult<EAMISSERVICELOGDETAILS>> List([FromQuery] EamisServiceLogDetailsDTO filter, [FromQuery] PageConfig config)
+        public async Task<ActionResult<EAMISSERVICELOGDETAILS>> List([FromQuery] EamisServiceLogDetailsDTO filter, [FromQuery] PageConfig config, string branchID)
         {
             if (filter == null)
                 filter = new EamisServiceLogDetailsDTO();
-            return Ok(await _eamisServiceLogDetailsRepository.ListServiceLogDetails(filter, config));
+            return Ok(await _eamisServiceLogDetailsRepository.ListServiceLogDetails(filter, config, branchID));
         }
 
 
@@ -46,11 +46,11 @@ namespace EAMIS.WebApi.Controllers.Transaction
         /// <param name="config"></param>
         /// <returns></returns>
         [HttpGet("listservicelogforcreation")]
-        public async Task<ActionResult<EamisServiceLogDetailsCreationDTO>> ListServiceLogDetailsForCreation([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config)
+        public async Task<ActionResult<EamisServiceLogDetailsCreationDTO>> ListServiceLogDetailsForCreation([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config, string branchID)
         {
             if (filter == null)
                 filter = new EamisPropertyTransactionDetailsDTO();
-            var result = await _eamisServiceLogDetailsRepository.ListServiceLogDetailsForCreation(filter, config);
+            var result = await _eamisServiceLogDetailsRepository.ListServiceLogDetailsForCreation(filter, config, branchID);
             return Ok(result);
         }
 

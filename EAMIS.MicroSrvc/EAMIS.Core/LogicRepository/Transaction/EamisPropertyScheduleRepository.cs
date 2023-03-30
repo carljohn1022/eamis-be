@@ -489,6 +489,10 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYSCHEDULE>(true);
 
+            if (!string.IsNullOrEmpty(filter.BranchID)) predicate = (strict)
+                     ? predicate.And(x => x.BRANCH_ID.ToLower() == filter.BranchID.ToLower())
+                     : predicate.And(x => x.BRANCH_ID.Contains(filter.BranchID.ToLower()));
+
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_SCHEDULE;
             return query.Where(predicate);
         }

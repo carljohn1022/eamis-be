@@ -20,6 +20,7 @@ namespace EAMIS.Common.DTO.Transaction
         public string FundSource { get; set; }
         public string TranType { get; set; }
         public bool IsProperty { get; set; }
+        public string BranchID { get; set; }
         public List<EamisAttachedFilesDTO> DeliveryImages { get; set; } = new List<EamisAttachedFilesDTO>();
         public List<EamisPropertyTransactionDetailsDTO> PropertyTransactionDetails { get; set; } = new List<EamisPropertyTransactionDetailsDTO>();
     }

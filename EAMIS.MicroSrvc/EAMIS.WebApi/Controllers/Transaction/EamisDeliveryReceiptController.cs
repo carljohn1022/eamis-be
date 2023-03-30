@@ -72,9 +72,9 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return Ok(await _eamisDeliveryReceiptRepository.Delete(item));
         }
         [HttpGet("getNextSequence")]
-        public async Task<string> GetNextSequenceAsync()
+        public async Task<string> GetNextSequenceAsync(string branchID)
         {
-            var nextId = await _eamisDeliveryReceiptRepository.GetNextSequenceNumber();
+            var nextId = await _eamisDeliveryReceiptRepository.GetNextSequenceNumber(branchID);
             return nextId;
         }
 

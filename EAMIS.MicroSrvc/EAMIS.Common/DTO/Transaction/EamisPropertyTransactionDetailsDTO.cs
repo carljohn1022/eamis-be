@@ -43,6 +43,7 @@ namespace EAMIS.Common.DTO.Transaction
         public int CountIndex { get; set; }
         public string FromResponsibilityCode { get; set; }
         public int FromEndUser { get; set; }
+        public string BranchID { get; set; }
         public EamisPropertyTransactionDTO PropertyTransactionGroup { get; set; }
 
     }

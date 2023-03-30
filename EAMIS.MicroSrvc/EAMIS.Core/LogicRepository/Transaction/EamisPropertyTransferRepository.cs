@@ -29,16 +29,16 @@ namespace EAMIS.Core.LogicRepository.Transaction
         }
 
         #region property transaction
-        public async Task<string> GetNextSequenceNumber(string tranType)
+        public async Task<string> GetNextSequenceNumber(string tranType, string branchID)
         {
             if (tranType == TransactionTypeSettings.PTRTransfer)
             {
-                var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.PTRTransfer);
+                var nextId = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.PTRTransfer, branchID);
                 return nextId;
             }
             if (tranType == TransactionTypeSettings.ITRTransfer)
             {
-                var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.ITRTransfer);
+                var nextId = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.ITRTransfer, branchID);
                 return nextId;
             }
             return null;
@@ -98,6 +98,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.TransactionStatus)) predicate = (strict)
                    ? predicate.And(x => x.TRANSACTION_STATUS.ToLower() == filter.TransactionStatus.ToLower())
                    : predicate.And(x => x.TRANSACTION_STATUS.Contains(filter.TransactionStatus.ToLower()));
+            if (!string.IsNullOrEmpty(filter.BranchID)) predicate = (strict)
+                   ? predicate.And(x => x.BRANCH_ID.ToLower() == filter.BranchID.ToLower())
+                   : predicate.And(x => x.BRANCH_ID.Contains(filter.BranchID.ToLower()));
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION;
             return query.Where(predicate);
         }
@@ -169,13 +172,13 @@ namespace EAMIS.Core.LogicRepository.Transaction
             {
                 if (item.TranType == TransactionTypeSettings.ITRTransfer)
                 {
-                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.ITRTransfer);
-                    item.TransactionNumber = item.TranType + nextIdProvided;
+                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.ITRTransfer, item.BranchID);
+                    item.TransactionNumber = item.TranType+"-"+item.BranchID+"-"+nextIdProvided;
                 }
                 if (item.TranType == TransactionTypeSettings.PTRTransfer)
                 {
-                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.PTRTransfer);
-                    item.TransactionNumber = item.TranType + nextIdProvided;
+                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.PTRTransfer, item.BranchID);
+                    item.TransactionNumber = item.TranType + "-" + item.BranchID + "-" + nextIdProvided;
                 }
             }
 
@@ -226,7 +229,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DELIVERY_DATE = item.DeliveryDate,
                 USER_STAMP = item.UserStamp,
                 TRANSACTION_STATUS = item.TransactionStatus,
-                TRAN_TYPE = item.TranType.Trim()
+                TRAN_TYPE = item.TranType.Trim(),
+                BRANCH_ID = item.BranchID
             };
         }
 

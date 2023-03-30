@@ -124,13 +124,21 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DELIVERY_DATE = item.DeliveryDate,
                 USER_STAMP = item.UserStamp,
                 TRANSACTION_STATUS = item.TransactionStatus,
-                IS_PROPERTY = item.IsProperty
+                IS_PROPERTY = item.IsProperty,
+                BRANCH_ID = item.BranchID
 
             };
         }
 
         public async Task<EamisPropertyTransactionDTO> Insert(EamisPropertyTransactionDTO item)
         {
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(i => i.TRANSACTION_NUMBER == item.TransactionNumber).FirstOrDefault();
+            if (result != null)
+           {
+                var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.PropertyReceiving, item.BranchID);
+                item.TransactionNumber = nextIdProvided;
+            }
+
             EAMISPROPERTYTRANSACTION data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
@@ -138,21 +146,21 @@ namespace EAMIS.Core.LogicRepository.Transaction
             //ensure that recently added record has the correct transaction type number
             item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
 
-            string _prType = PrefixSettings.PRPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
+            //string _prType = PrefixSettings.PRPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
 
             //check if the forecasted transaction type matches with the actual transaction type (saved/created in DB)
             //forecasted transaction type = item.TransactionType
             //actual transaction type = item.TransactionType.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0')
-            if (item.TransactionNumber != _prType)
-            {
-                item.TransactionNumber = _prType; //if not matched, replace value of FTT with  ATT
+            //if (item.TransactionNumber != _prType)
+            //{
+            //    item.TransactionNumber = _prType; //if not matched, replace value of FTT with  ATT
 
-                //reset context state to avoid error
-                _ctx.Entry(data).State = EntityState.Detached;
+            //    //reset context state to avoid error
+            //    _ctx.Entry(data).State = EntityState.Detached;
 
-                //call the update method, force to update the transaction type in the DB
-                await this.Update(item);
-            }
+            //    //call the update method, force to update the transaction type in the DB
+            //    await this.Update(item);
+            //}
 
             return item;
         }
@@ -241,6 +249,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.FundSource)) predicate = (strict)
                     ? predicate.And(x => x.FUND_SOURCE.ToLower() == filter.FundSource.ToLower())
                     : predicate.And(x => x.FUND_SOURCE.Contains(filter.FundSource.ToLower()));
+            if (!string.IsNullOrEmpty(filter.BranchID)) predicate = (strict)
+                    ? predicate.And(x => x.BRANCH_ID.ToLower() == filter.BranchID.ToLower())
+                    : predicate.And(x => x.BRANCH_ID.Contains(filter.BranchID.ToLower()));
             if (filter.IsProperty != null)
                 predicate = predicate.And(x => x.IS_PROPERTY == filter.IsProperty);
 
@@ -255,9 +266,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
             await _ctx.SaveChangesAsync();
             return item;
         }
-        public async Task<string> GetNextSequenceNumberPR()
+        public async Task<string> GetNextSequenceNumberPR(string branchID)
         {
-            var nextId = await _EAMISIDProvider.GetNextSequenceNumberPR(TransactionTypeSettings.PropertyReceiving);
+            var nextId = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.PropertyReceiving, branchID);
             return nextId;
         }
         public async Task<EamisPropertyTransactionDTO> getPropertyItemById(int itemID)
@@ -362,14 +373,16 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.TransactionStatus)) predicate = (strict)
                    ? predicate.And(x => x.TRANSACTION_STATUS.ToLower() == filter.TransactionStatus.ToLower())
                    : predicate.And(x => x.TRANSACTION_STATUS.Contains(filter.TransactionStatus.ToLower()));
-
-            //predicate = predicate.And(x => x.DELIVERY_RECEIPT_DETAILS.Where(y => y.ITEMS_GROUP.ITEM_CATEGORY.IS_ASSET == true).Any());
+            if (!string.IsNullOrEmpty(filter.BranchID)) predicate = (strict)
+                  ? predicate.And(x => x.BRANCH_ID.ToLower() == filter.BranchID.ToLower())
+                  : predicate.And(x => x.BRANCH_ID.Contains(filter.BranchID.ToLower()));
+            predicate = predicate.And(x => x.DELIVERY_RECEIPT_DETAILS.Where(y => y.ITEMS_GROUP.ITEM_CATEGORY.IS_ASSET == true).Any());
             var excludedTypes = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
                 .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
                                                    d => d.PROPERTY_TRANS_ID,
                                                    h => h.ID,
                                                    (d, h) => new { d, h })
-                .Where(x => x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved)
+                .Where(x => x.h.BRANCH_ID == filter.BranchID)
                 .Select(t => t.d.DR).ToList();
             predicate = predicate.And(x => !excludedTypes.Contains(x.TRANSACTION_TYPE) && x.TRANSACTION_STATUS == PropertyItemStatus.Approved);
 

@@ -97,5 +97,65 @@ namespace EAMIS.Core.CommonSvc.Utility
             }
             return _id;
         }
+        public async Task<string> GetNextSequenceNumberPerBranch(string TransactionType, string branchID)
+        {
+            var maxId = 0;
+            var nextId = 0;
+            string _id = "";
+            switch (TransactionType)
+            {
+                case TransactionTypeSettings.DeliveryReceipt:
+                    maxId = _ctx.EAMIS_DELIVERY_RECEIPT.Where(t => t.BRANCH_ID == branchID).ToList().Count() ; //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = PrefixSettings.DRPrefix +"-"+branchID+"-"+DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    break;
+                case TransactionTypeSettings.PropertyReceiving:
+                    maxId = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(t => t.BRANCH_ID == branchID && t.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving).ToList().Count(); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = PrefixSettings.PRPrefix + "-" + branchID + "-" + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    break;
+                case TransactionTypeSettings.IssuanceMaterials:
+                    maxId = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(t => t.BRANCH_ID == branchID && t.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceMaterials).ToList().Count(); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = PrefixSettings.IMPrefix + "-" + branchID + "-" + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    break;
+                case TransactionTypeSettings.ICSIssuance:
+                    maxId = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(t => t.TRAN_TYPE == TransactionTypeSettings.ICSIssuance && t.BRANCH_ID == branchID).ToList().Count(); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    break;
+                case TransactionTypeSettings.PARIssuance:
+                    maxId = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(t => t.TRAN_TYPE == TransactionTypeSettings.PARIssuance && t.BRANCH_ID == branchID).ToList().Count(); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    break;
+                case TransactionTypeSettings.PTRTransfer:
+                    maxId = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(t => t.TRAN_TYPE == TransactionTypeSettings.PTRTransfer && t.BRANCH_ID == branchID).ToList().Count();
+                    nextId = maxId + 1;
+                    _id = DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');
+                    break;
+                case TransactionTypeSettings.ITRTransfer:
+                    maxId = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(t => t.TRAN_TYPE == TransactionTypeSettings.ITRTransfer && t.BRANCH_ID == branchID).ToList().Count();
+                    nextId = maxId + 1;
+                    _id = DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');
+                    break;
+                case TransactionTypeSettings.ServiceLog:
+                    maxId = _ctx.EAMIS_SERVICE_LOG.Where(t => t.BRANCH_ID == branchID && t.SERVICE_LOG_TYPE == TransactionTypeSettings.ServiceLog).ToList().Count(); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = PrefixSettings.SLPrefix + "-" + branchID + "-" + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    break;
+                case TransactionTypeSettings.PropertyDisposal:
+                    maxId = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(t => t.BRANCH_ID == branchID && t.TRANSACTION_TYPE == TransactionTypeSettings.PropertyDisposal).ToList().Count(); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = PrefixSettings.PDPrefix + "-" + branchID + "-" + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    break;
+                case TransactionTypeSettings.PropertyRevaluation:
+                    maxId = _ctx.EAMIS_PROPERTY_REVALUATION.Where(t => t.BRANCH_ID == branchID).ToList().Count(); //returns the maximum value in the sequence. note, read from identity type column only
+                    nextId = maxId + 1;
+                    _id = PrefixSettings.PVPrefix + "-" + branchID + "-" + DateTime.Now.Year.ToString() + nextId.ToString().PadLeft(6, '0');//change according to the business rule
+                    break;
+            }
+            return _id;
+        }
     }
   }

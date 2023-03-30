@@ -95,9 +95,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return item;
         }
-        public async Task<DataList<EamisServiceLogDetailsDTO>> ListServiceLogDetails(EamisServiceLogDetailsDTO filter, PageConfig config)
+        public async Task<DataList<EamisServiceLogDetailsDTO>> ListServiceLogDetails(EamisServiceLogDetailsDTO filter, PageConfig config, string branchID)
         {
-            IQueryable<EAMISSERVICELOGDETAILS> query = FilteredEntites(filter);
+            IQueryable<EAMISSERVICELOGDETAILS> query = FilteredEntites(filter, branchID);
             string resolved_sort = config.SortBy ?? "Id";
             bool resolve_isAscending = (config.IsAscending) ? config.IsAscending : false;
             int resolved_size = config.Size ?? _maxPageSize;
@@ -165,7 +165,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
-        private IQueryable<EAMISSERVICELOGDETAILS> FilteredEntites(EamisServiceLogDetailsDTO filter, IQueryable<EAMISSERVICELOGDETAILS> custom_query = null, bool strict = false)
+        private IQueryable<EAMISSERVICELOGDETAILS> FilteredEntites(EamisServiceLogDetailsDTO filter, string branchID, IQueryable<EAMISSERVICELOGDETAILS> custom_query = null, bool strict = false)
         {
             var predicate = PredicateBuilder.New<EAMISSERVICELOGDETAILS>(true);
             if (filter.ID != 0)
@@ -189,13 +189,13 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 .Where(x => x.p.TRANSACTION_TYPE == TransactionTypeSettings.PropertyDisposal && x.i.d.ASSET_CONDITION == "UNSERVICEABLE")
                 .Select(t => t.i.d.PROPERTY_NUMBER).ToList();
 
-            predicate = predicate.And(x => !excludedTypes.Contains(x.PROPERTY_NUMBER) && x.SERVICE_LOG_GROUP.TRANSACTION_STATUS == PropertyItemStatus.Approved);
+            predicate = predicate.And(x => !excludedTypes.Contains(x.PROPERTY_NUMBER) && x.SERVICE_LOG_GROUP.TRANSACTION_STATUS == PropertyItemStatus.Approved && x.SERVICE_LOG_GROUP.BRANCH_ID == branchID);
 
             var query = custom_query ?? _ctx.EAMIS_SERVICE_LOG_DETAILS;
             return query.Where(predicate);
         }
         #region for creation of new service log
-        private IQueryable<EAMISSERVICELOGDETAILS> FilteredEntitiesServiceLogDetailsForCreation(EamisPropertyTransactionDetailsDTO filter, IQueryable<EAMISSERVICELOGDETAILS> custom_query = null, bool strict = false)
+        private IQueryable<EAMISSERVICELOGDETAILS> FilteredEntitiesServiceLogDetailsForCreation(EamisPropertyTransactionDetailsDTO filter, string branchID, IQueryable<EAMISSERVICELOGDETAILS> custom_query = null, bool strict = false)
         {
             var predicate = PredicateBuilder.New<EAMISSERVICELOGDETAILS>(true);
             //get items under service logs and exclude it from the list
@@ -214,7 +214,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                d1 => d1.d.DR,
                                                dr => dr.TRANSACTION_TYPE,
                                                (d1, dr) => new { d1, dr })
-                                        .Where(x => x.d1.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving && x.d1.h.TRANSACTION_STATUS == PropertyItemStatus.Approved)
+                                        .Where(x => x.d1.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving && x.d1.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
+                                        && x.d1.h.BRANCH_ID == branchID)
                                         .Select(x => new EAMISSERVICELOGDETAILS
                                         {
                                             ID = 0,
@@ -317,9 +318,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     }).ToList()).ConfigureAwait(false);
             return result;
         }
-        public async Task<DataList<EamisServiceLogDetailsCreationDTO>> ListServiceLogDetailsForCreation(EamisPropertyTransactionDetailsDTO filter, PageConfig config)
+        public async Task<DataList<EamisServiceLogDetailsCreationDTO>> ListServiceLogDetailsForCreation(EamisPropertyTransactionDetailsDTO filter, PageConfig config, string branchID)
         {
-            IQueryable<EAMISSERVICELOGDETAILS> query = FilteredEntitiesServiceLogDetailsForCreation(filter);
+            IQueryable<EAMISSERVICELOGDETAILS> query = FilteredEntitiesServiceLogDetailsForCreation(filter, branchID);
             string resolved_sort = config.SortBy ?? "Id";
             bool resolve_isAscending = (config.IsAscending) ? config.IsAscending : false;
             int resolved_size = config.Size ?? _maxPageSize;

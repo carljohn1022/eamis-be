@@ -22,18 +22,18 @@ namespace EAMIS.WebApi.Controllers.Transaction
         }
 
         [HttpGet("getNextSequence")]
-        public async Task<string> GetNextSequenceAsync()
+        public async Task<string> GetNextSequenceAsync(string branchID)
         {
-            var nextId = await _eamisPropertyDisposalRepository.GetNextSequenceNumber();
+            var nextId = await _eamisPropertyDisposalRepository.GetNextSequenceNumber(branchID);
             return nextId;
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<EamisPropertyTransactionDTO>> List([FromQuery] EamisPropertyTransactionDTO filter, [FromQuery] PageConfig config)
+        public async Task<ActionResult<EamisPropertyTransactionDTO>> List([FromQuery] EamisPropertyTransactionDTO filter, [FromQuery] PageConfig config, string branchID)
         {
             if (filter == null)
                 filter = new EamisPropertyTransactionDTO();
-            return Ok(await _eamisPropertyDisposalRepository.List(filter, config));
+            return Ok(await _eamisPropertyDisposalRepository.List(filter, config, branchID));
         }
 
 

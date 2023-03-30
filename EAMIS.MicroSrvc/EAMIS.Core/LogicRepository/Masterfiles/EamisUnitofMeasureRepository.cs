@@ -229,5 +229,13 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         {
             return await _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.ID == id && x.SHORT_DESCRIPTION == ShortDesc && x.UOM_DESCRIPTION == UomDesc);
         }
+        public async Task<bool> ValidateShortEdit(int id, string ShortDesc)
+        {
+            return await _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.ID != id && x.SHORT_DESCRIPTION == ShortDesc);
+        }
+        public async Task<bool> ValidateUomEdit(int id, string UomDesc)
+        {
+            return await _ctx.EAMIS_UNITOFMEASURE.AsNoTracking().AnyAsync(x => x.ID != id && x.UOM_DESCRIPTION == UomDesc);
+        }
     }
 }

@@ -30,9 +30,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
               : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
 
-        public async Task<string> GetNextSequenceNumber()
+        public async Task<string> GetNextSequenceNumber(string branchID)
         {
-            var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.ServiceLog);
+            var nextId = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.ServiceLog, branchID);
             return nextId;
         }
 
@@ -126,6 +126,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
             if (string.IsNullOrEmpty(filter.TransactionId) && filter.TransactionId != null)
                 predicate = predicate.And(x => x.TRAN_ID == filter.TransactionId);
+            if (!string.IsNullOrEmpty(filter.BranchID)) predicate = (strict)
+                   ? predicate.And(x => x.BRANCH_ID.ToLower() == filter.BranchID.ToLower())
+                   : predicate.And(x => x.BRANCH_ID.Contains(filter.BranchID.ToLower()));
 
             var query = custom_query ?? _ctx.EAMIS_SERVICE_LOG;
             return query.Where(predicate);
@@ -133,27 +136,34 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         public async Task<EamisServiceLogDTO> InsertServiceLog(EamisServiceLogDTO item)
         {
+            var result = _ctx.EAMIS_SERVICE_LOG.Where(i => i.TRAN_ID == item.TransactionId).FirstOrDefault();
+            if (result != null)
+            {
+                var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.ServiceLog, item.BranchID);
+                item.TransactionId = nextIdProvided;
+            }
+
             EAMISSERVICELOG data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
             //ensure that recently added record has the correct transaction id number
             item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
 
-            string _drType = PrefixSettings.SLPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
+            //string _drType = PrefixSettings.SLPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
 
-            //check if the forecasted transaction id matches with the actual transaction id (saved/created in DB)
-            //forecasted transaction id = item.TransactionId
-            //actual transaction id = item.TransactionId.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0')
-            if (item.TransactionId != _drType)
-            {
-                item.TransactionId = _drType;
+            ////check if the forecasted transaction id matches with the actual transaction id (saved/created in DB)
+            ////forecasted transaction id = item.TransactionId
+            ////actual transaction id = item.TransactionId.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0')
+            //if (item.TransactionId != _drType)
+            //{
+            //    item.TransactionId = _drType;
 
-                //reset context state to avoid error
-                _ctx.Entry(data).State = EntityState.Detached;
+            //    //reset context state to avoid error
+            //    _ctx.Entry(data).State = EntityState.Detached;
 
-                //call the update method, force to update the transaction id in the DB
-                await this.UpdateServiceLog(item);
-            }
+            //    //call the update method, force to update the transaction id in the DB
+            //    await this.UpdateServiceLog(item);
+            //}
             return item;
         }
 
@@ -177,7 +187,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TRAN_ID = item.TransactionId,
                 TRANSACTION_STATUS = item.TransactionStatus,
                 SERVICE_LOG_TYPE = item.ServiceLogType,
-                USER_STAMP = item.UserStamp
+                USER_STAMP = item.UserStamp,
+                BRANCH_ID = item.BranchID
             };
         }
         public async Task<EamisServiceLogDTO> getServiceItemById(int itemID)

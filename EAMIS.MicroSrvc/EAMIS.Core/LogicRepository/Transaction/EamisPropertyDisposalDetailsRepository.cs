@@ -259,33 +259,13 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             if (item == null) return new EAMISPROPERTYTRANSACTIONDETAILS();
             return new EAMISPROPERTYTRANSACTIONDETAILS
-            {
+            { 
                 ID = item.Id,
-                PROPERTY_TRANS_ID = item.PropertyTransactionID, //note: please ensure the newly created property transaction id is assigned to this field
-                IS_DEPRECIATION = item.isDepreciation,
-                DR = item.Dr,
+                PROPERTY_TRANS_ID = item.PropertyTransactionID, //note: please ensure the newly created property transaction id is assigned to this field      
                 PROPERTY_NUMBER = item.PropertyNumber,
-                ITEM_DESCRIPTION = item.ItemDescription,
-                ITEM_CODE = item.ItemCode,
-                SERIAL_NUMBER = item.SerialNumber,
-                PO = item.Pr,
-                PR = item.Pr,
-                ACQUISITION_DATE = item.AcquisitionDate,
-                REQUESTED_BY = item.RequestedBy,
-                OFFICE = item.Office,
-                DEPARTMENT = item.Department,
-                UNIT_COST = item.UnitCost,
-                QTY = item.Qty,
-                SALVAGE_VALUE = item.SalvageValue,
-                BOOK_VALUE = item.BookValue,
-                ESTIMATED_LIFE = item.EstLife,
-                AREA = item.Area,
-                SEMI_EXPANDABLE_AMOUNT = item.Semi,
+                ITEM_DESCRIPTION = item.ItemDescription,         
+                UNIT_COST = item.UnitCost,        
                 USER_STAMP = item.UserStamp,
-                TIME_STAMP = item.TimeStamp,
-                WARRANTY_EXPIRY = item.WarrantyExpiry,
-                INVOICE = item.Invoice,
-                PROPERTY_CONDITION = item.PropertyCondition,
                 MODE_OF_DISPOSAL = item.ModeOfDisposal
             };
         }

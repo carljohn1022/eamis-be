@@ -10,7 +10,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
     {
         Task<DataList<EamisPropertyItemsDTO>> List(EamisPropertyItemsDTO filter, PageConfig config);
 
-        Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config, string tranType, int assigneeCustodian);
+        Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config, string tranType, int assigneeCustodian, string branchID);
         Task<DataList<EamisPropertyTransactionDetailsDTO>> ListSupplyItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config, string tranType, int assigneeCustodian);
         Task<EamisPropertyTransactionDTO> InsertProperty(EamisPropertyTransactionDTO item);       
         Task<EamisPropertyTransactionDTO> InsertPropertyForMaterialIssuance(EamisPropertyTransactionDTO item);
@@ -19,8 +19,8 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<string> UpdatePropertyItemQty(EamisDeliveryReceiptDetailsDTO item);
         Task<EamisPropertyTransactionDetailsDTO> UpdateDetails(EamisPropertyTransactionDetailsDTO item);
         Task<EamisPropertyTransactionDTO> getPropertyItemById(int itemID);
-        Task<string> GetNextSequenceNumber(string tranType);
-        Task<string> GetNextSequenceNumberForMaterialIssuance();
+        Task<string> GetNextSequenceNumber(string tranType, string branchID);
+        Task<string> GetNextSequenceNumberForMaterialIssuance(string branchID);
         Task<DataList<EamisPropertyTransactionDetailsDTO>> SearchReceiving(string type, string searchValue);
         Task<DataList<EamisDeliveryReceiptDetailsDTO>> SearchDRForMaterialIssuance(string type, string searcValue);
         Task<string> GetResponsibilityCenterByID(string responsibilityCode);
@@ -32,6 +32,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode, int counter);
         Task<string> GetDRNumFrSupplier(string dr);
         Task<string> GetAPRNum(string dr);
-        Task<DataList<EamisDeliveryReceiptDetailsDTO>> ListSuppliesDRForIssuance(EamisDeliveryReceiptDetailsDTO filter, PageConfig config);
+        Task<string> GetBranchAreaOfUserForTranType(string branchID);
+        Task<DataList<EamisDeliveryReceiptDetailsDTO>> ListSuppliesDRForIssuance(EamisDeliveryReceiptDetailsDTO filter, PageConfig config, string branchID);
     }
 }

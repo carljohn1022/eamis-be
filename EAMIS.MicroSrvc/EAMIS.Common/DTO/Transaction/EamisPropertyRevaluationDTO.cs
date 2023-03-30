@@ -15,6 +15,7 @@ namespace EAMIS.Common.DTO.Transaction
         public bool IsActive { get; set; }
         public string UserStamp { get; set; }
         public string Status { get; set; }
+        public string BranchID { get; set; }
         public List<EamisPropertyRevaluationDetailsDTO> PropertyRevaluationDetails { get; set; }
     }
 }

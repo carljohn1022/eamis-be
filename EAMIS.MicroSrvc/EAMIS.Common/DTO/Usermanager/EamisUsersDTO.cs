@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Ais;
+using EAMIS.Common.DTO.Branch_Maintenance;
 using EAMIS.Common.DTO.Report_Catalog;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace EAMIS.Common.DTO.Masterfiles
         public List<EamisUserRolesDTO> RoleManager { get; set; }
         public EamisUserloginDTO UserLogin { get; set; }
         public AisPersonnelDTO PersonnelInfo { get; set; }
+        public EamisBranchDTO BranchGroup { get; set; } //For Branch
     }
     public class RegisterDTO
     {

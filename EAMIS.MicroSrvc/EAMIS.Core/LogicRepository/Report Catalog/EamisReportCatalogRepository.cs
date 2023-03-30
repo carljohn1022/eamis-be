@@ -136,6 +136,44 @@ namespace EAMIS.Core.LogicRepository.Report_Catalog
                                           .ToList();
             return result;
         }
+        public async Task<List<LookupDTO>> PropertyType()
+        {
+            var result = _ctx.EAMIS_PROPERTYITEMS
+                              .Where(f => !(f.PROPERTY_TYPE == null || f.PROPERTY_TYPE == string.Empty))
+                              .Where(f => f.PROPERTY_TYPE == "High Value Semi-Expendable" || f.PROPERTY_TYPE == "Low Value Semi-Expendable")
+                              .GroupBy(x => x.PROPERTY_TYPE)
+                              .Select(i => new LookupDTO
+                              {
+                                  LookUpValue = i.Key,
+                              })
+                              .ToList();
+            return result;
+        }
+        public async Task<List<LookupDTO>> CategoryName()
+        {
+            var result = _ctx.EAMIS_ITEM_CATEGORY
+                                          .Where(f => !(f.CATEGORY_NAME == null || f.CATEGORY_NAME == string.Empty))
+                                          .GroupBy(x => x.CATEGORY_NAME)
+                                          .Select(i => new LookupDTO
+                                          {
+                                              LookUpValue = i.Key,
+                                          })
+                                          .ToList();
+            return result;
+        }
+        public async Task<List<LookupDTO>> TransactionNumberMaterial()
+        {
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION
+                                          .Where(f => f.TRANSACTION_TYPE == "Issuance/Releasing - Materials")
+                                          .GroupBy(x => x.TRANSACTION_NUMBER)
+                                          .Select(i => new LookupDTO
+                                          {
+                                              LookUpValue = i.Key
+                                          })
+                                          .ToList();
+
+            return result;
+        }
 
 
         public async Task<EamisReportCatalogDTO> Delete(EamisReportCatalogDTO item)

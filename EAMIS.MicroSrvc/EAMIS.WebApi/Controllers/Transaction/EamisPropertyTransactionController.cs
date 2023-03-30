@@ -59,9 +59,9 @@ namespace EAMIS.WebApi.Controllers.Transaction
             return Ok(await _eamisPropertyTransactionRepository.Delete(item));
         }
         [HttpGet("getNextSequence")]
-        public async Task<string> GetNextSequenceAsync()
+        public async Task<string> GetNextSequenceAsync(string branchID)
         {
-            var nextId = await _eamisPropertyTransactionRepository.GetNextSequenceNumberPR();
+            var nextId = await _eamisPropertyTransactionRepository.GetNextSequenceNumberPR(branchID);
             return nextId;
         }
         [HttpGet("editbyid")]

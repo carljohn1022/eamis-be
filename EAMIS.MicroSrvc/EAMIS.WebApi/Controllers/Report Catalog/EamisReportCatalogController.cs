@@ -73,6 +73,25 @@ namespace EAMIS.WebApi.Controllers.Report_Catalog
 
             return Ok(await _eamisReportCatalogRepository.ResponsibilityCodeList());
         }
+        [HttpGet("PropertyType")]
+        public async Task<ActionResult<LookupDTO>> PropertyType()
+        {
+
+            return Ok(await _eamisReportCatalogRepository.PropertyType());
+        }
+
+        [HttpGet("CategoryName")]
+        public async Task<ActionResult<LookupDTO>> CategoryName()
+        {
+
+            return Ok(await _eamisReportCatalogRepository.CategoryName());
+        }
+        [HttpGet("TransactionNumberMaterial")]
+        public async Task<ActionResult<LookupDTO>> TransactionNumberMaterial()
+        {
+
+            return Ok(await _eamisReportCatalogRepository.TransactionNumberMaterial());
+        }
 
         [HttpGet("list")]
         public async Task<ActionResult<EAMISREPORTCATALOG>> List([FromQuery] EamisReportCatalogDTO filter, [FromQuery] PageConfig config)

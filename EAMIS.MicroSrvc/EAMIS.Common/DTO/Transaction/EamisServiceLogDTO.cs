@@ -14,6 +14,7 @@ namespace EAMIS.Common.DTO.Transaction
         public DateTime TransactionDate { get; set; }
         public string TransactionStatus { get; set; }
         public string UserStamp { get; set; }
+        public string BranchID { get; set; }
         public List<EamisServiceLogDetailsDTO> ServiceLogDetails { get; set; }
     }
 }

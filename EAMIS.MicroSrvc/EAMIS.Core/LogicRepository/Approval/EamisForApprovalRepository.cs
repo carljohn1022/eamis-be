@@ -404,7 +404,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                                                     DRDate = x.DR_BY_SUPPLIER_DATE,
                                                     AprDate = x.APR_DATE,
                                                     AprNum = x.APR_NUMBER,
-                                                    UserStamp = x.USER_STAMP
+                                                    UserStamp = x.USER_STAMP,
+                                                    BranchID = x.BRANCH_ID
                                                 })
                                                 .FirstOrDefault();
                 if (newStatus == DocStatus.Approved) 
@@ -445,7 +446,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                         DR_BY_SUPPLIER_DATE = data.DRDate,
                         WAREHOUSE_ID = data.StockroomId,
                         APR_NUMBER = data.AprNum,
-                        APR_DATE = data.AprDate
+                        APR_DATE = data.AprDate,
+                        BRANCH_ID = data.BranchID
                     };
                     _ctx.Entry(value).State = EntityState.Modified;
                     await _ctx.SaveChangesAsync();
@@ -480,6 +482,7 @@ namespace EAMIS.Core.LogicRepository.Approval
                                                     FundSource = x.FUND_SOURCE,
                                                     IsProperty = x.IS_PROPERTY,
                                                     TranType = x.TRAN_TYPE,
+                                                    BranchID = x.BRANCH_ID
                                                 })
                                                 .FirstOrDefault();
                 if (data.TransactionType == TransactionTypeSettings.IssuanceMaterials )
@@ -542,7 +545,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                         DELIVERY_DATE = data.DeliveryDate,
                         USER_STAMP = data.UserStamp,
                         TRANSACTION_STATUS = newStatus,
-                        IS_PROPERTY = data.IsProperty
+                        IS_PROPERTY = data.IsProperty,
+                        BRANCH_ID = data.BranchID
                     };
                     _ctx.Entry(value).State = EntityState.Modified;
                     await _ctx.SaveChangesAsync();
@@ -569,7 +573,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                                                     TransactionDate = x.TRAN_DATE,
                                                     TransactionId = x.TRAN_ID,
                                                     UserStamp = x.USER_STAMP,
-                                                    Status = x.STATUS
+                                                    Status = x.STATUS,
+                                                    BranchID = x.BRANCH_ID
                                                 })
                                                 .FirstOrDefault();
                 if (data != null)
@@ -582,6 +587,7 @@ namespace EAMIS.Core.LogicRepository.Approval
                         TRAN_ID = data.TransactionId,
                         TRAN_DATE = data.TransactionDate,
                         USER_STAMP = data.UserStamp,
+                        BRANCH_ID = data.BranchID,
                         STATUS = newStatus
                     };
                     _ctx.Entry(value).State = EntityState.Modified;
@@ -608,7 +614,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                                                     ServiceLogType = x.SERVICE_LOG_TYPE,
                                                     TransactionDate = x.TRAN_DATE,
                                                     TransactionId = x.TRAN_ID,
-                                                    UserStamp = x.USER_STAMP
+                                                    UserStamp = x.USER_STAMP,
+                                                    BranchID = x.BRANCH_ID
                                                 })
                                                 .FirstOrDefault();
                 if (data != null)
@@ -620,7 +627,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                         TRAN_ID = data.TransactionId,
                         SERVICE_LOG_TYPE = data.ServiceLogType,
                         TRAN_DATE = data.TransactionDate,
-                        USER_STAMP = data.UserStamp
+                        USER_STAMP = data.UserStamp,
+                        BRANCH_ID = data.BranchID
                     };
                     _ctx.Entry(value).State = EntityState.Modified;
                     await _ctx.SaveChangesAsync();

@@ -50,11 +50,11 @@ namespace EAMIS.WebApi.Controllers.Transaction
         //    return Ok(await _eamisPropertyTransferDetailsRepository.ListItemsForTranser(item, config));
         //}
         [HttpGet("listitemsfortransfer")]
-        public async Task<ActionResult<EamisPropertyTransferDetailsDTO>> List([FromQuery] EamisPropertyTransferDetailsDTO filter, [FromQuery] PageConfig config, string tranType)
+        public async Task<ActionResult<EamisPropertyTransferDetailsDTO>> List([FromQuery] EamisPropertyTransferDetailsDTO filter, [FromQuery] PageConfig config, string tranType, string branchID)
         {
             if (filter == null)
                 filter = new EamisPropertyTransferDetailsDTO();
-            return Ok(await _eamisPropertyTransferDetailsRepository.ListItemsForTranser(filter, tranType, config));
+            return Ok(await _eamisPropertyTransferDetailsRepository.ListItemsForTranser(filter, tranType, config, branchID));
         }
 
         [HttpGet("getResponsibilityCenter")]

@@ -57,17 +57,23 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         [HttpPut("Edit")]
         public async Task<ActionResult<EamisItemCategoryDTO>> Edit([FromBody] EamisItemCategoryDTO item)
         {
-            
-            if (await _eamisItemCategoryRepository.EditValidateExistingShortDesc(item.Id, item.ShortDesc, item.CategoryName)) 
-            {
-                if (item == null)
-                    item = new EamisItemCategoryDTO();
-                return Ok(await _eamisItemCategoryRepository.Update(item));
-            }
-            else if (await _eamisItemCategoryRepository.ValidateExistingShortDesc(item.ShortDesc, item.CategoryName))
+
+            if (await _eamisItemCategoryRepository.EditValidateExistingShortDesc(item.Id, item.ShortDesc))
             {
                 return Unauthorized();
             }
+            if (await _eamisItemCategoryRepository.EditValidateExistingCategory(item.Id, item.CategoryName))
+            {
+                return Unauthorized();
+            }
+            //if (await _eamisItemCategoryRepository.EditValidateExistingShortDesc(item.Id, item.ShortDesc, item.CategoryName)) 
+            //{
+            //    return Unauthorized();
+            //}
+            //else if (await _eamisItemCategoryRepository.ValidateExistingShortDesc(item.ShortDesc, item.CategoryName))
+            //{
+            //    return Unauthorized();
+            //}
             else
             {
                 return Ok(await _eamisItemCategoryRepository.Update(item));

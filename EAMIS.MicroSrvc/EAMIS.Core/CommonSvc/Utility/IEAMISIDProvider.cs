@@ -10,5 +10,6 @@ namespace EAMIS.Core.CommonSvc.Utility
     {
         Task<string> GetNextSequenceNumber(string TransactionType);
         Task<string> GetNextSequenceNumberPR(string TransactionNumber);
+        Task<string> GetNextSequenceNumberPerBranch(string TransactionType, string branchID);
     }
 }

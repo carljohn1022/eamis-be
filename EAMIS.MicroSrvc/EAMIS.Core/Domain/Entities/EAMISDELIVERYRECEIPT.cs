@@ -39,6 +39,7 @@ namespace EAMIS.Core.Domain.Entities
         public string APR_NUMBER { get; set; }
         public DateTime APR_DATE { get; set; }
         public string USER_STAMP { get; set; }
+        public string BRANCH_ID { get; set; }
         public EAMISWAREHOUSE WAREHOUSE_GROUP { get; set; }
         public EAMISSUPPLIER SUPPLIER_GROUP { get; set; }
         public List<EAMISDELIVERYRECEIPTDETAILS> DELIVERY_RECEIPT_DETAILS { get; set; }

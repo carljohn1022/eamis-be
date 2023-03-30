@@ -104,6 +104,9 @@ namespace EAMIS.Core.Domain
         //Inventory Taking
         public DbSet<EAMISINVENTORYTAKING> EAMIS_INVENTORY_TAKING { get; set; }
 
+        //Branch Maintenance
+        public DbSet<EAMISBRANCHMAINTENANCE> branch { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<EAMISATTACHMENTTYPE>()

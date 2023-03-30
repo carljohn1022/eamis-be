@@ -41,23 +41,23 @@ namespace EAMIS.Core.LogicRepository.Transaction
               : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
 
-        public async Task<string> GetNextSequenceNumber(string tranType)
+        public async Task<string> GetNextSequenceNumber(string tranType, string branchID)
         {
             if (tranType == TransactionTypeSettings.ICSIssuance)
             {
-                var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.ICSIssuance);
+                var nextId = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.ICSIssuance, branchID);
                 return nextId;
             }
             if (tranType == TransactionTypeSettings.PARIssuance)
             {
-                var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.PARIssuance);
+                var nextId = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.PARIssuance, branchID);
                 return nextId;
             }
             return null;
         }
-        public async Task<string> GetNextSequenceNumberForMaterialIssuance()
+        public async Task<string> GetNextSequenceNumberForMaterialIssuance(string branchID)
         {
-            var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.IssuanceMaterial);
+            var nextId = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.IssuanceMaterials, branchID);
             return nextId;
         }
         private string issuanceString()
@@ -249,13 +249,13 @@ namespace EAMIS.Core.LogicRepository.Transaction
             {
                 if (item.TranType == TransactionTypeSettings.ICSIssuance)
                 {
-                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.ICSIssuance);
-                    item.TransactionNumber = item.TranType + nextIdProvided;
+                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.ICSIssuance, item.BranchID);
+                    item.TransactionNumber = item.TranType+"-"+item.BranchID+"-"+ nextIdProvided;
                 }
                 if (item.TranType == TransactionTypeSettings.PARIssuance)
                 {
-                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.PARIssuance);
-                    item.TransactionNumber = item.TranType + nextIdProvided;
+                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.PARIssuance, item.BranchID);
+                    item.TransactionNumber = item.TranType+"-"+item.BranchID+"-"+ nextIdProvided;
                 }
             }
             EAMISPROPERTYTRANSACTION data = MapToEntity(item);
@@ -282,24 +282,31 @@ namespace EAMIS.Core.LogicRepository.Transaction
         }
         public async Task<EamisPropertyTransactionDTO> InsertPropertyForMaterialIssuance(EamisPropertyTransactionDTO item)
         {
+            var result = _ctx.EAMIS_PROPERTY_TRANSACTION.Where(i => i.TRANSACTION_NUMBER == item.TransactionNumber).FirstOrDefault();
+            if (result != null)
+            {    
+                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.IssuanceMaterials, item.BranchID);
+                    item.TransactionNumber = nextIdProvided;
+            }
+
             EAMISPROPERTYTRANSACTION data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
             //ensure that recently added record has the correct transaction id number
             item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
 
-            string _drType = PrefixSettings.IMPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
+            //string _drType = PrefixSettings.IMPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
 
-            if (item.TransactionNumber != _drType)
-            {
-                item.TransactionNumber = _drType;
+            //if (item.TransactionNumber != _drType)
+            //{
+            //    item.TransactionNumber = _drType;
 
-                //reset context state to avoid error
-                _ctx.Entry(data).State = EntityState.Detached;
+            //    //reset context state to avoid error
+            //    _ctx.Entry(data).State = EntityState.Detached;
 
-                //call the update method, force to update the transaction number in DB
-                await this.UpdateProperty(item);
-            }
+            //    //call the update method, force to update the transaction number in DB
+            //    await this.UpdateProperty(item);
+            //}
             item.Id = data.ID;
             return item;
         }
@@ -321,8 +328,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DELIVERY_DATE = item.DeliveryDate,
                 USER_STAMP = item.UserStamp,
                 TRANSACTION_STATUS = item.TransactionStatus,
-                IS_PROPERTY = item.IsProperty
-
+                IS_PROPERTY = item.IsProperty,
+                BRANCH_ID = item.BranchID
             };
 
         }
@@ -591,9 +598,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
             return result;
         }
-        public async Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config, string tranType, int assigneeCustodian)
+        public async Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config, string tranType, int assigneeCustodian, string branchID)
         {
-            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredItemsForReceiving(filter, tranType, assigneeCustodian);
+            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredItemsForReceiving(filter, tranType, assigneeCustodian, branchID);
             string resolved_sort = config.SortBy ?? "Id";
             bool resolve_isAscending = (config.IsAscending) ? config.IsAscending : false;
             int resolved_size = config.Size ?? _maxPageSize;
@@ -705,7 +712,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     TransactionDate = x.TRANSACTION_DATE,
                     FundSource = x.FUND_SOURCE,
                     FiscalPeriod = x.FISCALPERIOD,
-                    ReceivedBy = x.RECEIVED_BY
+                    ReceivedBy = x.RECEIVED_BY,
+                    BranchID = x.BRANCH_ID
                 }).Where(i => i.Id == x.PROPERTY_TRANS_ID).FirstOrDefault()
 
             }
@@ -837,7 +845,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return null;
         }
-        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, string tranType, int assigneeCustodian, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> additional_query = null)
+        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, string tranType, int assigneeCustodian, string branchID, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> additional_query = null)
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
             //Do not display items under service logs
@@ -869,7 +877,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                         ic => ic.ID,
                                         (c, ic) => new { ic, c })
                                         .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving &&
-                                                    x.ic.IS_ASSET == true && x.c.i.h.TRANSACTION_STATUS == PropertyItemStatus.Approved) //added Property Transfer
+                                                    x.ic.IS_ASSET == true && x.c.i.h.TRANSACTION_STATUS == PropertyItemStatus.Approved &&
+                                                    x.c.i.h.BRANCH_ID == branchID) //added Property Transfer
                                         .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                         {
                                             ID = x.c.i.d.ID,
@@ -923,7 +932,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                         ic => ic.ID,
                                         (c, ic) => new { ic, c })
                                         .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer &&
-                                                    x.ic.IS_ASSET == true && x.c.i.h.TRANSACTION_STATUS == PropertyItemStatus.Approved) //added Property Transfer
+                                                    x.ic.IS_ASSET == true && x.c.i.h.TRANSACTION_STATUS == PropertyItemStatus.Approved &&
+                                                    x.c.i.h.BRANCH_ID == branchID) //added Property Transfer
                                         .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                         {
                                             ID = x.c.i.d.ID,
@@ -986,7 +996,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             ic => ic.ID,
                                             (c, ic) => new { ic, c })
                                             .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyReceiving &&
-                                                        x.ic.IS_ASSET == true && x.c.i.h.TRANSACTION_STATUS == PropertyItemStatus.Approved)
+                                                        x.ic.IS_ASSET == true && x.c.i.h.TRANSACTION_STATUS == PropertyItemStatus.Approved &&
+                                                        x.c.i.h.BRANCH_ID == branchID)
                                             .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                             {
                                                 ID = x.c.i.d.ID,
@@ -1040,7 +1051,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             ic => ic.ID,
                                             (c, ic) => new { ic, c })
                                             .Where(x => x.c.i.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer &&
-                                                        x.ic.IS_ASSET == true && x.c.i.h.TRANSACTION_STATUS == PropertyItemStatus.Approved)
+                                                        x.ic.IS_ASSET == true && x.c.i.h.TRANSACTION_STATUS == PropertyItemStatus.Approved &&
+                                                        x.c.i.h.BRANCH_ID == branchID)
                                             .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                             {
                                                 ID = x.c.i.d.ID,
@@ -1182,7 +1194,13 @@ namespace EAMIS.Core.LogicRepository.Transaction
             retValue = result[0].APR_NUMBER.ToString();
             return retValue;
         }
-
+        public async Task<string> GetBranchAreaOfUserForTranType(string branchID)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _ctx.branch.Where(s => s.BranchID == branchID).AsNoTracking().ToList()).ConfigureAwait(false);
+            retValue = result[0].AreaID.ToString();
+            return retValue;
+        }
 
         //public async Task<EamisPropertyTransactionDetailsDTO> Delete(EamisPropertyTransactionDetailsDTO item)
         //{
@@ -1229,7 +1247,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
             });
         }
-        private IQueryable<EAMISDELIVERYRECEIPTDETAILS> FilteredDRForIssuance(EamisDeliveryReceiptDetailsDTO filter, IQueryable<EAMISDELIVERYRECEIPTDETAILS> custom_query = null)
+        private IQueryable<EAMISDELIVERYRECEIPTDETAILS> FilteredDRForIssuance(EamisDeliveryReceiptDetailsDTO filter, string branchID, IQueryable<EAMISDELIVERYRECEIPTDETAILS> custom_query = null)
         {
             var predicate = PredicateBuilder.New<EAMISDELIVERYRECEIPTDETAILS>(true);
 
@@ -1246,7 +1264,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                         c => c.p.CATEGORY_ID,
                                         ic => ic.ID,
                                         (c, ic) => new { ic, c })
-                                    .Where(x => x.ic.IS_SUPPLIES == true && x.c.i.h.TRANSACTION_STATUS == DocStatus.Approved)
+                                    .Where(x => x.ic.IS_SUPPLIES == true && x.c.i.h.TRANSACTION_STATUS == DocStatus.Approved && x.c.i.h.BRANCH_ID == branchID)
                                     .Select(x => new EAMISDELIVERYRECEIPTDETAILS
                                     {
                                         ID = x.c.i.d.ID,
@@ -1268,9 +1286,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             return query.OrderByDescending(x => x.ID).Skip((resolved_index - 1) * resolved_size).Take(resolved_size);
         }
-        public async Task<DataList<EamisDeliveryReceiptDetailsDTO>> ListSuppliesDRForIssuance(EamisDeliveryReceiptDetailsDTO filter, PageConfig config)
+        public async Task<DataList<EamisDeliveryReceiptDetailsDTO>> ListSuppliesDRForIssuance(EamisDeliveryReceiptDetailsDTO filter, PageConfig config, string branchID)
         {
-            IQueryable<EAMISDELIVERYRECEIPTDETAILS> query = FilteredDRForIssuance(filter);
+            IQueryable<EAMISDELIVERYRECEIPTDETAILS> query = FilteredDRForIssuance(filter, branchID);
             string resolved_sort = config.SortBy ?? "Id";
             bool resolve_isAscending = (config.IsAscending) ? config.IsAscending : false;
             int resolved_size = config.Size ?? _maxPageSize;

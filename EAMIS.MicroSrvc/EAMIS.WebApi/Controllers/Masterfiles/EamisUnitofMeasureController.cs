@@ -47,16 +47,22 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         public async Task<ActionResult<EamisUnitofMeasureDTO>> Edit([FromBody] EamisUnitofMeasureDTO item)
         {
             var data = new EamisUnitofMeasureDTO();
-            if (await _eamisUnitofMeasureRepository.UpdateUOM(item.Id, item.Short_Description, item.Uom_Description))
-            {
-                if (item == null)
-                    item = new EamisUnitofMeasureDTO();
-                return Ok(await _eamisUnitofMeasureRepository.Update(item));
-            }
-            else if (await _eamisUnitofMeasureRepository.ValidateExistDesc(item.Short_Description, item.Uom_Description))
+            if (await _eamisUnitofMeasureRepository.ValidateShortEdit(item.Id, item.Short_Description))
             {
                 return Unauthorized();
             }
+            if (await _eamisUnitofMeasureRepository.ValidateUomEdit(item.Id, item.Uom_Description))
+            {
+                return Unauthorized();
+            }
+            //if (await _eamisUnitofMeasureRepository.UpdateUOM(item.Id, item.Short_Description, item.Uom_Description))
+            //{
+            //    return Unauthorized();
+            //}
+            //else if (await _eamisUnitofMeasureRepository.ValidateExistDesc(item.Short_Description, item.Uom_Description))
+            //{
+            //    return Unauthorized();
+            //}
             //else if (await _eamisUnitofMeasureRepository.ValidationForUomExistShortDescNotExist(item.Short_Description, item.Uom_Description))
             //{
             //    return Unauthorized();
@@ -65,8 +71,9 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             //{
             //    return Unauthorized();
             //}
-            else { 
-            return Ok(await _eamisUnitofMeasureRepository.Update(item));
+            else
+            {
+                return Ok(await _eamisUnitofMeasureRepository.Update(item));
             }
         }
         [HttpGet("Search")]

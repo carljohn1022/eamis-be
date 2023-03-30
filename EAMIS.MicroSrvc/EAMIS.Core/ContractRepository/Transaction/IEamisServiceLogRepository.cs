@@ -10,7 +10,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
 {
     public interface IEamisServiceLogRepository
     {
-        Task<string> GetNextSequenceNumber();
+        Task<string> GetNextSequenceNumber(string branchID);
         Task<DataList<EamisServiceLogDTO>> ListServiceLogs(EamisServiceLogDTO filter, PageConfig config);
         Task<EamisServiceLogDTO> InsertServiceLog(EamisServiceLogDTO item);
         Task<EamisServiceLogDTO> UpdateServiceLog(EamisServiceLogDTO item);

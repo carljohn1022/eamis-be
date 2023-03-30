@@ -52,5 +52,6 @@ namespace EAMIS.Common.DTO.Transaction
         public int RemainingLife { get; set; }
         public int ReferenceId { get; set; } //Property Transaction Details ID
         public decimal AccumulatedDepreciationAmount { get; set; }
+        public string BranchID { get; set; }
     }
 }

@@ -150,20 +150,21 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ITEM_CODE = item.ItemCode,
                 REFERENCE_ID = item.Id,
                 REMAINING_LIFE = EstimatedLife, // item.EstLife,
-                ACCUMULATED_DEPREC_AMT = 0 //Deprecition amount multiplied by running life(property item's age)
+                ACCUMULATED_DEPREC_AMT = 0, //Deprecition amount multiplied by running life(property item's age)
+                BRANCH_ID = item.BranchID
             };
         }
 
-        private async Task<EAMISPROPERTYREVALUATION> MapPropertyRevaluation()
-        {
-            return new EAMISPROPERTYREVALUATION
-            {
-                ID = 0,
-                PARTICULARS = string.Empty,
-                TRAN_DATE = DateTime.Now,
-                TRAN_ID = await Task.Run(() => _eamisPropertyRevalutionRepository.GetNextSequenceNumber()).ConfigureAwait(false)
-            };
-        }
+        //private async Task<EAMISPROPERTYREVALUATION> MapPropertyRevaluation()
+        //{
+        //    return new EAMISPROPERTYREVALUATION
+        //    {
+        //        ID = 0,
+        //        PARTICULARS = string.Empty,
+        //        TRAN_DATE = DateTime.Now,
+        //        TRAN_ID = await Task.Run(() => _eamisPropertyRevalutionRepository.GetNextSequenceNumber(string branchID)).ConfigureAwait(false)
+        //    };
+        //}
 
         private EAMISPROPERTYREVALUATIONDETAILS MapPropertyRevaluationDetails(int revaluationId, EamisPropertyTransactionDetailsDTO item)
         {

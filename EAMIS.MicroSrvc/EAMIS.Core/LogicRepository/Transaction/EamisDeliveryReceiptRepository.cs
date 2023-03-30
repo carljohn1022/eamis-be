@@ -61,7 +61,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DR_BY_SUPPLIER_DATE = item.DRDate,
                 APR_NUMBER = item.AprNum,
                 APR_DATE = item.AprDate,
-                USER_STAMP = item.UserStamp
+                USER_STAMP = item.UserStamp,
+                BRANCH_ID = item.BranchID
             };
         }
         //public async Task<EamisDeliveryReceiptDTO> GeneratedDRNum()
@@ -74,6 +75,13 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
         public async Task<EamisDeliveryReceiptDTO> Insert(EamisDeliveryReceiptDTO item)
         {
+            var result = _ctx.EAMIS_DELIVERY_RECEIPT.Where(i => i.TRANSACTION_TYPE == item.TransactionType).FirstOrDefault();
+            if (result != null)
+            {  
+                var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.DeliveryReceipt, item.BranchID);
+                item.TransactionType = nextIdProvided;
+            }
+
             EAMISDELIVERYRECEIPT data = MapToEntity(item);
             _ctx.Entry(data).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
@@ -81,21 +89,21 @@ namespace EAMIS.Core.LogicRepository.Transaction
             //ensure that recently added record has the correct transaction type number
             item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
 
-            string _drType = PrefixSettings.DRPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
+            //string _drType = PrefixSettings.DRPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
 
             //check if the forecasted transaction type matches with the actual transaction type (saved/created in DB)
             //forecasted transaction type = item.TransactionType
             //actual transaction type = item.TransactionType.Substring(0, 6) + Convert.ToString(data.ID).PadLeft(6, '0')
-            if (item.TransactionType != _drType)
-            {
-                item.TransactionType = _drType; //if not matched, replace value of FTT with  ATT
+            //if (item.TransactionType != _drType)
+            //{
+            //    item.TransactionType = _drType; //if not matched, replace value of FTT with  ATT
 
-                //reset context state to avoid error
-                _ctx.Entry(data).State = EntityState.Detached;
+            //    //reset context state to avoid error
+            //    _ctx.Entry(data).State = EntityState.Detached;
 
-                //call the update method, force to update the transaction type in the DB
-                await this.Update(item);
-            }
+            //    //call the update method, force to update the transaction type in the DB
+            //    await this.Update(item);
+            //}
 
             return item;
         }
@@ -130,7 +138,10 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.TransactionStatus)) predicate = (strict)
                    ? predicate.And(x => x.TRANSACTION_STATUS.ToLower() == filter.TransactionStatus.ToLower())
                    : predicate.And(x => x.TRANSACTION_STATUS.Contains(filter.TransactionStatus.ToLower()));
-          
+            if (!string.IsNullOrEmpty(filter.BranchID)) predicate = (strict)
+                   ? predicate.And(x => x.BRANCH_ID.ToLower() == filter.BranchID.ToLower())
+                   : predicate.And(x => x.BRANCH_ID.Contains(filter.BranchID.ToLower()));
+
 
             var query = custom_query ?? _ctx.EAMIS_DELIVERY_RECEIPT;
             return query.Where(predicate);
@@ -204,9 +215,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
             return item;
         }
 
-        public async Task<string> GetNextSequenceNumber()
+        public async Task<string> GetNextSequenceNumber(string branchID)
         {
-            var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.DeliveryReceipt);
+            var nextId = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.DeliveryReceipt, branchID);
             return nextId;
         }
         private IQueryable<EAMISDELIVERYRECEIPT> PagedQueryForSearch(IQueryable<EAMISDELIVERYRECEIPT> query)

@@ -34,15 +34,15 @@ namespace EAMIS.WebApi.Controllers.Transaction
         }
 
         [HttpGet("getNextSequence")]
-        public async Task<string> GetNextSequenceAsync(string tranType)
+        public async Task<string> GetNextSequenceAsync(string tranType, string branchID)
         {
-            var nextId = await _eamisPropertyIssuanceRepository.GetNextSequenceNumber(tranType);
+            var nextId = await _eamisPropertyIssuanceRepository.GetNextSequenceNumber(tranType, branchID);
             return nextId;
         }
         [HttpGet("getNextSequenceForMaterialIssuance")]
-        public async Task<string> GetNextSequenceForMaterialIssuanceAsync()
+        public async Task<string> GetNextSequenceForMaterialIssuanceAsync(string branchID)
         {
-            var nextId = await _eamisPropertyIssuanceRepository.GetNextSequenceNumberForMaterialIssuance();
+            var nextId = await _eamisPropertyIssuanceRepository.GetNextSequenceNumberForMaterialIssuance(branchID);
             return nextId;
         }
         [HttpGet("Search")]
@@ -149,12 +149,12 @@ namespace EAMIS.WebApi.Controllers.Transaction
         //    return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceivingItems());
         //}
         [HttpGet("listitemsforreceiving")]
-        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> ListItemsForReceiving([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config, bool bolIsProperty, string tranType, int assigneeCustodian)
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> ListItemsForReceiving([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config, bool bolIsProperty, string tranType, int assigneeCustodian, string branchID)
         {
             if (filter == null)
                 filter = new EamisPropertyTransactionDetailsDTO();
             if (bolIsProperty)
-                return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceiving(filter, config, tranType, assigneeCustodian));
+                return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceiving(filter, config, tranType, assigneeCustodian, branchID));
             else
                 return Ok(await _eamisPropertyIssuanceRepository.ListSupplyItemsForReceiving(filter, config, tranType, assigneeCustodian));
         }
@@ -326,12 +326,18 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var response = await _eamisPropertyIssuanceRepository.GetDRNumFrSupplier(dr);
             return response;
         }
+        [HttpGet("GetAreaIDForTranType")]
+        public async Task<string> GetBranchAreaOfUserForTranType(string branchID)
+        {
+            var response = await _eamisPropertyIssuanceRepository.GetBranchAreaOfUserForTranType(branchID);
+            return response;
+        }
         [HttpGet("DRListForIssuanceSupplies")]
-        public async Task<ActionResult<EamisDeliveryReceiptDetailsDTO>> List([FromQuery] EamisDeliveryReceiptDetailsDTO filter, [FromQuery] PageConfig config)
+        public async Task<ActionResult<EamisDeliveryReceiptDetailsDTO>> List([FromQuery] EamisDeliveryReceiptDetailsDTO filter, [FromQuery] PageConfig config, string branchID)
         {
             if (filter == null)
                 filter = new EamisDeliveryReceiptDetailsDTO();
-            return Ok(await _eamisPropertyIssuanceRepository.ListSuppliesDRForIssuance(filter, config));
+            return Ok(await _eamisPropertyIssuanceRepository.ListSuppliesDRForIssuance(filter, config, branchID));
         }
         
     }

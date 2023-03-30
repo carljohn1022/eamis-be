@@ -53,5 +53,6 @@ namespace EAMIS.Core.Domain.Entities
         public int REMAINING_LIFE { get; set; }
         public int REFERENCE_ID { get; set; } //Property Transaction Details ID
         public decimal ACCUMULATED_DEPREC_AMT { get; set; }
+        public string BRANCH_ID { get; set; } //For Branch Filtering
     }
 }

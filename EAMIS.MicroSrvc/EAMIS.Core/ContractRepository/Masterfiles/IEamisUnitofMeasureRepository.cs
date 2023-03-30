@@ -23,6 +23,8 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> ValidationForShortDescExistUomNotExist(string ShortDesc, string UomDesc);
          Task<bool> UpdateUOM(int id, string ShortDesc, string UomDesc);
         Task<bool> ValidateExistDesc(string ShortDesc, string UomDesc);
+        Task<bool> ValidateShortEdit(int id, string ShortDesc);
+        Task<bool> ValidateUomEdit(int id, string UomDesc);
         Task<EamisUnitofMeasureDTO> InsertFromExcel(EamisUnitofMeasureDTO item);
         Task<List<EAMISUNITOFMEASURE>> ListAllIUnitOfMeasurement();
 

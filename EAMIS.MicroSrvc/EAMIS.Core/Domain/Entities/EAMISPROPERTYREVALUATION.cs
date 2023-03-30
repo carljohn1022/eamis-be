@@ -15,6 +15,7 @@ namespace EAMIS.Core.Domain.Entities
         public bool IS_ACTIVE { get; set; }
         public string USER_STAMP { get; set; }
         public string STATUS { get; set; }
+        public string BRANCH_ID { get; set; }
         //public List<EAMISPROPERTYREVALUATIONDETAILS> PropertyRevaluationDetails { get; set; }
     }
 }

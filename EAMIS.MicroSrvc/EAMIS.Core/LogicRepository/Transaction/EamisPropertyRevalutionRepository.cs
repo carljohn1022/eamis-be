@@ -35,9 +35,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
               : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
-        public async Task<string> GetNextSequenceNumber()
+        public async Task<string> GetNextSequenceNumber(string branchID)
         {
-            var nextId = await _EAMISIDProvider.GetNextSequenceNumber(TransactionTypeSettings.PropertyRevaluation);
+            var nextId = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.PropertyRevaluation, branchID);
             return nextId;
         }
 
@@ -59,24 +59,31 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             try
             {
+                var result = _ctx.EAMIS_PROPERTY_REVALUATION.Where(i => i.TRAN_ID == item.TransactionId).FirstOrDefault();
+                if (result != null)
+                {
+                    var nextIdProvided = await _EAMISIDProvider.GetNextSequenceNumberPerBranch(TransactionTypeSettings.PropertyRevaluation, item.BranchID);
+                    item.TransactionId = nextIdProvided;
+                }
+
                 EAMISPROPERTYREVALUATION data = MapToEntity(item);
                 _ctx.Entry(data).State = EntityState.Added;
                 await _ctx.SaveChangesAsync();
                 //ensure that recently added record has correct transaction id number
                 item.Id = data.ID; //data.ID --> generated upon inserting a new record in DB
 
-                string _drType = PrefixSettings.PVPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
+                //string _drType = PrefixSettings.PVPrefix + DateTime.Now.Year.ToString() + Convert.ToString(data.ID).PadLeft(6, '0');
 
-                if (item.TransactionId != _drType)
-                {
-                    item.TransactionId = _drType;
+                //if (item.TransactionId != _drType)
+                //{
+                //    item.TransactionId = _drType;
 
-                    //reset context state to avoid error
-                    _ctx.Entry(data).State = EntityState.Detached;
+                //    //reset context state to avoid error
+                //    _ctx.Entry(data).State = EntityState.Detached;
 
-                    //call the update method, force to update the transaction number in DB
-                    await this.Update(item);
-                }
+                //    //call the update method, force to update the transaction number in DB
+                //    await this.Update(item);
+                //}
             }
             catch (Exception ex)
             {
@@ -96,7 +103,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TRAN_ID = item.TransactionId,
                 PARTICULARS = item.Particulars,
                 USER_STAMP = item.UserStamp,
-                STATUS = item.Status
+                STATUS = item.Status,
+                BRANCH_ID = item.BranchID
             };
         }
         
@@ -121,7 +129,10 @@ namespace EAMIS.Core.LogicRepository.Transaction
         private IQueryable<EAMISPROPERTYREVALUATION> FilteredEntites(EamisPropertyRevaluationDTO filter, IQueryable<EAMISPROPERTYREVALUATION> custom_query = null, bool strict = false)
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYREVALUATION>(true);
-            
+            if (!string.IsNullOrEmpty(filter.BranchID)) predicate = (strict)
+                     ? predicate.And(x => x.BRANCH_ID.ToLower() == filter.BranchID.ToLower())
+                     : predicate.And(x => x.BRANCH_ID.Contains(filter.BranchID.ToLower()));
+
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_REVALUATION;
             return query.Where(predicate);
         }

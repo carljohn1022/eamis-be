@@ -16,8 +16,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<EamisDeliveryReceiptDTO> Insert(EamisDeliveryReceiptDTO item);
         Task<EamisDeliveryReceiptDTO> Update(EamisDeliveryReceiptDTO item);
         Task<EamisDeliveryReceiptDTO> Delete(EamisDeliveryReceiptDTO item);
-
-        Task<string> GetNextSequenceNumber();
+        Task<string> GetNextSequenceNumber(string branchID);
         Task<EamisDeliveryReceiptDTO> getDeliveryItemById(int itemID);
         Task<List<LookupDTO>> ForRenewalTransactionNumber(); //added by me 
     }

@@ -11,7 +11,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<EamisPropertyTransactionDTO> Insert(EamisPropertyTransactionDTO item);
         Task<EamisPropertyTransactionDTO> Update(EamisPropertyTransactionDTO item);
         Task<EamisPropertyTransactionDTO> Delete(EamisPropertyTransactionDTO item);
-        Task<string> GetNextSequenceNumberPR();
+        Task<string> GetNextSequenceNumberPR(string branchID);
         Task<EamisPropertyTransactionDTO> getPropertyItemById(int itemID);
         Task<DataList<EamisPropertyTransactionDTO>> SearchReceivingforIssuance(string type, string searchValue, bool isProperty);
         Task<DataList<EamisPropertyTransactionDTO>> SearchReceivingforTransfer(string type, string searchValue);

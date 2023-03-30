@@ -150,9 +150,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
         #endregion Property transaction details
 
         #region property items for transfer
-        public async Task<DataList<EamisPropertyTransferDetailsDTO>> ListItemsForTranser(EamisPropertyTransferDetailsDTO filter, string tranType, PageConfig config)
+        public async Task<DataList<EamisPropertyTransferDetailsDTO>> ListItemsForTranser(EamisPropertyTransferDetailsDTO filter, string tranType, PageConfig config, string branchID)
         {
-            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredItemsForTranserDetails(filter,tranType);
+            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredItemsForTranserDetails(filter, tranType, branchID);
 
             string resolved_sort = config.SortBy ?? "Id";
             bool resolves_isAscending = (config.IsAscending) ? config.IsAscending : false;
@@ -215,7 +215,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             return query;
         }
-        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForTranserDetails(EamisPropertyTransferDetailsDTO filter, string tranType, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> additional_query = null , bool strict = false)
+        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForTranserDetails(EamisPropertyTransferDetailsDTO filter, string tranType, string branchID, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> additional_query = null , bool strict = false)
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
 
@@ -230,6 +230,12 @@ namespace EAMIS.Core.LogicRepository.Transaction
                               .Select(x => x.d.PROPERTY_NUMBER)
                               .ToList();
 
+            var arrDistinctDetailID = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                                          .Where(pn => !(pn.PROPERTY_NUMBER == null || pn.PROPERTY_NUMBER.Trim() == string.Empty))
+                                          .GroupBy(x => x.PROPERTY_NUMBER)
+                                          .Select(i => i.Max(x => x.ID))
+                                          .ToList();
+
             if (tranType == "PTR") { 
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
                                             .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
@@ -237,10 +243,12 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                             h => h.ID,
                                             (d, h) => new { d, h })
                                             .Where(x => !arrservicelogs.Contains(x.d.PROPERTY_NUMBER) &&
+                                                    arrDistinctDetailID.Contains(x.d.ID) &&
                                                    (x.h.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceProperties)
                                                     && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                     && x.d.UNIT_COST >= 50000
                                                     && x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
+                                                    && x.h.BRANCH_ID == branchID
                                                    )
                                             .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                             {
@@ -279,12 +287,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                  h => h.ID,
                                                  (d, h) => new { d, h })
                                                  .Where(x => !arrservicelogs.Contains(x.d.PROPERTY_NUMBER) &&
+                                                        arrDistinctDetailID.Contains(x.d.ID) &&
                                                         (x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer)
                                                          && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                          && x.d.UNIT_COST >= 50000
                                                          && x.d.FROM_END_USER == x.d.ASSIGNEE_CUSTODIAN
                                                          && x.d.FROM_RESPONSIBILITY_CENTER != x.d.RESPONSIBILITY_CODE
                                                          && x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
+                                                         && x.h.BRANCH_ID == branchID
                                                         )
                                                  .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                                  {
@@ -331,10 +341,12 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                            h => h.ID,
                                            (d, h) => new { d, h })
                                            .Where(x => !arrservicelogs.Contains(x.d.PROPERTY_NUMBER) &&
+                                                  arrDistinctDetailID.Contains(x.d.ID) &&
                                                   (x.h.TRANSACTION_TYPE == TransactionTypeSettings.IssuanceProperties)
                                                    && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                    && x.d.UNIT_COST < 50000
                                                    && x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
+                                                   && x.h.BRANCH_ID == branchID
                                                   )
                                            .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                            {
@@ -373,12 +385,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                            h => h.ID,
                                            (d, h) => new { d, h })
                                            .Where(x => !arrservicelogs.Contains(x.d.PROPERTY_NUMBER) &&
+                                                    arrDistinctDetailID.Contains(x.d.ID) &&
                                                   (x.h.TRANSACTION_TYPE == TransactionTypeSettings.PropertyTransfer)
                                                    && x.d.ASSIGNEE_CUSTODIAN == filter.AssigneeCustodian
                                                    && x.d.UNIT_COST < 50000
                                                    && x.d.FROM_END_USER == x.d.ASSIGNEE_CUSTODIAN
                                                    && x.d.FROM_RESPONSIBILITY_CENTER != x.d.RESPONSIBILITY_CODE
                                                    && x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
+                                                   && x.h.BRANCH_ID == branchID
                                                   )
                                            .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                            {
@@ -474,7 +488,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                 DeliveryDate = h.DELIVERY_DATE,
                                                 UserStamp = h.USER_STAMP,
                                                 TransactionStatus = h.TRANSACTION_STATUS,
-                                                FundSource = h.FUND_SOURCE
+                                                FundSource = h.FUND_SOURCE,
+                                                BranchID = h.BRANCH_ID
                                             }).FirstOrDefault()
             });
         }

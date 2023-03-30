@@ -23,6 +23,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> ValidateExistingItem(string propertyNo);
         Task<bool> ValidateExistingPropertyName(string propertyName);
         Task<bool> UpdateValidateExistingItem(string propertyNo, int id);
+        Task<bool> UpdateValidateExistingItemPropertyName(string propertyName, int id);
         string GetPropertyImageFileName(int propertyItemId);
         string ErrorMessage { get; set; }
 
