@@ -22,6 +22,8 @@ namespace EAMIS.Common.DTO.Transaction
         public bool IsProperty { get; set; }
         public string BranchID { get; set; }
         public bool ForDonation { get; set; }
+        public bool? ForOther { get; set; }
+        public string? SpecifyForOthers { get; set; }
         public List<EamisAttachedFilesDTO> DeliveryImages { get; set; } = new List<EamisAttachedFilesDTO>();
         public List<EamisPropertyTransactionDetailsDTO> PropertyTransactionDetails { get; set; } = new List<EamisPropertyTransactionDetailsDTO>();
     }

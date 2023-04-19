@@ -54,5 +54,10 @@ namespace EAMIS.WebApi.Controllers.Inventory_Taking
         {
             return Ok(await _eamisInventoryTakingRepository.GetOfficeDesc(isActive));
         }
+        [HttpGet("getPropertyAccountability")]
+        public async Task<ActionResult<EamisPropertyTransactionDetailsDTO>> GetPropertyNumberAccountability(string assigneeCustodianName)
+        {
+            return Ok(await _eamisInventoryTakingRepository.GetPropertyNumberAccountability(assigneeCustodianName));
+        }
     }
 }

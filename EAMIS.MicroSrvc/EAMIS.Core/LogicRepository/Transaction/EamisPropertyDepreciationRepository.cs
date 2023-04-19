@@ -206,7 +206,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     AcquisitionDate = d.ACQUISITION_DATE,
                     AppraisalIncrement = d.APPRAISAL_INCREMENT,
                     AppraisedValue = d.APPRAISED_VALUE,
-                    AccumulatedDepreciationAmount = d.ACCUMULATED_DEPREC_AMT * RunningLife,
+                    AccumulatedDepreciationAmount = d.DEPREC_AMOUNT * RunningLife, //Change ACCUMULATED_DEPREC_AMT TO DEPREC_AMOUNT
                     AreaSQM = d.AREA_SQM,
                     AssessedValue = d.ASSESSED_VALUE,
                     AssetCondition = d.ASSET_CONDITION,

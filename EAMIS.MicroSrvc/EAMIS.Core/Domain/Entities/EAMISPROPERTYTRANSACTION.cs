@@ -24,6 +24,8 @@ namespace EAMIS.Core.Domain.Entities
         public bool IS_PROPERTY { get; set; }
         public string BRANCH_ID { get; set; }
         public bool FOR_DONATION { get; set; }
+        public bool? FOR_OTHER { get; set; }
+        public string? SPECIFY_FOR_OTHER { get; set; }
         public List <EAMISPROPERTYTRANSACTIONDETAILS> PROPERTY_TRANSACTION_DETAILS { get; set; }
         public List <EAMISSERVICELOGDETAILS> SERVICE_LOG_DETAILS { get; set; }
 

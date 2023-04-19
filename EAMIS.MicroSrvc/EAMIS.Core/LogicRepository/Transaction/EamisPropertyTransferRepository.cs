@@ -231,7 +231,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 TRANSACTION_STATUS = item.TransactionStatus,
                 TRAN_TYPE = item.TranType.Trim(),
                 BRANCH_ID = item.BranchID,
-                FOR_DONATION = item.ForDonation
+                FOR_DONATION = item.ForDonation,
+                FOR_OTHER = item.ForOther,
+                SPECIFY_FOR_OTHER = item.SpecifyForOthers
             };
         }
 
@@ -251,6 +253,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 DeliveryDate = result.DELIVERY_DATE,
                 TranType = result.TRAN_TYPE.Trim(),
                 ForDonation = result.FOR_DONATION,
+                ForOther = result.FOR_OTHER,
+                SpecifyForOthers = result.SPECIFY_FOR_OTHER,
                 TransactionStatus = result.TRANSACTION_STATUS,
                 PropertyTransactionDetails = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking().Select(x => new EamisPropertyTransactionDetailsDTO
                 {
@@ -285,6 +289,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                     transactionDetailId = x.REFERENCE_ID,
                     FromResponsibilityCode = x.FROM_RESPONSIBILITY_CENTER,
                     FromEndUser = x.FROM_END_USER,
+                    Remarks = x.REMARKS
                 }).Where(i => i.PropertyTransactionID == result.ID).ToList()
                 ,
                 DeliveryImages = _ctx.EAMIS_ATTACHED_FILES.AsNoTracking().Select(v => new EamisAttachedFilesDTO

@@ -20,11 +20,13 @@ namespace EAMIS.Core.LogicRepository.Inventory_Taking
     public class EamisInventoryTakingRepository : IEamisInventoryTakingRepository
     {
         private readonly EAMISContext _ctx;
+        private readonly AISContext _aisctx;
         private readonly int _maxPageSize;
 
-        public EamisInventoryTakingRepository(EAMISContext ctx)
+        public EamisInventoryTakingRepository(EAMISContext ctx, AISContext aisctx)
         {      
             _ctx = ctx;
+            _aisctx = aisctx;
             _maxPageSize = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("MaxPageSize")) ? 100
                : int.Parse(ConfigurationManager.AppSettings.Get("MaxPageSize").ToString());
         }
@@ -48,18 +50,19 @@ namespace EAMIS.Core.LogicRepository.Inventory_Taking
             .OrderByDescending(x => x.ID)
             .FirstOrDefaultAsync(x => x.PROPERTY_NUMBER == propertyNumber)).ConfigureAwait(false);
 
-            var trylang = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
-                    .OrderByDescending(x => x.ID)
-                    .Where(x => x.ASSIGNEE_CUSTODIAN == 7 && !(_ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
-                        .Where(y => y.SERIAL_NUMBER == x.SERIAL_NUMBER && y.ASSIGNEE_CUSTODIAN != 7)
-                        .Any()))
-                    .Select(x => new {
-                        x.ID,
-                        x.PROPERTY_NUMBER,
-                        x.ITEM_DESCRIPTION,
-                        x.SERIAL_NUMBER
-                    }).Distinct()
-                    .ToList()).ConfigureAwait(false);
+
+            //var trylang = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.AsNoTracking()
+            //     .Where(x => x.ASSIGNEE_CUSTODIAN == 3 && !(_ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+            //         .Where(y => y.PROPERTY_NUMBER == x.PROPERTY_NUMBER && y.ASSIGNEE_CUSTODIAN != 3)
+            //         .Any()))
+            //     .GroupBy(x => new { x.PROPERTY_NUMBER, x.ITEM_DESCRIPTION, x.SERIAL_NUMBER })
+            //     .Select(g => new {
+            //         ID = g.Max(x => x.ID),
+            //         g.Key.PROPERTY_NUMBER,
+            //         g.Key.ITEM_DESCRIPTION,
+            //         g.Key.SERIAL_NUMBER
+            //     })
+            //     .ToList()).ConfigureAwait(false);
 
             if (result == null)
             {
@@ -170,7 +173,6 @@ namespace EAMIS.Core.LogicRepository.Inventory_Taking
                                               unitDesc = i.Key
                                           })
                                           .ToList();
-
             return result;
         }
         public async Task<List<EamisResponsibilityCenterDTO>> GetOfficeDesc(bool isActive)
@@ -183,8 +185,40 @@ namespace EAMIS.Core.LogicRepository.Inventory_Taking
                                               officeDesc = i.Key
                                           })
                                           .ToList();
-
             return result;
+        }
+        public async Task<List<EamisPropertyTransactionDetailsDTO>> GetPropertyNumberAccountability(string assigneeCustodianName)
+        {
+
+            var latestTransactionIdsQuery = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+             .GroupBy(t => t.PROPERTY_NUMBER)
+             .Select(g => g.Max(t => t.ID));
+
+            int assigneeCustodian = 0;
+            var result = await Task.Run(() => _aisctx.Personnel.Where(s => s.FirstName + " " + s.MiddleName + " " + s.LastName == assigneeCustodianName).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                assigneeCustodian = result[0].Id;
+            }
+
+            var equipmentQuery = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                        .Where(t => latestTransactionIdsQuery.Contains(t.ID) && t.ASSIGNEE_CUSTODIAN == assigneeCustodian);
+
+                    var equipmentList = await equipmentQuery.Select(t => new EamisPropertyTransactionDetailsDTO
+                    {
+                        Id = t.ID,
+                        PropertyNumber = t.PROPERTY_NUMBER,
+                        ItemDescription = t.ITEM_DESCRIPTION,
+                        SerialNumber = t.SERIAL_NUMBER,
+                        AssigneeCustodian = t.ASSIGNEE_CUSTODIAN,
+                        Office = t.OFFICE,
+                        Department = t.DEPARTMENT,
+                        UnitCost = t.UNIT_COST,
+                        ItemCode = t.ITEM_CODE
+                    }).ToListAsync();
+
+            return equipmentList;
+
         }
 
         // Try lang

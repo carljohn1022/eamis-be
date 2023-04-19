@@ -144,7 +144,8 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 PROPERTY_CONDITION = item.PropertyCondition,
                 REFERENCE_ID = item.transactionDetailId,
                 FROM_END_USER = item.FromEndUser,
-                FROM_RESPONSIBILITY_CENTER = item.FromResponsibilityCode
+                FROM_RESPONSIBILITY_CENTER = item.FromResponsibilityCode,
+                REMARKS = item.Remarks
             };
         }
         #endregion Property transaction details

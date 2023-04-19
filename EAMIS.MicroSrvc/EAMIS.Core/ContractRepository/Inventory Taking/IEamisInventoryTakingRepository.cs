@@ -18,6 +18,7 @@ namespace EAMIS.Core.ContractRepository.Inventory_Taking
         Task<bool> CheckPropertyNumberExistIfScanned(string propertyNumber);
         Task<List<EamisResponsibilityCenterDTO>> GetUnitDesc(bool isActive, string officeDesc);
         Task<List<EamisResponsibilityCenterDTO>> GetOfficeDesc(bool isActive);
+        Task<List<EamisPropertyTransactionDetailsDTO>> GetPropertyNumberAccountability(string assigneeCustodianName);
         //Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config, string agencyEmployeeNumber); //try
     }
 }
