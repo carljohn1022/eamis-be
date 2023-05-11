@@ -598,9 +598,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
             return result;
         }
-        public async Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config, string tranType, int assigneeCustodian, string branchID)
+        public async Task<DataList<EamisPropertyTransactionDetailsDTO>> ListItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, PageConfig config, string tranType, int assigneeCustodian, string branchID, string responsibilityCode)
         {
-            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredItemsForReceiving(filter, tranType, assigneeCustodian, branchID);
+            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredItemsForReceiving(filter, tranType, assigneeCustodian, branchID, responsibilityCode);
             string resolved_sort = config.SortBy ?? "Id";
             bool resolve_isAscending = (config.IsAscending) ? config.IsAscending : false;
             int resolved_size = config.Size ?? _maxPageSize;
@@ -845,7 +845,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return null;
         }
-        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, string tranType, int assigneeCustodian, string branchID, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> additional_query = null)
+        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForReceiving(EamisPropertyTransactionDetailsDTO filter, string tranType, int assigneeCustodian, string branchID, string responsibilityCode, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> additional_query = null)
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
             //Do not display items under service logs
@@ -917,6 +917,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                                 .GroupBy(g => g.REFERENCE_ID)
                                                                 .Select(i => i.Sum(v => v.QTY)).FirstOrDefault()) > 0
                                                                 && s.UNIT_COST >= 50000 && s.ASSIGNEE_CUSTODIAN == assigneeCustodian
+                                                                && s.RESPONSIBILITY_CODE == responsibilityCode
                                                 );
                 var addition_query = additional_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
                                         .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
@@ -973,6 +974,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                                 .Select(i => i.Sum(v => v.QTY)).FirstOrDefault()) > 0
                                                                 && s.UNIT_COST >= 50000 && s.ASSIGNEE_CUSTODIAN == assigneeCustodian
                                                                 && s.FROM_END_USER != s.ASSIGNEE_CUSTODIAN
+                                                                && s.RESPONSIBILITY_CODE == responsibilityCode
                                                 );
                 if (addition_query != null)
                 {
@@ -1036,6 +1038,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                                     .GroupBy(g => g.REFERENCE_ID)
                                                                     .Select(i => i.Sum(v => v.QTY)).FirstOrDefault()) > 0
                                                                     && s.UNIT_COST < 50000 && s.ASSIGNEE_CUSTODIAN == assigneeCustodian
+                                                                    && s.RESPONSIBILITY_CODE == responsibilityCode
                                                     );
                 var addition_query = additional_query ?? _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
                                             .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
@@ -1092,6 +1095,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                                     .Select(i => i.Sum(v => v.QTY)).FirstOrDefault()) > 0
                                                                     && s.UNIT_COST < 50000 && s.ASSIGNEE_CUSTODIAN == assigneeCustodian
                                                                     && s.FROM_END_USER != s.ASSIGNEE_CUSTODIAN
+                                                                    && s.RESPONSIBILITY_CODE == responsibilityCode
                                                     );
                 if (addition_query != null)
                 {

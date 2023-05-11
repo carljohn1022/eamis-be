@@ -149,12 +149,12 @@ namespace EAMIS.WebApi.Controllers.Transaction
         //    return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceivingItems());
         //}
         [HttpGet("listitemsforreceiving")]
-        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> ListItemsForReceiving([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config, bool bolIsProperty, string tranType, int assigneeCustodian, string branchID)
+        public async Task<ActionResult<EAMISPROPERTYTRANSACTIONDETAILS>> ListItemsForReceiving([FromQuery] EamisPropertyTransactionDetailsDTO filter, [FromQuery] PageConfig config, bool bolIsProperty, string tranType, int assigneeCustodian, string branchID, string responsibilityCode)
         {
             if (filter == null)
                 filter = new EamisPropertyTransactionDetailsDTO();
             if (bolIsProperty)
-                return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceiving(filter, config, tranType, assigneeCustodian, branchID));
+                return Ok(await _eamisPropertyIssuanceRepository.ListItemsForReceiving(filter, config, tranType, assigneeCustodian, branchID, responsibilityCode));
             else
                 return Ok(await _eamisPropertyIssuanceRepository.ListSupplyItemsForReceiving(filter, config, tranType, assigneeCustodian));
         }

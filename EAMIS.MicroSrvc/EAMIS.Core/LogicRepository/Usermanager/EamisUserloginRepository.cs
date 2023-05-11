@@ -213,9 +213,11 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 USER_ID = user.USER_ID,
                 USERNAME = user.USERNAME,
                 AGENCY_EMPLOYEE_NUMBER = user.AGENCY_EMPLOYEE_NUMBER,
+                USER_INFO_ID = user.USER_INFO_ID,
                 IS_ACTIVE = true,
                 IS_DELETED = false,
                 IS_BLOCKED = true,
+                BRANCH = user.BRANCH,
                 PASSWORD_HASH = user.PASSWORD_HASH,
                 PASSWORD_SALT = user.PASSWORD_SALT,
             };

@@ -92,6 +92,12 @@ namespace EAMIS.WebApi.Controllers.Report_Catalog
 
             return Ok(await _eamisReportCatalogRepository.TransactionNumberMaterial());
         }
+        [HttpGet("SubCategoryName")]
+        public async Task<ActionResult<LookupDTO>> SubCategoryName()
+        {
+
+            return Ok(await _eamisReportCatalogRepository.SubCategoryName());
+        }
 
         [HttpGet("list")]
         public async Task<ActionResult<EAMISREPORTCATALOG>> List([FromQuery] EamisReportCatalogDTO filter, [FromQuery] PageConfig config)

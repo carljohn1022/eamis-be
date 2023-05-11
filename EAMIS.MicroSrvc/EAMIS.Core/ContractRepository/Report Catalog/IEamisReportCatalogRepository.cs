@@ -25,6 +25,7 @@ namespace EAMIS.Core.ContractRepository.Report_Catalog
         Task<List<LookupDTO>> PropertyType();
         Task<List<LookupDTO>> CategoryName();
         Task<List<LookupDTO>> TransactionNumberMaterial();
+        Task<List<LookupDTO>> SubCategoryName();
         string ErrorMessage { get; set; }
         bool HasError { get; set; }
 

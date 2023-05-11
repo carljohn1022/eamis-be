@@ -151,9 +151,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
         #endregion Property transaction details
 
         #region property items for transfer
-        public async Task<DataList<EamisPropertyTransferDetailsDTO>> ListItemsForTranser(EamisPropertyTransferDetailsDTO filter, string tranType, PageConfig config, string branchID)
+        public async Task<DataList<EamisPropertyTransferDetailsDTO>> ListItemsForTranser(EamisPropertyTransferDetailsDTO filter, string tranType, PageConfig config, string branchID, string responsibilityCode)
         {
-            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredItemsForTranserDetails(filter, tranType, branchID);
+            IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> query = FilteredItemsForTranserDetails(filter, tranType, branchID, responsibilityCode);
 
             string resolved_sort = config.SortBy ?? "Id";
             bool resolves_isAscending = (config.IsAscending) ? config.IsAscending : false;
@@ -216,7 +216,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
         {
             return query;
         }
-        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForTranserDetails(EamisPropertyTransferDetailsDTO filter, string tranType, string branchID, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> additional_query = null , bool strict = false)
+        private IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> FilteredItemsForTranserDetails(EamisPropertyTransferDetailsDTO filter, string tranType, string branchID, string responsibilityCode, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> custom_query = null, IQueryable<EAMISPROPERTYTRANSACTIONDETAILS> additional_query = null , bool strict = false)
         {
             var predicate = PredicateBuilder.New<EAMISPROPERTYTRANSACTIONDETAILS>(true);
 
@@ -250,6 +250,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                     && x.d.UNIT_COST >= 50000
                                                     && x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
                                                     && x.h.BRANCH_ID == branchID
+                                                    && x.d.RESPONSIBILITY_CODE == responsibilityCode
                                                    )
                                             .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                             {
@@ -296,6 +297,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                          && x.d.FROM_RESPONSIBILITY_CENTER != x.d.RESPONSIBILITY_CODE
                                                          && x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
                                                          && x.h.BRANCH_ID == branchID
+                                                         && x.d.RESPONSIBILITY_CODE == responsibilityCode
                                                         )
                                                  .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                                  {
@@ -348,6 +350,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                    && x.d.UNIT_COST < 50000
                                                    && x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
                                                    && x.h.BRANCH_ID == branchID
+                                                   && x.d.RESPONSIBILITY_CODE == responsibilityCode
                                                   )
                                            .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                            {
@@ -394,6 +397,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                                                    && x.d.FROM_RESPONSIBILITY_CENTER != x.d.RESPONSIBILITY_CODE
                                                    && x.h.TRANSACTION_STATUS == PropertyItemStatus.Approved
                                                    && x.h.BRANCH_ID == branchID
+                                                   && x.d.RESPONSIBILITY_CODE == responsibilityCode
                                                   )
                                            .Select(x => new EAMISPROPERTYTRANSACTIONDETAILS
                                            {

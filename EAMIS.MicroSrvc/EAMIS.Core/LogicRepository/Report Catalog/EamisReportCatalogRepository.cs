@@ -174,6 +174,19 @@ namespace EAMIS.Core.LogicRepository.Report_Catalog
 
             return result;
         }
+        public async Task<List<LookupDTO>> SubCategoryName()
+        {
+            var result = _ctx.EAMIS_ITEMS_SUB_CATEGORY
+                                          .Where(f => !(f.SUB_CATEGORY_NAME == null || f.SUB_CATEGORY_NAME == string.Empty))
+                                          .GroupBy(x => x.SUB_CATEGORY_NAME)
+                                          .Select(i => new LookupDTO
+                                          {
+                                              LookUpValue = i.Key,
+                                          })
+                                          .ToList();
+
+            return result;
+        }
 
 
         public async Task<EamisReportCatalogDTO> Delete(EamisReportCatalogDTO item)
