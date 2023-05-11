@@ -664,13 +664,18 @@ namespace EAMIS.Core.LogicRepository.Transaction
             string strResult = "";
             //check item in DB
             var itemInDB = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.FirstOrDefault(i => i.PROPERTY_NO == item.ItemCode)).ConfigureAwait(false);
+            var itemTransferAlready = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS.FirstOrDefault(i => i.ID == item.transactionDetailId)).ConfigureAwait(false);
             if (itemInDB != null)
             {
-                itemInDB.QUANTITY = itemInDB.QUANTITY - item.Qty;
-                var result = await _ctx.SaveChangesAsync();
-                if (result > 0)
+                var itemIfTransfer = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION.FirstOrDefault(i => i.ID == itemTransferAlready.PROPERTY_TRANS_ID)).ConfigureAwait(false);
+                if (itemIfTransfer.TRANSACTION_TYPE != TransactionTypeSettings.PropertyTransfer)
                 {
-                    strResult = "Successfully updated.";
+                    itemInDB.QUANTITY = itemInDB.QUANTITY - item.Qty;
+                    var result = await _ctx.SaveChangesAsync();
+                    if (result > 0)
+                    {
+                        strResult = "Successfully updated.";
+                    }
                 }
             }
             return strResult;

@@ -38,6 +38,7 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
             return Ok(await _applicationUsers.Register(item));
 
         }
+
         [HttpGet("publicsearch")]
         public async Task<ActionResult<EamisUsersDTO>> PublicSearch(string searchType, string searchKey, [FromQuery]PageConfig config)
         {
@@ -62,6 +63,12 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         {
 
             return Ok(await _applicationUsers.ChangePassword(item, NewPassword));
+        }
+        [HttpPut("Blocked/Unblocked")]
+        public async Task<ActionResult<EamisUsersDTO>> UnblockedUser([FromBody] EamisUsersDTO item)
+        {
+
+            return Ok(await _applicationUsers.UnblockeUser(item));
         }
         [HttpGet("AgencyName")]
         public async Task<string> GetAgencyName(string AgencyEmployeeNumber)

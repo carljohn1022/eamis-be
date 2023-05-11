@@ -333,6 +333,13 @@ namespace EAMIS.Core.BusinessLogic.Masterfiles
             return retValue;
 
         }
+        public async Task<EamisUsersDTO> UnblockeUser(EamisUsersDTO item)
+        {
+            EAMISUSERS data = MapToEntity(item);
+            _ctx.Entry(data).State = EntityState.Modified;
+            await _ctx.SaveChangesAsync();
+            return item;
+        }
         public async Task<string> GetAgencyName(string AgencyEmployeeNumber)
         {
             string retValue = "";
