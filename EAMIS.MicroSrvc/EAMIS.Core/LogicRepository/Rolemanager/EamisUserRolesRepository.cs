@@ -15,6 +15,7 @@ using EAMIS.Core.ContractRepository;
 using System.Configuration;
 using EAMIS.Core.Response.DTO;
 using EAMIS.Core.ContractRepository.Masterfiles;
+using EAMIS.Common.DTO.Branch_Maintenance;
 
 namespace EAMIS.Core.LogicRepository.Masterfiles
 {
@@ -75,7 +76,27 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                     Id = x.ROLES.ID,
                     Role_Name = x.ROLES.ROLE_NAME,
                     IsDeleted = x.ROLES.IS_DELETED,
-                }
+                },
+                Users = _ctx.EAMIS_USERS.AsNoTracking().Select(v => new EamisUsersDTO
+                {
+                    User_Id = v.USER_ID,
+                    Username = v.USERNAME,
+                    Branch = v.BRANCH,
+                    UserInfoId = v.USER_INFO_ID,
+                    Password_Hash = v.PASSWORD_HASH,
+                    Password_Salt = v.PASSWORD_SALT,
+                    IsActive = v.IS_ACTIVE,
+                    IsDeleted = v.IS_DELETED,
+                    IsBlocked = v.IS_BLOCKED,
+                    AgencyEmployeeNumber = v.AGENCY_EMPLOYEE_NUMBER,
+                    BranchGroup = _ctx.branch.AsNoTracking().Where(h => h.BranchID == v.BRANCH)
+                                            .Select(h => new EamisBranchDTO
+                                            {
+                                                BranchID = h.BranchID,
+                                                BranchDescription = h.BranchDescription
+                                            }).FirstOrDefault(),
+
+                }).Where(v => v.User_Id == x.USER_ID).ToList()
             });
         }
         private EAMISUSERROLES MapToEntity(EamisUserRolesDTO item)

@@ -1,4 +1,5 @@
 ﻿using EAMIS.Common.DTO.Masterfiles;
+using EAMIS.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,13 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
     {
         Task<LoginDTO> Login(UserLoginDTO item);
         Task<UserLoginDTO> DirectBlockedUser(UserLoginDTO item);
+        Task<bool> userBlocked(string userName);
         Task<LoginDTO> GetById(LoginDTO loginDTO);
         public LoginDTO UserId { get; set; }
         Task<bool> UsernameExist(string Username);
         Task<bool> UserLoginExists(string Username);
         Task<UserDTO> Logout(int Id,UserDTO item);
+        Task<EAMISUSERLOGIN> LogoutSession(int Id, int UserId);
+        Task<string> GetSessionIsLogout(int id);
     }
 }

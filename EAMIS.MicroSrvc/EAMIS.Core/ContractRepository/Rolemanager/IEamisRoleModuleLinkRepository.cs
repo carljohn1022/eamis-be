@@ -11,6 +11,7 @@ namespace EAMIS.Core.ContractRepository.Masterfiles
         Task<bool> Validate(int UserId);
         Task<EamisUserRolesDTO> GetUserIdList(int userId);
         Task<string> GetAgencyName(int userId);
+        Task<string> GetOwnRecord(int userId, int moduleId);
         Task<EamisRoleModuleLinkDTO> Insert(EamisRoleModuleLinkDTO item);
         Task<EamisRoleModuleLinkDTO> Update(EamisRoleModuleLinkDTO item);
         Task<EamisRoleModuleLinkDTO> Delete(EamisRoleModuleLinkDTO item);

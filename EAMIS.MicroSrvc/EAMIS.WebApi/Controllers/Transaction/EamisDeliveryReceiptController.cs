@@ -43,6 +43,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
             var response = await _eamisSupplierRepository.GetSupplieryById(supplierId);
             return response;
         }
+
         [HttpGet("list")]
         public async Task<ActionResult<EAMISDELIVERYRECEIPT>> List([FromQuery] EamisDeliveryReceiptDTO filter, [FromQuery] PageConfig config)
         {

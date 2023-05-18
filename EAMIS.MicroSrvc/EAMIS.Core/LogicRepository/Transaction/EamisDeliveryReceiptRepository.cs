@@ -141,6 +141,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.BranchID)) predicate = (strict)
                    ? predicate.And(x => x.BRANCH_ID.ToLower() == filter.BranchID.ToLower())
                    : predicate.And(x => x.BRANCH_ID.Contains(filter.BranchID.ToLower()));
+            if (!string.IsNullOrEmpty(filter.UserStamp)) predicate = (strict)
+                 ? predicate.And(x => x.USER_STAMP.ToLower() == filter.UserStamp.ToLower())
+                 : predicate.And(x => x.USER_STAMP.Contains(filter.UserStamp.ToLower()));
 
 
             var query = custom_query ?? _ctx.EAMIS_DELIVERY_RECEIPT;
@@ -251,7 +254,6 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 Items = await QueryToDTO(paged).ToListAsync()
             };
         }
-
         public async Task<EamisDeliveryReceiptDTO> getDeliveryItemById(int itemID)
         {
             var result = await Task.Run(() => _ctx.EAMIS_DELIVERY_RECEIPT.AsNoTracking().FirstOrDefaultAsync(x => x.ID == itemID)).ConfigureAwait(false);

@@ -132,7 +132,9 @@ namespace EAMIS.Core.LogicRepository.Transaction
             if (!string.IsNullOrEmpty(filter.BranchID)) predicate = (strict)
                      ? predicate.And(x => x.BRANCH_ID.ToLower() == filter.BranchID.ToLower())
                      : predicate.And(x => x.BRANCH_ID.Contains(filter.BranchID.ToLower()));
-
+            if (!string.IsNullOrEmpty(filter.UserStamp)) predicate = (strict)
+                ? predicate.And(x => x.USER_STAMP.ToLower() == filter.UserStamp.ToLower())
+                : predicate.And(x => x.USER_STAMP.Contains(filter.UserStamp.ToLower()));
             var query = custom_query ?? _ctx.EAMIS_PROPERTY_REVALUATION;
             return query.Where(predicate);
         }

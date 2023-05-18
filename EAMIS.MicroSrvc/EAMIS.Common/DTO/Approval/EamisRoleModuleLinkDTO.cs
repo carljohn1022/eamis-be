@@ -14,6 +14,7 @@ namespace EAMIS.Common.DTO.Rolemanager
         public bool PrintRight { get; set; }
         public bool IsActive { get; set; }
         public int UserId { get; set; }
+        public bool Own_Record { get; set; }
         public EamisModulesDTO ModulesNameList { get; set; }
         public EamisRolesDTO Roles { get; set; }
     }

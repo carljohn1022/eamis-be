@@ -70,6 +70,10 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
         {
             return await _ctx.EAMIS_USERS.AnyAsync(x => x.USERNAME == Username.ToUpper());
         }
+        public async Task<bool> userBlocked(string userName)
+        {
+            return await _ctx.EAMIS_USERS.AsNoTracking().AnyAsync(x => x.USERNAME == userName && x.IS_BLOCKED == true);
+        }
         public async Task<LoginDTO> Login(UserLoginDTO item)
         {
 
@@ -109,16 +113,24 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 LOGED_OUT_TIMESTAMP = null,
                 IS_LOGOUT = false,
             };
+             var existingSession = await _ctx.EAMIS_USER_LOGIN.OrderByDescending(x => x.ID).FirstOrDefaultAsync(s => s.USER_ID == user.USER_ID);
+            if (existingSession != null && existingSession.IS_LOGOUT == false)
+            {
+                await LogoutSession(existingSession.ID, existingSession.USER_ID);
+            }
             _ctx.Entry(input).State = EntityState.Added;
             await _ctx.SaveChangesAsync();
             string aToken = await _AccesstokenService.GenerateToken(user);
             string rToken = _refreshtokenService.GenerateToken();
+
             RefreshTokenDTO refreshTokenDTO = new RefreshTokenDTO()
             {
                 RefreshToken = rToken,
                 UserId = input.USER_ID
             };
             await _refreshTokenRepositories.Create(refreshTokenDTO);
+
+           
 
             return new LoginDTO
             {
@@ -184,6 +196,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                         IsActive = r.IS_ACTIVE,
                         InsertRight = r.INSERT_RIGHT,
                         UserId = r.USER_ID,
+                        Own_Record = r.OWN_RECORD,
                         ModulesNameList = _ctx.EAMIS_MODULES.Select(v => new EamisModulesDTO
                         {
                             Id = v.ID,
@@ -218,6 +231,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 IS_DELETED = false,
                 IS_BLOCKED = true,
                 BRANCH = user.BRANCH,
+                USER_STAMP = user.USER_STAMP,
                 PASSWORD_HASH = user.PASSWORD_HASH,
                 PASSWORD_SALT = user.PASSWORD_SALT,
             };
@@ -243,6 +257,46 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             await _ctx.SaveChangesAsync();
             return item;
 
+        }
+        public async Task<EAMISUSERLOGIN> LogoutSession (int Id, int UserId)
+        {
+            var user = await _ctx.EAMIS_USER_LOGIN.AsNoTracking().SingleOrDefaultAsync(x => x.ID == Id && x.IS_LOGOUT == false);
+            if (user == null) return null;
+
+            var startDateTime = DateTime.UtcNow;
+            var systemDateTimeZone = TimeZoneInfo.Local;
+            var input = new EAMISUSERLOGIN
+            {
+                ID = Id,
+                USER_ID = user.USER_ID,
+                COMPUTER_NAME = user.COMPUTER_NAME,
+                LOGED_IN_TIMESTAMP = user.LOGED_IN_TIMESTAMP,
+                IS_LOGOUT = true,
+                LOGED_OUT_TIMESTAMP = TimeZoneInfo.ConvertTimeFromUtc(startDateTime, systemDateTimeZone).ToString().ToUpper(),
+            };
+
+            try
+            {
+                _ctx.Entry(input).State = EntityState.Modified;
+                await _ctx.SaveChangesAsync();
+                return input;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+
+        }
+        public async Task<string> GetSessionIsLogout (int id)
+        {
+            string retValue = "";
+            var isLogout = await Task.Run(() => _ctx.EAMIS_USER_LOGIN.OrderByDescending(x => x.ID).FirstOrDefaultAsync(s => s.ID == id)).ConfigureAwait(false);
+            if (isLogout != null)
+            {
+                retValue = isLogout.IS_LOGOUT.ToString();
+            }
+            return retValue;
         }
         public async Task<bool> UserLoginExists(string Username)
         {

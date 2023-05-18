@@ -45,6 +45,16 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
             }
             return item;
         }
+        public async Task<string> GetOwnRecord(int userId, int moduleId)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _ctx.EAMIS_ROLE_MODULE_LINK.Where(s => s.USER_ID == userId && s.MODULE_ID == moduleId).AsNoTracking().ToList()).ConfigureAwait(false);
+            if (result != null)
+            {
+                retValue = result[0].OWN_RECORD.ToString(); ;
+            }
+            return retValue;
+        }
         public async Task<string> GetAgencyName(int userId)
         {
             string retValue = "";
@@ -77,6 +87,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                     IsActive = r.IS_ACTIVE,
                     InsertRight = r.INSERT_RIGHT,
                     UserId = r.USER_ID,
+                    Own_Record = r.OWN_RECORD,
                     ModulesNameList = _ctx.EAMIS_MODULES.Select(v => new EamisModulesDTO
                     {
                         Id = v.ID,
@@ -158,7 +169,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 ModuleId = item.MODULE_ID,
                 PrintRight = item.PRINT_RIGHT,
                 IsActive = item.IS_ACTIVE,
-                UserId = item.USER_ID
+                UserId = item.USER_ID,
+                Own_Record = item.OWN_RECORD
             };
 
         }
@@ -176,7 +188,8 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 UPDATE_RIGHT = item.UpdateRight,
                 VIEW_RIGHT = item.ViewRight,
                 IS_ACTIVE = item.IsActive,
-                USER_ID = item.UserId
+                USER_ID = item.UserId,
+                OWN_RECORD = item.Own_Record
             };
         }
         private IQueryable<EamisRoleModuleLinkDTO> QueryToDTO(IQueryable<EAMISROLEMODULELINK> query)
@@ -193,6 +206,7 @@ namespace EAMIS.Core.LogicRepository.Masterfiles
                 PrintRight = x.PRINT_RIGHT,
                 IsActive = x.IS_ACTIVE,
                 UserId = x.USER_ID,
+                Own_Record = x.OWN_RECORD,
                 Roles = _ctx.EAMIS_ROLES.Select(r => new EamisRolesDTO
                 {
                     Id = r.ID,

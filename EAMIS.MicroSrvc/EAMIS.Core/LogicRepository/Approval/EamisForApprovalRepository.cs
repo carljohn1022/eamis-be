@@ -447,7 +447,8 @@ namespace EAMIS.Core.LogicRepository.Approval
                         WAREHOUSE_ID = data.StockroomId,
                         APR_NUMBER = data.AprNum,
                         APR_DATE = data.AprDate,
-                        BRANCH_ID = data.BranchID
+                        BRANCH_ID = data.BranchID,
+                        USER_STAMP = data.UserStamp
                     };
                     _ctx.Entry(value).State = EntityState.Modified;
                     await _ctx.SaveChangesAsync();
@@ -503,7 +504,7 @@ namespace EAMIS.Core.LogicRepository.Approval
                                 .ToList();
                         foreach (var item in details)
                         {
-                            await _eamisPropertyTransactionDetailsRepository.UpdateIssuedPropertyItemQty(item);
+                            await _eamisPropertyTransactionDetailsRepository.UpdateIssuedMaterialItemQty(item);
                         }
                     }
                 }

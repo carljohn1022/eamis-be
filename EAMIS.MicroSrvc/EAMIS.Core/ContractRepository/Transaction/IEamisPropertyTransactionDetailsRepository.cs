@@ -15,6 +15,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<EamisPropertyTransactionDetailsDTO> getPropertyItemById(int itemID);
         Task<string> UpdatePropertyItemQty(EamisDeliveryReceiptDetailsDTO item);
         Task<string> UpdateIssuedPropertyItemQty(EamisPropertyTransactionDetailsDTO item);
+        Task<string> UpdateIssuedMaterialItemQty(EamisPropertyTransactionDetailsDTO item);
         Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string responsibilityCode, string serialNumber);
         Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode, int counter);
         //  Task<DataList<EamisDeliveryReceiptDTO>> DeliveryReceiptHeaderToDetailsList(EamisDeliveryReceiptDTO filter, PageConfig config);

@@ -680,6 +680,23 @@ namespace EAMIS.Core.LogicRepository.Transaction
             }
             return strResult;
         }
+        public async Task<string> UpdateIssuedMaterialItemQty(EamisPropertyTransactionDetailsDTO item)
+        {
+            string strResult = "";
+            //check item in DB
+            var itemInDB = await Task.Run(() => _ctx.EAMIS_PROPERTYITEMS.FirstOrDefault(i => i.PROPERTY_NO == item.ItemCode)).ConfigureAwait(false);
+            if (itemInDB != null)
+            {  
+                    itemInDB.QUANTITY = itemInDB.QUANTITY - item.Qty;
+                    var result = await _ctx.SaveChangesAsync();
+                    if (result > 0)
+                    {
+                        strResult = "Successfully updated.";
+                    }
+                
+            }
+            return strResult;
+        }
         public async Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode)
         {
             //check item's category

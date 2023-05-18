@@ -24,6 +24,12 @@ namespace EAMIS.WebApi.Controllers.Rolemanager
             return Ok(await _eamisRoleModuleLinkRepository.GetUserIdList(userId));
 
         }
+        [HttpGet("GetOwnRecord")]
+        public async Task<string> UserInfoId(int userId, int moduleId)
+        {
+            var response = await _eamisRoleModuleLinkRepository.GetOwnRecord(userId, moduleId);
+            return response;
+        }
         [HttpGet("AgencyName")]
         public async Task<string> GetAgencyName(int userId)
         {

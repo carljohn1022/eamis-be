@@ -113,6 +113,7 @@ namespace EAMIS.Core.Response
                             IsActive = roleList.FirstOrDefault(x => x.USER_ID == d.USER_ID).IS_ACTIVE,
                             InsertRight = roleList.FirstOrDefault(x => x.USER_ID == d.USER_ID).INSERT_RIGHT,
                             UserId = roleList.FirstOrDefault(x => x.USER_ID == d.USER_ID).USER_ID,
+                            Own_Record = roleList.FirstOrDefault(x => x.USER_ID == d.USER_ID).OWN_RECORD,
                             //ModulesNameList = new EamisModulesDTO
                             //{
                             //    Id = Modules.FirstOrDefault(x => x.ID == d.ROLE_ID).ID,

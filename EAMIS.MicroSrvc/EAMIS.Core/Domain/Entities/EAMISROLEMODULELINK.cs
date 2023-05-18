@@ -13,6 +13,6 @@
         public bool PRINT_RIGHT { get; set; }
         public bool IS_ACTIVE { get; set; }
         public int USER_ID { get; set; }
-
+        public bool OWN_RECORD { get; set; }
     }
 }

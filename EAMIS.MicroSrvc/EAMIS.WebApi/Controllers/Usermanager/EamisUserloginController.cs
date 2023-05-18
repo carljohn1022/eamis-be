@@ -38,10 +38,24 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
         public async Task<ActionResult<LoginDTO>> Login([FromBody] UserLoginDTO item)
         {
             // if (await _eamisUserloginRepository.UserLoginExists(item.UsersToken.Username)) return BadRequest("This account is being connected already.");
-            if (!await _eamisUserloginRepository.UsernameExist(item.Username)) return BadRequest();
+            //if (!await _eamisUserloginRepository.UsernameExist(item.Username)) return BadRequest();
+            //var LoginUser = await _eamisUserloginRepository.Login(item);
+            //if (LoginUser == null) return Unauthorized();
+            //if (LoginUser.UsersToken.isBlocked == true) return BadRequest("this is blocked user");
+            //if(!await _eamisUserloginRepository.UsernameExist(item.Username))
+            //{
+            //    return NotFound("userName Not Found");
+            //}
+            if (await _eamisUserloginRepository.userBlocked(item.Username))
+            {
+                return Unauthorized("this userss is blocked");
+            }
             var LoginUser = await _eamisUserloginRepository.Login(item);
-            if (LoginUser == null) return Unauthorized();
-            if (LoginUser.UsersToken.isBlocked == true) return BadRequest("this is blocked user");
+
+            if (LoginUser == null)
+            {
+                return BadRequest("this user is null");
+            }
             return Ok(LoginUser);
         }
         [HttpPut("DirectBlockedUser")]
@@ -86,6 +100,12 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                 return Ok(response);
 
             }
+        }
+        [HttpGet("GetIsLogout")]
+        public async Task<string> GetIsLogout (int id)
+        {
+            var response = await _eamisUserloginRepository.GetSessionIsLogout(id);
+            return response;
         }
     }
 }

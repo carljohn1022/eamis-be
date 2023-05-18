@@ -158,3 +158,4 @@ C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EA
 C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\ref\EAMIS.Core.dll
 C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.pdb
 C:\Users\revil\Downloads\Latest Deploy 2-17-2023\Latest Deploy 2-17-2023\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.genruntimeconfig.cache
+C:\Users\npala\Desktop\Latest Checkout\DENR-EAMIS_MicroSvc\EAMIS.MicroSrvc\EAMIS.Core\obj\Debug\net5.0\EAMIS.Core.csproj.CopyComplete
