@@ -513,7 +513,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
         public async Task<EamisPropertyTransferDetailsDTO> Update(EamisPropertyTransferDetailsDTO item)
         {
             EAMISPROPERTYTRANSACTIONDETAILS data = MapToEntity(item);
-
+            if (data.RESPONSIBILITY_CODE == "" || data.RESPONSIBILITY_CODE == null) { data.RESPONSIBILITY_CODE = item.ResponsibilityCode; }
             _ctx.Entry(data).State = data.ID == 0 ? EntityState.Added : EntityState.Modified;
             await _ctx.SaveChangesAsync();
             return item;

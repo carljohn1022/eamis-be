@@ -61,7 +61,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             //display latest value
             for (int intAsset = 0; intAsset < result.Items.Count(); intAsset++)
             {
-                var propertyTransaction = GetPropertyTransactionDetailsLatestValue(result.Items[intAsset].ReferenceId,
+                var propertyTransaction = GetPropertyTransactionDetailsLatestValue(result.Items[intAsset].PropertyNumber,
                                                                                    result.Items[intAsset].ItemCode,
                                                                                    result.Items[intAsset].SerialNo);
                 var propertyDelivery = GetPropertyItemDeliveryLatestValue(propertyTransaction.Dr);
@@ -195,23 +195,23 @@ namespace EAMIS.Core.LogicRepository.Transaction
                              }).FirstOrDefault();
             return result;
         }
-        private EamisPropertyTransactionDetailsDTO GetPropertyTransactionDetailsLatestValue(int propertyTransactionId,
+        private EamisPropertyTransactionDetailsDTO GetPropertyTransactionDetailsLatestValue(string propertyTransactionId,
                                                                                             string itemCode,
                                                                                             string serialNumber)
         {
+
             var latestId = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
-                                          .Where(refId => refId.REFERENCE_ID == propertyTransactionId &&
+                                          .Where(refId => refId.PROPERTY_NUMBER == propertyTransactionId &&
                                                           refId.ITEM_CODE == itemCode &&
                                                           refId.SERIAL_NUMBER == serialNumber)
-                                          .GroupBy(x => x.REFERENCE_ID)
-                                          .Select(i => i.Max(x => x.ID))
-                                          .FirstOrDefault();
+                                          .GroupBy(x => x.PROPERTY_NUMBER)
+                                          .Select(i => i.Max(x => x.ID));
             var result = _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
                              .Join(_ctx.EAMIS_PROPERTY_TRANSACTION,
                              pd => pd.PROPERTY_TRANS_ID, //Property Transaction Details
                              ph => ph.ID, //Property Transaction 
                              (pd, ph) => new { pd, ph })
-                             .Where(i => i.pd.ID == (latestId == 0 ? propertyTransactionId : latestId))
+                             .Where(i => latestId.Contains(i.pd.ID))
                              .Select(item => new EamisPropertyTransactionDetailsDTO
                              {
                                  Id = item.pd.ID,
@@ -273,7 +273,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
             //display latest value
             for (int intAsset = 0; intAsset < result.Items.Count(); intAsset++)
             {
-                var propertyTransaction = GetPropertyTransactionDetailsLatestValue(result.Items[intAsset].ReferenceId,
+                var propertyTransaction = GetPropertyTransactionDetailsLatestValue(result.Items[intAsset].PropertyNumber,
                                                                                    result.Items[intAsset].ItemCode,
                                                                                    result.Items[intAsset].SerialNo);
                 var propertyDelivery = GetPropertyItemDeliveryLatestValue(propertyTransaction.Dr);
