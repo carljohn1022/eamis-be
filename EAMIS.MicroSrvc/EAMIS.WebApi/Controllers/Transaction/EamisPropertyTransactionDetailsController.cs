@@ -65,6 +65,12 @@ namespace EAMIS.WebApi.Controllers.Transaction
 
             return result;
         }
+        [HttpGet("GetExistingPropertyNumber")]
+        public async Task<string> GetExistingPropertyNumber (string propertyNumber)
+        {
+            var response = await _eamisPropertyTransactionDetailsRepository.GetPropertyNumberExisted(propertyNumber);
+            return response;
+        }
         //[HttpGet("ListForDeliveryReceiptHeaderToDetails")]
         //public async Task<ActionResult<EAMISDELIVERYRECEIPT>> List([FromQuery] EamisDeliveryReceiptDTO filter, [FromQuery] PageConfig config)
         //{

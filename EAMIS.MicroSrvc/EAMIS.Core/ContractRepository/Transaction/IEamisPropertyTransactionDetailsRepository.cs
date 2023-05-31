@@ -19,6 +19,7 @@ namespace EAMIS.Core.ContractRepository.Transaction
         Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string responsibilityCode, string serialNumber);
         Task<string> GeneratePropertyNumber(DateTime acquisitionDate, string itemCode, string responsibilityCode, int counter);
         //  Task<DataList<EamisDeliveryReceiptDTO>> DeliveryReceiptHeaderToDetailsList(EamisDeliveryReceiptDTO filter, PageConfig config);
+        Task<string> GetPropertyNumberExisted (string propertyNumber);
         string ErrorMessage { get; set; }
         bool HasError { get; set; }
     }

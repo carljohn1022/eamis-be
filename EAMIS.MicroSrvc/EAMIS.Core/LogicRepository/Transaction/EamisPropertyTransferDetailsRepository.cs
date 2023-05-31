@@ -122,7 +122,7 @@ namespace EAMIS.Core.LogicRepository.Transaction
                 ITEM_DESCRIPTION = item.ItemDescription,
                 ITEM_CODE = item.ItemCode,
                 SERIAL_NUMBER = item.SerialNumber,
-                PO = item.Pr,
+                PO = item.Po,
                 PR = item.Pr,
                 ACQUISITION_DATE = item.AcquisitionDate,
                 ASSIGNEE_CUSTODIAN = item.NewAssigneeCustodian, // item.AssigneeCustodian,

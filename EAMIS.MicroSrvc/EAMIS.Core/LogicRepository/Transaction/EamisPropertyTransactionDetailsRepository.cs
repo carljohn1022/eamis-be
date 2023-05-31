@@ -1094,6 +1094,22 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
             return string.Empty;
         }
+        public async Task<string> GetPropertyNumberExisted(string propertyNumber)
+        {
+            string retValue = "";
+            var result = await Task.Run(() => _ctx.EAMIS_PROPERTY_TRANSACTION_DETAILS
+                .Where(s => s.PROPERTY_NUMBER != null && s.PROPERTY_NUMBER.Length >= 19 && s.PROPERTY_NUMBER.Substring(0, 19) == propertyNumber.Substring(0, Math.Min(propertyNumber.Length, 19)))
+                .AsNoTracking()
+                .ToList())
+                .ConfigureAwait(false);
+
+            if (result.Count > 0)
+            {
+                retValue = "exist";
+            }
+
+            return retValue;
+        }
         partial class IssuedQtyDTO
         {
             public string ItemCode { get; set; }

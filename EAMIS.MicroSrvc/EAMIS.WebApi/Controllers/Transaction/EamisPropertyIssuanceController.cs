@@ -323,7 +323,7 @@ namespace EAMIS.WebApi.Controllers.Transaction
         [HttpGet("GetAPRNumber")]
         public async Task<string> GetAPRNum(string dr)
         {
-            var response = await _eamisPropertyIssuanceRepository.GetDRNumFrSupplier(dr);
+            var response = await _eamisPropertyIssuanceRepository.GetAPRNum(dr);
             return response;
         }
         [HttpGet("GetAreaIDForTranType")]
