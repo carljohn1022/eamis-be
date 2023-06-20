@@ -553,7 +553,9 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                 center.Cell(1, 6).Value = "Office Description";
                 center.Cell(1, 7).Value = "Unit Code";
                 center.Cell(1, 8).Value = "Unit Description";
-                center.Cell(1, 9).Value = "Active";
+                center.Cell(1, 9).Value = "Location Code";
+                center.Cell(1, 10).Value = "Location Description";
+                center.Cell(1, 11).Value = "Active";
 
                 if (TemplateWithData)
                 {
@@ -569,7 +571,9 @@ namespace EAMIS.WebApi.Controllers.Masterfiles
                         center.Cell(rowCtr, 6).Value = item.OFFICE_DESC;
                         center.Cell(rowCtr, 7).Value = item.UNIT_CODE;
                         center.Cell(rowCtr, 8).Value = item.UNIT_DESC;
-                        center.Cell(rowCtr, 9).Value = item.IS_ACTIVE;
+                        center.Cell(rowCtr, 9).Value = item.LOCATION_CODE;
+                        center.Cell(rowCtr, 10).Value = item.LOCATION_DESC;
+                        center.Cell(rowCtr, 11).Value = item.IS_ACTIVE;
                         rowCtr++;
                     }
                 }

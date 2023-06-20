@@ -557,7 +557,9 @@ namespace EAMIS.Core.CommonSvc.Utility
                 officeDesc = rowValues[5].ToString(),
                 unitCode = rowValues[6].ToString(),
                 unitDesc = rowValues[7].ToString(),
-                isActive = Convert.ToBoolean(rowValues[8])
+                locationCode = rowValues[8].ToString(),
+                locationDescription = rowValues[9].ToString(),
+                isActive = Convert.ToBoolean(rowValues[10])
             };
         }
 
@@ -1136,7 +1138,9 @@ namespace EAMIS.Core.CommonSvc.Utility
                                 eamisResponsibilityCenterDTO.officeDesc = row.Cell(6).Value.ToString();
                                 eamisResponsibilityCenterDTO.unitCode = row.Cell(7).Value.ToString();
                                 eamisResponsibilityCenterDTO.unitDesc = row.Cell(8).Value.ToString();
-                                eamisResponsibilityCenterDTO.isActive = Convert.ToBoolean(row.Cell(9).Value);
+                                eamisResponsibilityCenterDTO.locationCode = row.Cell(9).Value.ToString();
+                                eamisResponsibilityCenterDTO.locationDescription = row.Cell(10).Value.ToString();
+                                eamisResponsibilityCenterDTO.isActive = Convert.ToBoolean(row.Cell(11).Value);
                                 rowCtr += 1;
                                 var result = await _eamisResponsibilityCenterRepository.InsertFromExcel(eamisResponsibilityCenterDTO);
                                 row = worksheet.Row(rowCtr);
