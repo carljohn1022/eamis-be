@@ -541,12 +541,14 @@ namespace EAMIS.Core.LogicRepository.Transaction
 
                                     serialNumber +=  totalCount.ToString().PadLeft(4, '0') +
                                                        loc.LOCATION_CODE.Substring(locStart);
+                                    string officeCode = loc.OFFICE_CODE.ToString();
+                                    string officeCodeLimit = officeCode.Length > 5 ? officeCode.Substring(0, 5) : officeCode;
 
-                                    propertyNumber = yearPurchased + "-" +
+                                propertyNumber = yearPurchased + "-" +
                                                      coa.PPE_SUB_MAJOR_ACCT_GRP.ToString() + "-" +
                                                      coa.GENERAL_LEDGER_ACCOUNT.ToString() + "-" +
                                                      serialNumber + "-" +
-                                                     loc.OFFICE_CODE.ToString();
+                                                     officeCodeLimit;
                                     return propertyNumber;
 
                                 }

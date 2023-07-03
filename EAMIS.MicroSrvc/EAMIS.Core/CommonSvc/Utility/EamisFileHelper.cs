@@ -1129,12 +1129,12 @@ namespace EAMIS.Core.CommonSvc.Utility
                             while (!row.IsEmpty())
                             {
                                 EamisResponsibilityCenterDTO eamisResponsibilityCenterDTO = new EamisResponsibilityCenterDTO();
-                                string officecode = row.Cell(5).Value.ToString().PadLeft(10, '0');
+                                //string officecode = row.Cell(5).Value.ToString().PadLeft(10, '0');
                                 eamisResponsibilityCenterDTO.mainGroupCode = row.Cell(1).Value.ToString();
                                 eamisResponsibilityCenterDTO.mainGroupDesc = row.Cell(2).Value.ToString();
                                 eamisResponsibilityCenterDTO.subGroupCode = row.Cell(3).Value.ToString();
                                 eamisResponsibilityCenterDTO.subGroupDesc = row.Cell(4).Value.ToString();
-                                eamisResponsibilityCenterDTO.officeCode = officecode;
+                                eamisResponsibilityCenterDTO.officeCode = row.Cell(5).Value.ToString();
                                 eamisResponsibilityCenterDTO.officeDesc = row.Cell(6).Value.ToString();
                                 eamisResponsibilityCenterDTO.unitCode = row.Cell(7).Value.ToString();
                                 eamisResponsibilityCenterDTO.unitDesc = row.Cell(8).Value.ToString();
